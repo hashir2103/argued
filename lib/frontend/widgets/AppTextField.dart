@@ -13,7 +13,7 @@ class AppTextField extends StatefulWidget {
   final void Function(String) onChanged;
   AppTextField({
     this.onChanged,
-    this.obsecureText=false,
+    this.obsecureText = false,
     this.hintText = '',
     this.label = '',
     this.icon,
@@ -74,10 +74,11 @@ class _AppTextFieldState extends State<AppTextField> {
 // ignore: must_be_immutable
 class AppSmallTextField extends StatefulWidget {
   String hintText;
+  final void Function(String) onChanged;
   String label;
   AppSmallTextField({
     this.hintText = '',
-    this.label = '',
+    this.label = '', this.onChanged,
   });
 
   @override
@@ -103,6 +104,7 @@ class _AppSmallTextFieldState extends State<AppSmallTextField> {
               borderRadius: BorderRadius.circular(10),
               color: Colors.grey.withOpacity(0.2)),
           child: TextFormField(
+            onChanged: widget.onChanged,
             decoration: InputDecoration(
                 contentPadding: EdgeInsets.only(left: 15),
                 border: InputBorder.none,

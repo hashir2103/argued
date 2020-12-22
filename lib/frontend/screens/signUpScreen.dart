@@ -1,6 +1,7 @@
 import 'package:argued/ArguedConfigs/constant.dart';
 import 'package:argued/ArguedConfigs/textStyles.dart';
 import 'package:argued/controller/AuthBloc.dart';
+import 'package:argued/frontend/widgets/AppBottomSheet.dart';
 import 'package:argued/frontend/widgets/AppButton.dart';
 import 'package:argued/frontend/widgets/AppIcon.dart';
 import 'package:argued/frontend/widgets/AppTextField.dart';
@@ -61,48 +62,54 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             onChanged: authBloc.changeEmail,
                             hintText: 'johndoe@email.com',
                             label: 'Email',
-                            icon: (snapshot.error != null)?FontAwesomeIcons.cut :FontAwesomeIcons.check,
+                            icon: (snapshot.error != null)
+                                ? FontAwesomeIcons.cut
+                                : FontAwesomeIcons.check,
                           );
                         })),
                 Padding(
                     padding:
                         EdgeInsets.symmetric(vertical: kbaseVerticalPadding),
                     child: StreamBuilder<String>(
-                      stream: authBloc.password,
-                      builder: (context, snapshot) {
-                        return AppTextField(
-                          onChanged: authBloc.changePassword,
-                            hintText: '**********',
-                            label: 'Password',
-                            icon: FontAwesomeIcons.eye);
-                      }
-                    )),
+                        stream: authBloc.password,
+                        builder: (context, snapshot) {
+                          return AppTextField(
+                              onChanged: authBloc.changePassword,
+                              hintText: '**********',
+                              label: 'Password',
+                              icon: FontAwesomeIcons.eye);
+                        })),
                 Padding(
                     padding:
                         EdgeInsets.symmetric(vertical: kbaseVerticalPadding),
                     child: StreamBuilder<String>(
-                      stream: authBloc.confirmPassword,
-                      builder: (context, snapshot) {
-                        return AppTextField(
-                          onChanged: authBloc.changeConfirmPassword,
-                            hintText: '**********',
-                            label: 'Confirm Password',
-                            icon: FontAwesomeIcons.eye);
-                      }
-                    )),
+                        stream: authBloc.confirmPassword,
+                        builder: (context, snapshot) {
+                          return AppTextField(
+                              onChanged: authBloc.changeConfirmPassword,
+                              hintText: '**********',
+                              label: 'Confirm Password',
+                              icon: FontAwesomeIcons.eye);
+                        })),
                 SizedBox(
                   height: 18,
                 ),
                 StreamBuilder<bool>(
-                  initialData: false,
-                  stream: authBloc.isValidSignUp,
-                  builder: (context, snapshot) {
-                    return AppButton(
-                      text: 'Sign Up',
-                      onTap: snapshot.data ? authBloc.signUp() : (){},
-                    );
-                  }
-                ),
+                    initialData: false,
+                    stream: authBloc.isValidSignUp,
+                    builder: (context, snapshot) {
+                      return AppButton(
+                        text: 'Sign Up',
+                        onTap: snapshot.data == true
+                            ? () {
+                                authBloc.signUp();
+                                AppBottomSheet().verifyCode(context);
+                              }
+                            : () {
+                                print('Nothing Happens');
+                              },
+                      );
+                    }),
                 SizedBox(
                   height: 28,
                 ),
@@ -132,23 +139,23 @@ class _SignUpScreenState extends State<SignUpScreen> {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         StreamBuilder<String>(
-          stream: authBloc.fname,
-          builder: (context, snapshot) {
-            return AppSmallTextField(
-              label: 'First Name',
-              hintText: 'John',
-            );
-          }
-        ),
+            stream: authBloc.fname,
+            builder: (context, snapshot) {
+              return AppSmallTextField(
+                onChanged: authBloc.changefname,
+                label: 'First Name',
+                hintText: 'John',
+              );
+            }),
         StreamBuilder<String>(
-          stream: authBloc.lname,
-          builder: (context, snapshot) {
-            return AppSmallTextField(
-              label: 'Last Name',
-              hintText: 'Doe',
-            );
-          }
-        ),
+            stream: authBloc.lname,
+            builder: (context, snapshot) {
+              return AppSmallTextField(
+                onChanged: authBloc.changelname,
+                label: 'Last Name',
+                hintText: 'Doe',
+              );
+            }),
       ],
     );
   }

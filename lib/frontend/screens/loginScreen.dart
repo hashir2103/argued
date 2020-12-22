@@ -59,12 +59,12 @@ class _LoginScreenState extends State<LoginScreen> {
               Padding(
                   padding: EdgeInsets.symmetric(vertical: kbaseVerticalPadding),
                   child: StreamBuilder<String>(
-                      stream: authBloc.email,
+                      stream: authBloc.username,
                       builder: (context, snapshot) {
                         return AppTextField(
-                          onChanged: authBloc.changeEmail,
-                          hintText: 'johndoe@email.com',
-                          label: 'Email',
+                          onChanged: authBloc.changeusername,
+                          hintText: 'johndoe',
+                          label: 'Username',
                           icon: (snapshot.error != null)
                               ? FontAwesomeIcons.cut
                               : FontAwesomeIcons.check,
@@ -87,7 +87,7 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               StreamBuilder<bool>(
                   initialData: false,
-                  stream: authBloc.isValidSignUp,
+                  stream: authBloc.isValidLogin,
                   builder: (context, snapshot) {
                     return AppButton(
                       text: 'Login',

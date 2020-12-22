@@ -10,6 +10,7 @@ const String kshopName = "Shop-Name";
 const String kLoginScreen = '/login';
 const String kSignUpScreen = '/signup';
 const String kSplashScreen = '/splashscreen';
+const String kHomeScreen = '/homescreen';
 
 // animation
 const kAnimationDuration = Duration(milliseconds: 200);
@@ -17,3 +18,10 @@ const kAnimationDuration = Duration(milliseconds: 200);
 //padding
 const double kbaseHorizontalPadding = 20.0;
 const double kbaseVerticalPadding = 8.0;
+
+
+//url
+const String kendpoint = 'https://argued.com';
+const String ksignUp = 'api/user/signup-mobile';
+const String kLogin = 'api/user/login';
+const String kverifyCode = 'api/user/verify-user';

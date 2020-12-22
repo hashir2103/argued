@@ -24,6 +24,7 @@ dependencies:
   flutter:
     sdk: flutter
   cupertino_icons: ^1.0.0
+  dio: ^3.0.10
   font_awesome_flutter: ^8.11.0
   google_fonts: ^1.1.1
   provider: ^4.3.2+3
