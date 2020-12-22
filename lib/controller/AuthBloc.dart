@@ -22,12 +22,14 @@ class AuthBloc {
   final _rememberMe = BehaviorSubject<bool>.seeded(false);
   final _loginPress = BehaviorSubject<bool>.seeded(false);
   final _hideText = BehaviorSubject<bool>.seeded(true);
+  final _resetCredential = BehaviorSubject<bool>.seeded(true);
   final _response = BehaviorSubject<Map>();
 
   //getter
 
   Stream<Map> get response => _response.stream;
   Stream<bool> get hideText => _hideText.stream;
+  Stream<bool> get resetCredential => _resetCredential.stream;
   Stream<bool> get rememberMe => _rememberMe.stream;
   Stream<bool> get loginPress => _loginPress.stream;
   Stream<String> get username => _username.stream;
@@ -46,6 +48,7 @@ class AuthBloc {
 
   Function(bool) get changeRememberMe => _rememberMe.sink.add;
   Function(bool) get changeHideText => _hideText.sink.add;
+  Function(bool) get changeResetCredential => _resetCredential.sink.add;
   Function(bool) get changeLoginPress => _loginPress.sink.add;
   Function(Map) get changeResponse => _response.sink.add;
   Function(String) get changePin1 => _pin1.sink.add;
@@ -60,6 +63,7 @@ class AuthBloc {
   Function(String) get changeConfirmPassword => _confirmPassword.sink.add;
 
   dispose() {
+    _resetCredential.close();
     _hideText.close();
     _username.close();
     _response.close();
@@ -105,8 +109,6 @@ class AuthBloc {
     }
   });
 
-  
-
   //functions
 
   Map get responseValue {
@@ -141,32 +143,9 @@ class AuthBloc {
     changeResponse(response);
   }
 
-  // loginEmail() async {
-  //   print('Login User');
-  //   try {
-  //     UserCredential userCredential = await _auth.signInWithEmailAndPassword(
-  //         email: _email.value.trim(), password: _password.value.trim());
-  //     var user = await _service.fetchUser(userCredential.user.uid);
-  //     _user.sink.add(user);
-  //   } catch (error) {
-  //     _errorMessage.sink.add(error.message);
-  //   }
-  // }
-
-  // Future<bool> isLoggedIn() async {
-  //   User firbaseUser = _auth.currentUser;
-  //   if (firbaseUser == null) return false;
-
-  //   var user = await _service.fetchUser(firbaseUser.uid);
-  //   if (user == null) return false;
-
-  //   // print(user.email);
-  //   _user.sink.add(user);
-  //   return true;
-  // }
-
-  // logOut() async {
-  //   await _auth.signOut();
-  //   _user.sink.add(null);
-  // }
+  resetUserCredential(bool isPass) async {
+    var response =
+        await authServices.resetCredential(isPass, _email.value.trim());
+    changeResponse(response);
+  }
 }

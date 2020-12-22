@@ -17,9 +17,8 @@ class AuthServices {
 
   verifyCode(String code, String id) async {
     try {
-      Response response = await Dio().post('$kendpoint/$kverifyCode/$id',data: {
-        "verificationCode" : code
-      });
+      Response response = await Dio().post('$kendpoint/$kverifyCode/$id',
+          data: {"verificationCode": code});
       print(response);
       return response.data;
     } catch (e) {
@@ -31,6 +30,20 @@ class AuthServices {
     try {
       Response response =
           await Dio().post('$kendpoint/$kLogin', data: loginModel.toMap());
+      print(response.data);
+      return response.data;
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  resetCredential(bool password, String email) async {
+    String url = password
+        ? kendpoint + kforgotPassword
+        : kendpoint + kforgotUsername;
+    var data = {"email": email};
+    try {
+      Response response = await Dio().post(url, data: data);
       print(response.data);
       return response.data;
     } catch (e) {

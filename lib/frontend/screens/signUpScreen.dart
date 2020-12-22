@@ -129,9 +129,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           return AppButton(
                             text: 'Sign Up',
                             onTap: snapshot.data == true
-                                ? () {
+                                ? ()async {
+                                    await authBloc.signUp();
                                     authBloc.changeLoginPress(true);
-                                    authBloc.signUp();
                                   }
                                 : () {
                                     print('Nothing Happens');

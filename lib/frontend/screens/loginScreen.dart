@@ -115,8 +115,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                     var response = authBloc.responseValue;
                                     if (response['key'] ==
                                         "user.account_inactive") {
-                                      AppBottomSheet().verifyCode(context, () {
-                                        authBloc.verifyCode();
+                                      AppBottomSheet().verifyCode(context, () async{
+                                        await authBloc.verifyCode();
                                         Navigator.pop(context);
                                         authBloc.changeLoginPress(true);
                                       });
@@ -175,25 +175,44 @@ class _LoginScreenState extends State<LoginScreen> {
 
   rememberMe(AuthBloc authBloc) {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.start,
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        StreamBuilder<bool>(
-            stream: authBloc.rememberMe,
-            builder: (context, snapshot) {
-              if (!snapshot.hasData) {
-                return Container();
-              }
-              return Checkbox(
-                  activeColor: primaryColor,
-                  value: snapshot.data,
-                  onChanged: (value) {
-                    authBloc.changeRememberMe(value);
-                  });
-            }),
-        Text(
-          'Remember me',
-          style: TextStyle(color: primaryTextColor),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            StreamBuilder<bool>(
+                stream: authBloc.rememberMe,
+                builder: (context, snapshot) {
+                  if (!snapshot.hasData) {
+                    return Container();
+                  }
+                  return Checkbox(
+                      activeColor: primaryColor,
+                      value: snapshot.data,
+                      onChanged: (value) {
+                        authBloc.changeRememberMe(value);
+                      });
+                }),
+            Text(
+              'Remember me',
+              style: TextStyle(color: primaryTextColor),
+            ),
+          ],
         ),
+        GestureDetector(
+          onTap: () {
+            AppBottomSheet().resetUserNamePassword(context, () {});
+          },
+          child: RichText(
+              text: TextSpan(children: [
+            TextSpan(
+              text: "Forgot Credential",
+              style: TextStyle(
+                  decoration: TextDecoration.underline, color: primaryColor),
+            ),
+            TextSpan(text: '?  ', style: TextStyle(color: Colors.black))
+          ])),
+        )
       ],
     );
   }
