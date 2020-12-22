@@ -7,7 +7,7 @@ import 'package:argued/frontend/widgets/AppNumberField.dart';
 import 'package:flutter/material.dart';
 
 class AppBottomSheet {
-  verifyCode(context) {
+  verifyCode(context, onTap) {
     showModalBottomSheet(
         elevation: 0,
         shape: RoundedRectangleBorder(
@@ -17,12 +17,15 @@ class AppBottomSheet {
         isDismissible: false,
         context: context,
         builder: (context) {
-          return VerificationCode();
+          return VerificationCode(onTap: onTap,);
         });
   }
 }
 
+// ignore: must_be_immutable
 class VerificationCode extends StatelessWidget {
+  Function onTap;
+  VerificationCode({this.onTap});
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -30,16 +33,21 @@ class VerificationCode extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          SizedBox(height: 4,),
-          Center(child: Container(
-            height: 7,
-            width: SizeConfig.screenWidth*0.2,
-            decoration: BoxDecoration(
-              color: primaryTextColor,
-              borderRadius: BorderRadius.circular(35)
+          SizedBox(
+            height: 4,
+          ),
+          Center(
+            child: Container(
+              height: 7,
+              width: SizeConfig.screenWidth * 0.2,
+              decoration: BoxDecoration(
+                  color: primaryTextColor,
+                  borderRadius: BorderRadius.circular(35)),
             ),
-          ),),
-          SizedBox(height: 30,),
+          ),
+          SizedBox(
+            height: 30,
+          ),
           Padding(
             padding: const EdgeInsets.symmetric(vertical: kbaseVerticalPadding),
             child: Text(
@@ -52,15 +60,25 @@ class VerificationCode extends StatelessWidget {
             child: Text(
               "Enter the 4 digit code recieved on your email",
               style: normalText(),
-            ),  
+            ),
           ),
-          SizedBox(height: 25,),       
+          SizedBox(
+            height: 25,
+          ),
           Padding(
             padding: const EdgeInsets.symmetric(vertical: kbaseVerticalPadding),
-            child:AppNumberField(),),
-          SizedBox(height: 25,),       
-          AppButton(text: 'Continue',onTap: ()=>Navigator.pop(context),),
-          SizedBox(height: 20,)       
+            child: AppNumberField(),
+          ),
+          SizedBox(
+            height: 25,
+          ),
+          AppButton(
+            text: 'Continue',
+            onTap: onTap
+          ),
+          SizedBox(
+            height: 20,
+          )
         ],
       ),
     );

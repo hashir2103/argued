@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:argued/ArguedConfigs/constant.dart';
 import 'package:argued/backend/auth_Services.dart';
+import 'package:argued/main.dart';
 import 'package:argued/model/loginModel.dart';
 import 'package:argued/model/signUpModel.dart';
 import 'package:rxdart/rxdart.dart';
@@ -19,12 +20,16 @@ class AuthBloc {
   final _password = BehaviorSubject<String>();
   final _confirmPassword = BehaviorSubject<String>();
   final _rememberMe = BehaviorSubject<bool>.seeded(false);
+  final _loginPress = BehaviorSubject<bool>.seeded(false);
+  final _hideText = BehaviorSubject<bool>.seeded(true);
   final _response = BehaviorSubject<Map>();
 
   //getter
 
   Stream<Map> get response => _response.stream;
+  Stream<bool> get hideText => _hideText.stream;
   Stream<bool> get rememberMe => _rememberMe.stream;
+  Stream<bool> get loginPress => _loginPress.stream;
   Stream<String> get username => _username.stream;
   Stream<String> get fname => _fname.stream;
   Stream<String> get lname => _lname.stream;
@@ -40,6 +45,8 @@ class AuthBloc {
   // Setter
 
   Function(bool) get changeRememberMe => _rememberMe.sink.add;
+  Function(bool) get changeHideText => _hideText.sink.add;
+  Function(bool) get changeLoginPress => _loginPress.sink.add;
   Function(Map) get changeResponse => _response.sink.add;
   Function(String) get changePin1 => _pin1.sink.add;
   Function(String) get changePin2 => _pin2.sink.add;
@@ -53,6 +60,7 @@ class AuthBloc {
   Function(String) get changeConfirmPassword => _confirmPassword.sink.add;
 
   dispose() {
+    _hideText.close();
     _username.close();
     _response.close();
     _pin1.close();
@@ -65,6 +73,7 @@ class AuthBloc {
     _password.close();
     _confirmPassword.close();
     _rememberMe.close();
+    _loginPress.close();
   }
 
   //Tranformer of stream to validate data
@@ -96,33 +105,40 @@ class AuthBloc {
     }
   });
 
-  String get pass {
-    return _password.value;
-  }
+  
 
   //functions
+
+  Map get responseValue {
+    return _response.value;
+  }
+
   Future signUp() async {
     changeusername(_email.value.split("@")[0]);
     var signUpModel = SignUpModel(
-        email: _email.value,
-        password: _password.value,
-        username: _username.value.trim(),
-        firstname: _fname.value.trim(),
-        lastname: _lname.value.trim(),
-        );
-    await authServices.signUp(signUpModel);
+      email: _email.value,
+      password: _password.value,
+      username: _username.value.trim(),
+      firstname: _fname.value.trim(),
+      lastname: _lname.value.trim(),
+    );
+    var response = await authServices.signUp(signUpModel);
+    changeResponse(response);
   }
 
-  verifyCode() {
+  verifyCode() async {
     String code = '${_pin1.value}${_pin2.value}${_pin3.value}${_pin4.value}';
-    // authServices.verifyCode(code);
-    print('Code : $code');
+    String id = _response.value['data']['_id'];
+    var response = await authServices.verifyCode(code, id);
+    authBloc.changeResponse(response);
+    print('Code : $code, Id : $id');
   }
 
   login() async {
-    var loginModel = LoginModel(
-        username: _username.value, password: _password.value.trim());
-    await authServices.login(loginModel);
+    var loginModel =
+        LoginModel(username: _username.value, password: _password.value.trim());
+    var response = await authServices.login(loginModel);
+    changeResponse(response);
   }
 
   // loginEmail() async {

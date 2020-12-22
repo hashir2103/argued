@@ -5,9 +5,11 @@ import 'package:argued/ArguedConfigs/constant.dart';
 import 'package:argued/ArguedConfigs/sizeConfig.dart';
 import 'package:argued/ArguedConfigs/textStyles.dart';
 import 'package:argued/controller/AuthBloc.dart';
+import 'package:argued/frontend/widgets/AppBottomSheet.dart';
 import 'package:argued/frontend/widgets/AppButton.dart';
 import 'package:argued/frontend/widgets/AppIcon.dart';
 import 'package:argued/frontend/widgets/AppTextField.dart';
+import 'package:argued/frontend/widgets/PopUpMessage.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -42,73 +44,106 @@ class _LoginScreenState extends State<LoginScreen> {
     var authBloc = Provider.of<AuthBloc>(context);
     return SafeArea(
         child: Scaffold(
-            body: ListView(
-      children: [
-        AppIcon(),
-        Padding(
-          padding:
-              const EdgeInsets.symmetric(horizontal: kbaseHorizontalPadding),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+      body: Stack(
+        children: [
+          ListView(
             children: [
+              AppIcon(),
               Padding(
-                padding:
-                    const EdgeInsets.symmetric(vertical: kbaseVerticalPadding),
-                child: Text("Welcome back", style: bigHeadingText()),
+                padding: const EdgeInsets.symmetric(
+                    horizontal: kbaseHorizontalPadding),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: kbaseVerticalPadding),
+                      child: Text("Welcome back", style: bigHeadingText()),
+                    ),
+                    Padding(
+                        padding: EdgeInsets.symmetric(
+                            vertical: kbaseVerticalPadding),
+                        child: StreamBuilder<String>(
+                            stream: authBloc.username,
+                            builder: (context, snapshot) {
+                              return AppTextField(
+                                onChanged: authBloc.changeusername,
+                                hintText: 'johndoe',
+                                label: 'Username',
+                                icon: (snapshot.error != null)
+                                    ? Icons.clear
+                                    : FontAwesomeIcons.check,
+                              );
+                            })),
+                    Padding(
+                        padding: EdgeInsets.symmetric(
+                            vertical: kbaseVerticalPadding),
+                        child: StreamBuilder<String>(
+                            stream: authBloc.password,
+                            builder: (context, snapshot) {
+                              return StreamBuilder<bool>(
+                                  stream: authBloc.hideText,
+                                  builder: (context, snapshot) {
+                                    return AppTextField(
+                                        onTap: () {
+                                          authBloc
+                                              .changeHideText(!snapshot.data);
+                                        },
+                                        obsecureText: snapshot.data == false
+                                            ? false
+                                            : true,
+                                        onChanged: authBloc.changePassword,
+                                        hintText: '**********',
+                                        label: 'Password',
+                                        icon: FontAwesomeIcons.eye);
+                                  });
+                            })),
+                    rememberMe(authBloc),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    StreamBuilder<bool>(
+                        initialData: false,
+                        stream: authBloc.isValidLogin,
+                        builder: (context, snapshot) {
+                          return AppButton(
+                            text: 'Login',
+                            onTap: snapshot.data == true
+                                ? () async {
+                                    authBloc.changeLoginPress(true);
+                                    await authBloc.login();
+                                    var response = authBloc.responseValue;
+                                    if (response['key'] ==
+                                        "user.account_inactive") {
+                                      AppBottomSheet().verifyCode(context, () {
+                                        authBloc.verifyCode();
+                                        Navigator.pop(context);
+                                        authBloc.changeLoginPress(true);
+                                      });
+                                    }
+                                  }
+                                : () {},
+                          );
+                        }),
+                    SizedBox(
+                      height: 35,
+                    ),
+                    dontHaveAcc(),
+                    SizedBox(
+                      height: 45,
+                    ),
+                    Center(
+                      child: termsAndCondition(),
+                    )
+                  ],
+                ),
               ),
-              Padding(
-                  padding: EdgeInsets.symmetric(vertical: kbaseVerticalPadding),
-                  child: StreamBuilder<String>(
-                      stream: authBloc.username,
-                      builder: (context, snapshot) {
-                        return AppTextField(
-                          onChanged: authBloc.changeusername,
-                          hintText: 'johndoe',
-                          label: 'Username',
-                          icon: (snapshot.error != null)
-                              ? FontAwesomeIcons.cut
-                              : FontAwesomeIcons.check,
-                        );
-                      })),
-              Padding(
-                  padding: EdgeInsets.symmetric(vertical: kbaseVerticalPadding),
-                  child: StreamBuilder<String>(
-                      stream: authBloc.password,
-                      builder: (context, snapshot) {
-                        return AppTextField(
-                            onChanged: authBloc.changePassword,
-                            hintText: '**********',
-                            label: 'Password',
-                            icon: FontAwesomeIcons.eye);
-                      })),
-              rememberMe(authBloc),
-              SizedBox(
-                height: 10,
-              ),
-              StreamBuilder<bool>(
-                  initialData: false,
-                  stream: authBloc.isValidLogin,
-                  builder: (context, snapshot) {
-                    return AppButton(
-                      text: 'Login',
-                      onTap: snapshot.data ? authBloc.login() : () {},
-                    );
-                  }),
-              SizedBox(
-                height: 35,
-              ),
-              dontHaveAcc(),
-              SizedBox(
-                height: 45,
-              ),
-              Center(
-                child: termsAndCondition(),
-              )
             ],
           ),
-        ),
-      ],
-    )));
+          PopUpMessage().loginAndSignUpMsg(authBloc)
+        ],
+      ),
+    ));
   }
 
   termsAndCondition() {
@@ -145,12 +180,15 @@ class _LoginScreenState extends State<LoginScreen> {
         StreamBuilder<bool>(
             stream: authBloc.rememberMe,
             builder: (context, snapshot) {
+              if (!snapshot.hasData) {
+                return Container();
+              }
               return Checkbox(
-                activeColor: primaryColor,
-                value: snapshot.data,
-                onChanged: (value) {
-                  authBloc.changeRememberMe(value);
-                });
+                  activeColor: primaryColor,
+                  value: snapshot.data,
+                  onChanged: (value) {
+                    authBloc.changeRememberMe(value);
+                  });
             }),
         Text(
           'Remember me',

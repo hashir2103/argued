@@ -1,10 +1,10 @@
 import 'package:argued/ArguedConfigs/constant.dart';
 import 'package:argued/ArguedConfigs/textStyles.dart';
 import 'package:argued/controller/AuthBloc.dart';
-import 'package:argued/frontend/widgets/AppBottomSheet.dart';
 import 'package:argued/frontend/widgets/AppButton.dart';
 import 'package:argued/frontend/widgets/AppIcon.dart';
 import 'package:argued/frontend/widgets/AppTextField.dart';
+import 'package:argued/frontend/widgets/PopUpMessage.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -38,85 +38,116 @@ class _SignUpScreenState extends State<SignUpScreen> {
     var authBloc = Provider.of<AuthBloc>(context);
     return SafeArea(
         child: Scaffold(
-      body: ListView(
+      body: Stack(
         children: [
-          AppIcon(),
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: kbaseHorizontalPadding),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                      vertical: kbaseVerticalPadding),
-                  child: Text("Create Account", style: bigHeadingText()),
-                ),
-                firstlastName(authBloc),
-                Padding(
-                    padding:
-                        EdgeInsets.symmetric(vertical: kbaseVerticalPadding),
-                    child: StreamBuilder<String>(
-                        stream: authBloc.email,
+          ListView(
+            children: [
+              AppIcon(),
+              Padding(
+                padding:
+                    EdgeInsets.symmetric(horizontal: kbaseHorizontalPadding),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: kbaseVerticalPadding),
+                      child: Text("Create Account", style: bigHeadingText()),
+                    ),
+                    firstlastName(authBloc),
+                    Padding(
+                        padding: EdgeInsets.symmetric(
+                            vertical: kbaseVerticalPadding),
+                        child: StreamBuilder<String>(
+                            stream: authBloc.email,
+                            builder: (context, snapshot) {
+                              return AppTextField(
+                                onChanged: authBloc.changeEmail,
+                                hintText: 'johndoe@email.com',
+                                label: 'Email',
+                                icon: (snapshot.error != null)
+                                    ? Icons.clear
+                                    : FontAwesomeIcons.check,
+                              );
+                            })),
+                    Padding(
+                        padding: EdgeInsets.symmetric(
+                            vertical: kbaseVerticalPadding),
+                        child: StreamBuilder<String>(
+                            stream: authBloc.password,
+                            builder: (context, snapshot) {
+                              return StreamBuilder<bool>(
+                                  initialData: true,
+                                  stream: authBloc.hideText,
+                                  builder: (context, snapshot) {
+                                    return AppTextField(
+                                        onTap: () {
+                                          authBloc
+                                              .changeHideText(!snapshot.data);
+                                        },
+                                        obsecureText: snapshot.data == false
+                                            ? false
+                                            : true,
+                                        onChanged: authBloc.changePassword,
+                                        hintText: '**********',
+                                        label: 'Password',
+                                        icon: FontAwesomeIcons.eye);
+                                  });
+                            })),
+                    Padding(
+                        padding: EdgeInsets.symmetric(
+                            vertical: kbaseVerticalPadding),
+                        child: StreamBuilder<String>(
+                            stream: authBloc.confirmPassword,
+                            builder: (context, snapshot) {
+                              return StreamBuilder<bool>(
+                                  initialData: true,
+                                  stream: authBloc.hideText,
+                                  builder: (context, snapshot) {
+                                    return AppTextField(
+                                        onTap: () {
+                                          authBloc
+                                              .changeHideText(!snapshot.data);
+                                        },
+                                        obsecureText: snapshot.data == false
+                                            ? false
+                                            : true,
+                                        onChanged:
+                                            authBloc.changeConfirmPassword,
+                                        hintText: '**********',
+                                        label: 'Confirm Password',
+                                        icon: FontAwesomeIcons.eye);
+                                  });
+                            })),
+                    SizedBox(
+                      height: 18,
+                    ),
+                    StreamBuilder<bool>(
+                        initialData: false,
+                        stream: authBloc.isValidSignUp,
                         builder: (context, snapshot) {
-                          return AppTextField(
-                            onChanged: authBloc.changeEmail,
-                            hintText: 'johndoe@email.com',
-                            label: 'Email',
-                            icon: (snapshot.error != null)
-                                ? FontAwesomeIcons.cut
-                                : FontAwesomeIcons.check,
+                          return AppButton(
+                            text: 'Sign Up',
+                            onTap: snapshot.data == true
+                                ? () {
+                                    authBloc.changeLoginPress(true);
+                                    authBloc.signUp();
+                                  }
+                                : () {
+                                    print('Nothing Happens');
+                                  },
                           );
-                        })),
-                Padding(
-                    padding:
-                        EdgeInsets.symmetric(vertical: kbaseVerticalPadding),
-                    child: StreamBuilder<String>(
-                        stream: authBloc.password,
-                        builder: (context, snapshot) {
-                          return AppTextField(
-                              onChanged: authBloc.changePassword,
-                              hintText: '**********',
-                              label: 'Password',
-                              icon: FontAwesomeIcons.eye);
-                        })),
-                Padding(
-                    padding:
-                        EdgeInsets.symmetric(vertical: kbaseVerticalPadding),
-                    child: StreamBuilder<String>(
-                        stream: authBloc.confirmPassword,
-                        builder: (context, snapshot) {
-                          return AppTextField(
-                              onChanged: authBloc.changeConfirmPassword,
-                              hintText: '**********',
-                              label: 'Confirm Password',
-                              icon: FontAwesomeIcons.eye);
-                        })),
-                SizedBox(
-                  height: 18,
+                        }),
+                    SizedBox(
+                      height: 28,
+                    ),
+                    alreadyHaveAcc(),
+                  ],
                 ),
-                StreamBuilder<bool>(
-                    initialData: false,
-                    stream: authBloc.isValidSignUp,
-                    builder: (context, snapshot) {
-                      return AppButton(
-                        text: 'Sign Up',
-                        onTap: snapshot.data == true
-                            ? () {
-                                authBloc.signUp();
-                                AppBottomSheet().verifyCode(context);
-                              }
-                            : () {
-                                print('Nothing Happens');
-                              },
-                      );
-                    }),
-                SizedBox(
-                  height: 28,
-                ),
-                alreadyHaveAcc(),
-              ],
-            ),
-          )
+              )
+            ],
+          ),
+          PopUpMessage().loginAndSignUpMsg(authBloc)
         ],
       ),
     ));
