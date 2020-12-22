@@ -11,7 +11,8 @@ const String kLoginScreen = '/login';
 const String kSignUpScreen = '/signup';
 const String kSplashScreen = '/splashscreen';
 const String kHomeScreen = '/homescreen';
-const String kViewerDashBoard = '/VDashBoard';
+const String kEditProfileScreen = '/editProfile';
+const String kViewerDashBoardScreen = '/VDashBoard';
 
 // animation
 const kAnimationDuration = Duration(milliseconds: 200);

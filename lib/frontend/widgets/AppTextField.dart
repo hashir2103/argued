@@ -10,8 +10,13 @@ class AppTextField extends StatefulWidget {
   IconData icon;
   Function onTap;
   bool obsecureText;
+  double size;
+  bool enable;
+
   final void Function(String) onChanged;
   AppTextField({
+    this.enable = true,
+    this.size = 20,
     this.onChanged,
     this.obsecureText = false,
     this.hintText = '',
@@ -45,6 +50,7 @@ class _AppTextFieldState extends State<AppTextField> {
           child: Stack(
             children: [
               TextFormField(
+                enabled: widget.enable,
                 obscureText: widget.obsecureText,
                 onChanged: widget.onChanged,
                 decoration: InputDecoration(
@@ -60,7 +66,7 @@ class _AppTextFieldState extends State<AppTextField> {
                       onTap: widget.onTap,
                       child: Icon(
                         widget.icon,
-                        size: 20,
+                        size: widget.size,
                         color: primaryColor,
                       )))
             ],
@@ -76,9 +82,14 @@ class AppSmallTextField extends StatefulWidget {
   String hintText;
   final void Function(String) onChanged;
   String label;
+  double fractionOfwidth;
+  TextInputType textInputType;
   AppSmallTextField({
+    this.textInputType = TextInputType.text,
+    this.fractionOfwidth = 2.3,
     this.hintText = '',
-    this.label = '', this.onChanged,
+    this.label = '',
+    this.onChanged,
   });
 
   @override
@@ -99,11 +110,12 @@ class _AppSmallTextFieldState extends State<AppSmallTextField> {
           ),
         ),
         Container(
-          width: SizeConfig.screenWidth / 2.3,
+          width: SizeConfig.screenWidth / widget.fractionOfwidth,
           decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(10),
               color: Colors.grey.withOpacity(0.2)),
           child: TextFormField(
+            keyboardType: widget.textInputType,
             onChanged: widget.onChanged,
             decoration: InputDecoration(
                 contentPadding: EdgeInsets.only(left: 15),

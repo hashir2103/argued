@@ -13,7 +13,7 @@ class ViewerDashBoardScreen extends StatefulWidget {
 }
 
 class _ViewerDashBoardScreenState extends State<ViewerDashBoardScreen> {
-    @override
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: appBar(),
@@ -99,8 +99,13 @@ class _ViewerDashBoardScreenState extends State<ViewerDashBoardScreen> {
         SizedBox(
           width: 15,
         ),
-        CircleAvatar(
-          radius: 15,
+        GestureDetector(
+          onTap: () {
+            Navigator.pushNamed(context, kEditProfileScreen);
+          },
+          child: CircleAvatar(
+            radius: 15,
+          ),
         ),
         SizedBox(
           width: 15,

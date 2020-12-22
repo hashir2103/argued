@@ -7,7 +7,7 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: GestureDetector(
-        onTap: ()=>Navigator.pushNamed(context, kViewerDashBoard),
+        onTap: ()=>Navigator.pushNamed(context, kViewerDashBoardScreen),
               child: Center(
           child: Text('Home',style: bigHeadingText(),),
         ),
