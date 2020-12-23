@@ -30,7 +30,6 @@ class AuthServices {
     try {
       Response response =
           await Dio().post('$kendpoint/$kLogin', data: loginModel.toMap());
-      print(response.data);
       return response.data;
     } catch (e) {
       print(e);
@@ -38,9 +37,8 @@ class AuthServices {
   }
 
   resetCredential(bool password, String email) async {
-    String url = password
-        ? kendpoint + kforgotPassword
-        : kendpoint + kforgotUsername;
+    String url =
+        password ? kendpoint + kforgotPassword : kendpoint + kforgotUsername;
     var data = {"email": email};
     try {
       Response response = await Dio().post(url, data: data);

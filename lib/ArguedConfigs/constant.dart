@@ -29,3 +29,4 @@ const String kLogin = 'api/user/login';
 const String kverifyCode = 'api/user/verify-user';
 const String kforgotUsername = '/api/user/forgotUsername';
 const String kforgotPassword = '/api/user/forgotPassword';
+const String kHotTopicHour = '/api/opinion/hotest';

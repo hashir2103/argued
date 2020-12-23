@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:argued/ArguedConfigs/constant.dart';
 import 'package:argued/backend/auth_Services.dart';
 import 'package:argued/main.dart';
+import 'package:argued/model/LoginResponseModal.dart';
 import 'package:argued/model/loginModel.dart';
 import 'package:argued/model/signUpModel.dart';
 import 'package:rxdart/rxdart.dart';
@@ -24,10 +25,12 @@ class AuthBloc {
   final _hideText = BehaviorSubject<bool>.seeded(true);
   final _resetCredential = BehaviorSubject<bool>.seeded(true);
   final _response = BehaviorSubject<Map>();
+  final _loginResponse = BehaviorSubject<LoginResponse>();
 
   //getter
 
   Stream<Map> get response => _response.stream;
+  Stream<LoginResponse> get loginResponse => _loginResponse.stream;
   Stream<bool> get hideText => _hideText.stream;
   Stream<bool> get resetCredential => _resetCredential.stream;
   Stream<bool> get rememberMe => _rememberMe.stream;
@@ -47,6 +50,7 @@ class AuthBloc {
   // Setter
 
   Function(bool) get changeRememberMe => _rememberMe.sink.add;
+  Function(LoginResponse) get changeLoginResponse => _loginResponse.sink.add;
   Function(bool) get changeHideText => _hideText.sink.add;
   Function(bool) get changeResetCredential => _resetCredential.sink.add;
   Function(bool) get changeLoginPress => _loginPress.sink.add;
@@ -63,6 +67,7 @@ class AuthBloc {
   Function(String) get changeConfirmPassword => _confirmPassword.sink.add;
 
   dispose() {
+    _loginResponse.close();
     _resetCredential.close();
     _hideText.close();
     _username.close();
@@ -140,6 +145,12 @@ class AuthBloc {
     var loginModel =
         LoginModel(username: _username.value, password: _password.value.trim());
     var response = await authServices.login(loginModel);
+    if (response['code'] == 200) {
+      var l = LoginResponse.fromJson(response['data']);
+      changeLoginResponse(l);
+      print('Token : ${_loginResponse.value.token}');
+    }
+    // print(response);
     changeResponse(response);
   }
 
