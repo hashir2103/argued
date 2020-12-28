@@ -51,8 +51,8 @@ TextStyle get chipText {
 
 TextStyle get dropDownMenuText {
   return TextStyle(
-    fontWeight: FontWeight.bold,
-      color: primaryTextColor, fontSize: 16 );
+    // fontWeight: FontWeight.bold,
+      color: Colors.black, fontSize: 16 );
 }
 
 

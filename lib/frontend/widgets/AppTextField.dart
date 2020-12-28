@@ -12,9 +12,11 @@ class AppTextField extends StatefulWidget {
   bool obsecureText;
   double size;
   bool enable;
-
+  TextEditingController controller;
+  Color iconColor;
   final void Function(String) onChanged;
   AppTextField({
+    this.controller,
     this.enable = true,
     this.size = 20,
     this.onChanged,
@@ -23,6 +25,7 @@ class AppTextField extends StatefulWidget {
     this.label = '',
     this.icon,
     this.onTap,
+    this.iconColor = primaryColor
   });
 
   @override
@@ -50,6 +53,7 @@ class _AppTextFieldState extends State<AppTextField> {
           child: Stack(
             children: [
               TextFormField(
+                controller: widget.controller,
                 enabled: widget.enable,
                 obscureText: widget.obsecureText,
                 onChanged: widget.onChanged,
@@ -67,7 +71,7 @@ class _AppTextFieldState extends State<AppTextField> {
                       child: Icon(
                         widget.icon,
                         size: widget.size,
-                        color: primaryColor,
+                        color: widget.iconColor,
                       )))
             ],
           ),
@@ -79,17 +83,29 @@ class _AppTextFieldState extends State<AppTextField> {
 
 // ignore: must_be_immutable
 class AppSmallTextField extends StatefulWidget {
-  String hintText;
-  final void Function(String) onChanged;
-  String label;
+  final String hintText;
+  final String label;
+  final IconData icon;
+  final Function onTap;
+  final bool obsecureText;
+  final double size;
+  final bool enable;
   double fractionOfwidth;
   TextInputType textInputType;
+  final void Function(String) onChanged;
+  TextEditingController controller;
   AppSmallTextField({
+    this.controller,
     this.textInputType = TextInputType.text,
     this.fractionOfwidth = 2.3,
     this.hintText = '',
     this.label = '',
     this.onChanged,
+    this.icon,
+    this.onTap,
+    this.obsecureText,
+    this.size,
+    this.enable,
   });
 
   @override
@@ -114,14 +130,31 @@ class _AppSmallTextFieldState extends State<AppSmallTextField> {
           decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(10),
               color: Colors.grey.withOpacity(0.2)),
-          child: TextFormField(
-            keyboardType: widget.textInputType,
-            onChanged: widget.onChanged,
-            decoration: InputDecoration(
-                contentPadding: EdgeInsets.only(left: 15),
-                border: InputBorder.none,
-                hintText: widget.hintText,
-                hintStyle: TextStyle(color: primaryTextColor)),
+          child: Stack(
+            children: [
+              TextFormField(
+                controller: widget.controller,
+                enabled: widget.enable ?? true,
+                obscureText: widget.obsecureText ?? false,
+                keyboardType: widget.textInputType,
+                onChanged: widget.onChanged,
+                decoration: InputDecoration(
+                    contentPadding: EdgeInsets.only(left: 15),
+                    border: InputBorder.none,
+                    hintText: widget.hintText,
+                    hintStyle: TextStyle(color: primaryTextColor)),
+              ),
+              Positioned(
+                  right: 10,
+                  top: 12,
+                  child: GestureDetector(
+                      onTap: widget.onTap,
+                      child: Icon(
+                        widget.icon,
+                        size: widget.size,
+                        color: primaryColor,
+                      )))
+            ],
           ),
         ),
       ],

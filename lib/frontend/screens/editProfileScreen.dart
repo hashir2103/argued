@@ -1,134 +1,396 @@
+import 'dart:async';
+
+import 'package:argued/ArguedConfigs/color.dart';
+import 'package:argued/ArguedConfigs/constantsList.dart';
+import 'package:argued/controller/ProfileBloc.dart';
+import 'package:argued/frontend/widgets/AppButton.dart';
 import 'package:argued/frontend/widgets/AppDropDown.dart';
 import 'package:argued/frontend/widgets/AppPhoneNumberField.dart';
 import 'package:flutter/material.dart';
 import 'package:argued/ArguedConfigs/constant.dart';
 import 'package:argued/ArguedConfigs/textStyles.dart';
-import 'package:argued/controller/AuthBloc.dart';
 import 'package:argued/frontend/widgets/AppIcon.dart';
 import 'package:argued/frontend/widgets/AppTextField.dart';
-import 'package:argued/frontend/widgets/PopUpMessage.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 
-class EditProfileScreen extends StatelessWidget {
+class EditProfileScreen extends StatefulWidget {
+  @override
+  _EditProfileScreenState createState() => _EditProfileScreenState();
+}
+
+class _EditProfileScreenState extends State<EditProfileScreen> {
+  StreamSubscription profiledata;
+  @override
+  void initState() {
+    // var dashboardBloc = Provider.of<DashboardBloc>(context, listen: false);
+    // // dashboardBloc.getCountries()
+    var profBloc = Provider.of<ProfileBloc>(context,listen: false);
+    profBloc.getProfile();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    profiledata.cancel();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
-    var authBloc = Provider.of<AuthBloc>(context);
+    var profileBloc = Provider.of<ProfileBloc>(context);
+    profiledata = profileBloc.profile.listen((p) {
+      // countryList2.forEach((c) {
+      //   if (c['_id'] == p.countryOfResidence) {
+      //     profileBloc.changeCountry(c['name']);
+      //   }
+      // });
+      print('======= Updating ========');
+      profileBloc.changeSalutation(p.salutation);
+      profileBloc.changefirstname(p.firstname);
+      profileBloc.changeLastName(p.lastname);
+      profileBloc.changeUsername(p.username);
+      // profileBloc.changeDOB(Dat)
+      profileBloc.changePhoneCode('+${p.countryCode}');
+      profileBloc.changePhoneNo(p.phoneNumber);
+      profileBloc.changeCurrency(p.currency);
+      profileBloc.changeMaritalStatus(p.maritalStatus);
+      profileBloc.changeReligion(p.religion);
+      profileBloc.changeShowMyOccupation(p.settings.showOccupation);
+      profileBloc.changeGeographicalInterest(p.settings.useLocation);
+    });
+    List<String> countryName =
+        kcountryList.map((c) => c.name).toList().toSet().toList();
+    List<String> currencyName =
+        kcountryList.map((c) => c.currencyName).toList().toSet().toList();
     return SafeArea(
         child: Scaffold(
-      body: Stack(
-        children: [
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: kbaseHorizontalPadding),
-            child: ListView(
-              children: [
-                AppIcon(),
-                Padding(
-                  padding: const EdgeInsets.only(bottom: kbaseVerticalPadding),
-                  child: Text("Edit Profile", style: bigHeadingText()),
-                ),
-                Padding(
-                  padding: EdgeInsets.symmetric(vertical: kbaseVerticalPadding),
-                  child: AppDropDown().myDropDown(),
-                ),
-                firstlastName(authBloc),
-                Padding(
-                  padding: EdgeInsets.symmetric(vertical: kbaseVerticalPadding),
-                  child: AppTextField(
-                    label: 'Username',
-                    hintText: 'username',
-                  ),
-                ),
-                Padding(
-                  padding: EdgeInsets.symmetric(vertical: kbaseVerticalPadding),
-                  child: AppTextField(
-                    label: 'Date of Birth',
-                    hintText: '03-15-1990',
-                    icon: Icons.arrow_drop_down,
-                    size: 30,
-                    enable: false,
-                    onTap: () {
-                      print('hello');
-                    },
-                  ),
-                ),
-                AppPhoneNumberField(),
-                Padding(
-                    padding:
-                        EdgeInsets.symmetric(vertical: kbaseVerticalPadding),
-                    child: StreamBuilder<String>(
-                        stream: authBloc.password,
-                        builder: (context, snapshot) {
-                          return StreamBuilder<bool>(
-                              initialData: true,
-                              stream: authBloc.hideText,
-                              builder: (context, snapshot) {
-                                return AppTextField(
+      body: Padding(
+        padding: EdgeInsets.symmetric(horizontal: kbaseHorizontalPadding),
+        child: ListView(
+          children: [
+            AppIcon(),
+            Padding(
+              padding: const EdgeInsets.only(bottom: kbaseVerticalPadding),
+              child: Text("Edit Profile", style: bigHeadingText()),
+            ),
+            Padding(
+                padding: EdgeInsets.symmetric(vertical: kbaseVerticalPadding),
+                child: AppDropDown(
+                    label: 'Salutaion',
+                    itemList: salutationList,
+                    onChange: profileBloc.changeSalutation,
+                    stream: profileBloc.salutation)),
+            firstlastName(profileBloc),
+            Padding(
+              padding: EdgeInsets.symmetric(vertical: kbaseVerticalPadding),
+              child: StreamBuilder<String>(
+                  stream: profileBloc.username,
+                  builder: (context, snapshot) {
+                    return AppTextField(
+                      iconColor: snapshot.hasError ? Colors.red : primaryColor,
+                      icon: snapshot.hasError ? Icons.clear : Icons.check,
+                      controller: TextEditingController()
+                        ..text = !snapshot.hasError ? snapshot.data : ''
+                        ..selection = TextSelection.collapsed(
+                            offset:
+                                snapshot.hasData ? snapshot.data.length : 0),
+                      label: 'Username',
+                      hintText: 'James',
+                      onChanged: profileBloc.changeUsername,
+                    );
+                  }),
+            ),
+            Padding(
+              padding: EdgeInsets.symmetric(vertical: kbaseVerticalPadding),
+              child: StreamBuilder<DateTime>(
+                  stream: profileBloc.dob,
+                  builder: (context, snapshot) {
+                    DateTime _date = DateTime(1990, 3, 15);
+                    return AppTextField(
+                      controller: TextEditingController()
+                        ..text = snapshot.hasData
+                            ? snapshot.data.toString().substring(0, 10)
+                            : '',
+                      label: 'Date of Birth',
+                      hintText: '03-15-1990',
+                      icon: Icons.arrow_drop_down,
+                      size: 30,
+                      enable: false,
+                      onTap: () async {
+                        var pickedDate = await showDatePicker(
+                            context: context,
+                            initialDate: _date,
+                            firstDate: DateTime(1947),
+                            lastDate: DateTime.now());
+                        profileBloc.changeDOB(pickedDate);
+                      },
+                    );
+                  }),
+            ),
+            AppPhoneNumberField(),
+            Padding(
+                padding: EdgeInsets.symmetric(vertical: kbaseVerticalPadding),
+                child: StreamBuilder<String>(
+                    stream: profileBloc.password,
+                    builder: (context, pass) {
+                      return StreamBuilder<bool>(
+                          initialData: true,
+                          stream: profileBloc.hideText,
+                          builder: (context, hideText) {
+                            return Stack(
+                              alignment: AlignmentDirectional.bottomCenter,
+                              overflow: Overflow.visible,
+                              children: [
+                                AppTextField(
                                     onTap: () {
-                                      authBloc.changeHideText(!snapshot.data);
+                                      profileBloc
+                                          .changeHideText(!hideText.data);
                                     },
+                                    // controller: TextEditingController()
+                                    //   ..text = pass.hasData ? pass.data : ''
+                                    //   ..selection = TextSelection.collapsed(
+                                    //       offset: pass.hasData
+                                    //           ? pass.data.length
+                                    //           : 0),
                                     obsecureText:
-                                        snapshot.data == false ? false : true,
-                                    onChanged: authBloc.changePassword,
+                                        hideText.data == false ? false : true,
+                                    onChanged: profileBloc.changePassword,
                                     hintText: '**********',
                                     label: 'Password',
-                                    icon: FontAwesomeIcons.eye);
-                              });
-                        })),
-                Padding(
-                    padding:
-                        EdgeInsets.symmetric(vertical: kbaseVerticalPadding),
-                    child: StreamBuilder<String>(
-                        stream: authBloc.confirmPassword,
-                        builder: (context, snapshot) {
-                          return StreamBuilder<bool>(
-                              initialData: true,
-                              stream: authBloc.hideText,
-                              builder: (context, snapshot) {
-                                return AppTextField(
+                                    icon: FontAwesomeIcons.eye),
+                                pass.hasError
+                                    ? Text(
+                                        pass.error,
+                                        style: listTileTrailingText.copyWith(
+                                            color: Colors.red),
+                                      )
+                                    : Text('')
+                              ],
+                            );
+                          });
+                    })),
+            Padding(
+                padding: EdgeInsets.symmetric(vertical: kbaseVerticalPadding),
+                child: StreamBuilder<String>(
+                    stream: profileBloc.confirmPassword,
+                    builder: (context, pass) {
+                      return StreamBuilder<bool>(
+                          initialData: true,
+                          stream: profileBloc.hideText,
+                          builder: (context, hideText) {
+                            return Stack(
+                              alignment: AlignmentDirectional.bottomCenter,
+                              overflow: Overflow.visible,
+                              children: [
+                                AppTextField(
                                     onTap: () {
-                                      authBloc.changeHideText(!snapshot.data);
+                                      profileBloc.getProfile();
+                                      profileBloc
+                                          .changeHideText(!hideText.data);
                                     },
+                                    // controller: TextEditingController()
+                                    //   ..text = pass.hasData ? pass.data : ''
+                                    //   ..selection = TextSelection.collapsed(
+                                    //       offset: pass.hasData
+                                    //           ? pass.data.length
+                                    //           : 0),
                                     obsecureText:
-                                        snapshot.data == false ? false : true,
-                                    onChanged: authBloc.changeConfirmPassword,
+                                        hideText.data == false ? false : true,
+                                    onChanged:
+                                        profileBloc.changeConfrimPassword,
                                     hintText: '**********',
                                     label: 'Confirm Password',
-                                    icon: FontAwesomeIcons.eye);
-                              });
-                        })),
-                SizedBox(
-                  height: 18,
-                ),
-                
-                // alreadyHaveAcc(),
+                                    icon: FontAwesomeIcons.eye),
+                              ],
+                            );
+                          });
+                    })),
+            Padding(
+                padding: EdgeInsets.symmetric(vertical: kbaseVerticalPadding),
+                child: AppDropDown(
+                    label: 'Counrty',
+                    itemList: countryName,
+                    onChange: profileBloc.changeCountry,
+                    stream: profileBloc.country)),
+            Padding(
+                padding: EdgeInsets.symmetric(vertical: kbaseVerticalPadding),
+                child: AppDropDown(
+                    label: 'Currency',
+                    itemList: currencyName,
+                    onChange: profileBloc.changeCurrency,
+                    stream: profileBloc.currency)),
+            Padding(
+              padding: EdgeInsets.symmetric(vertical: kbaseVerticalPadding),
+              child: AppTextField(
+                label: 'Occupation',
+                hintText: 'Select',
+                icon: Icons.arrow_drop_down,
+                size: 30,
+                enable: false,
+                onTap: () {
+                  print('hello');
+                },
+              ),
+            ),
+            Padding(
+              padding:
+                  const EdgeInsets.symmetric(vertical: kbaseVerticalPadding),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Padding(
+                      padding:
+                          EdgeInsets.symmetric(vertical: kbaseVerticalPadding),
+                      child: AppDropDown(
+                          widthPercentage: 0.43,
+                          label: 'Marital Status',
+                          itemList: maritalStatusList,
+                          onChange: profileBloc.changeMaritalStatus,
+                          stream: profileBloc.maritalStatus)),
+                  Padding(
+                      padding:
+                          EdgeInsets.symmetric(vertical: kbaseVerticalPadding),
+                      child: AppDropDown(
+                          widthPercentage: 0.43,
+                          label: 'Religion',
+                          itemList: religionList,
+                          onChange: profileBloc.changeReligion,
+                          stream: profileBloc.religion)),
+                ],
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.symmetric(vertical: kbaseVerticalPadding),
+              child: AppTextField(
+                label: 'UI Display Language',
+                hintText: 'English',
+                icon: Icons.arrow_drop_down,
+                size: 30,
+                enable: false,
+                onTap: () {
+                  print('hello');
+                },
+              ),
+            ),
+            Row(
+              children: [
+                StreamBuilder<bool>(
+                    stream: profileBloc.showMyOccupation,
+                    builder: (context, snapshot) {
+                      if (!snapshot.hasData) {
+                        return Container();
+                      }
+                      return Checkbox(
+                          activeColor: Colors.red.shade700,
+                          value: snapshot.data,
+                          onChanged: profileBloc.changeShowMyOccupation);
+                    }),
+                Text(
+                  'Show My Occupation in Video',
+                  style: listTileTitleText,
+                )
               ],
             ),
-          ),
-          PopUpMessage().loginAndSignUpMsg(authBloc)
-        ],
+            Row(
+              children: [
+                StreamBuilder<bool>(
+                    stream: profileBloc.showGeographicalInterest,
+                    builder: (context, snapshot) {
+                      if (!snapshot.hasData) {
+                        return Container();
+                      }
+                      return Checkbox(
+                          activeColor: Colors.red.shade700,
+                          value: snapshot.data,
+                          onChanged: profileBloc.changeGeographicalInterest);
+                    }),
+                Text(
+                  'Enable Geographical of Interest',
+                  style: listTileTitleText,
+                )
+              ],
+            ),
+            bottomBlock('Topics Of Interest'),
+            bottomBlock('Geographical Location of Interest'),
+            bottomBlock('Set Default Location For New Video'),
+            SizedBox(
+              height: 18,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                AppSmallButton(
+                    onTap: () => Navigator.pop(context),
+                    screenWidthPercentage: 0.4,
+                    buttonColor: Colors.white,
+                    buttonTextColor: primaryColor,
+                    buttonText: 'Back'),
+                AppSmallButton(
+                    onTap: () {},
+                    screenWidthPercentage: 0.4,
+                    buttonColor: primaryColor,
+                    buttonTextColor: Colors.white,
+                    buttonText: 'Submit'),
+              ],
+            ),
+            SizedBox(
+              height: 16,
+            )
+
+            // alreadyHaveAcc(),
+          ],
+        ),
       ),
     ));
   }
 
-  firstlastName(AuthBloc authBloc) {
+  bottomBlock(String text) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Container(
+          margin: EdgeInsets.only(top: 8),
+          padding: EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+          decoration: BoxDecoration(
+            border: Border.all(color: Colors.red.shade700, width: 1),
+            borderRadius: BorderRadius.circular(20),
+          ),
+          child: Text(
+            text,
+            style: TextStyle(color: Colors.red.shade700, fontSize: 16),
+          ),
+        ),
+      ],
+    );
+  }
+
+  firstlastName(ProfileBloc profileBloc) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         StreamBuilder<String>(
-            stream: authBloc.fname,
+            stream: profileBloc.firstname,
             builder: (context, snapshot) {
               return AppSmallTextField(
-                onChanged: authBloc.changefname,
+                controller: TextEditingController()
+                  ..text = snapshot.hasData ? snapshot.data : ''
+                  ..selection = TextSelection.collapsed(
+                      offset: snapshot.hasData ? snapshot.data.length : 0),
+                onChanged: profileBloc.changefirstname,
                 label: 'First Name',
                 hintText: 'John',
               );
             }),
         StreamBuilder<String>(
-            stream: authBloc.lname,
+            stream: profileBloc.lastname,
             builder: (context, snapshot) {
               return AppSmallTextField(
-                onChanged: authBloc.changelname,
+                controller: TextEditingController()
+                  ..text = snapshot.hasData ? snapshot.data : ''
+                  ..selection = TextSelection.collapsed(
+                      offset: snapshot.hasData ? snapshot.data.length : 0),
+                onChanged: profileBloc.changeLastName,
                 label: 'Last Name',
                 hintText: 'Doe',
               );

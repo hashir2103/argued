@@ -67,7 +67,7 @@ class Plan {
         this.videoSeconds,
     });
 
-    Options options;
+    Optionss options;
     List<String> access;
     String id;
     String name;
@@ -78,7 +78,7 @@ class Plan {
     int videoSeconds;
 
     factory Plan.fromJson(Map<String, dynamic> json) => Plan(
-        options: Options.fromJson(json["options"]),
+        options: Optionss.fromJson(json["options"]),
         access: List<String>.from(json["access"].map((x) => x)),
         id: json["_id"],
         name: json["name"],
@@ -102,8 +102,8 @@ class Plan {
     };
 }
 
-class Options {
-    Options({
+class Optionss {
+    Optionss({
         this.storage,
         this.monthlyPosts,
         this.analytics1,
@@ -115,7 +115,7 @@ class Options {
     bool analytics1;
     bool analytics2;
 
-    factory Options.fromJson(Map<String, dynamic> json) => Options(
+    factory Optionss.fromJson(Map<String, dynamic> json) => Optionss(
         storage: json["storage"],
         monthlyPosts: json["monthlyPosts"],
         analytics1: json["analytics1"],

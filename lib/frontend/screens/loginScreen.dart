@@ -67,12 +67,16 @@ class _LoginScreenState extends State<LoginScreen> {
                             stream: authBloc.username,
                             builder: (context, snapshot) {
                               return AppTextField(
+                                iconColor: snapshot.hasError
+                                    ? Colors.red
+                                    : primaryColor,
+                                icon: snapshot.hasError
+                                    ? Icons.clear
+                                    : Icons.check,
                                 onChanged: authBloc.changeusername,
                                 hintText: 'johndoe',
                                 label: 'Username',
-                                icon: (snapshot.error != null)
-                                    ? Icons.clear
-                                    : FontAwesomeIcons.check,
+            
                               );
                             })),
                     Padding(
@@ -110,12 +114,13 @@ class _LoginScreenState extends State<LoginScreen> {
                             text: 'Login',
                             onTap: snapshot.data == true
                                 ? () async {
-                                    authBloc.changeLoginPress(true);
                                     await authBloc.login();
+                                    authBloc.changeLoginPress(true);
                                     var response = authBloc.responseValue;
                                     if (response['key'] ==
                                         "user.account_inactive") {
-                                      AppBottomSheet().verifyCode(context, () async{
+                                      AppBottomSheet().verifyCode(context,
+                                          () async {
                                         await authBloc.verifyCode();
                                         Navigator.pop(context);
                                         authBloc.changeLoginPress(true);

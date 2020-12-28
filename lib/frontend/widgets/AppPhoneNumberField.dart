@@ -1,12 +1,15 @@
 import 'package:argued/ArguedConfigs/color.dart';
 import 'package:argued/ArguedConfigs/sizeConfig.dart';
 import 'package:argued/ArguedConfigs/textStyles.dart';
+import 'package:argued/controller/ProfileBloc.dart';
 import 'package:country_code_picker/country_code_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class AppPhoneNumberField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    var profileBloc = Provider.of<ProfileBloc>(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -18,35 +21,68 @@ class AppPhoneNumberField extends StatelessWidget {
           ),
         ),
         Container(
-          width: SizeConfig.screenWidth * 0.9,
+          width: SizeConfig.screenWidth,
           decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(10),
               color: Colors.grey.withOpacity(0.2)),
-          child: Wrap(
+          child: Stack(
             children: [
-              Padding(
-                padding: const EdgeInsets.only(left: 12),
-                child: CountryCodePicker(
-                  padding: EdgeInsets.all(0),
-                  initialSelection: 'IN',
-                  showDropDownButton: true,
-                  onChanged: (code) {
-                    print(code);
-                  },
-                ),
+              Row(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(left: 12),
+                    child: StreamBuilder<String>(
+                        stream: profileBloc.phoneCode,
+                        builder: (context, snapshot) {
+                          return CountryCodePicker(
+                            padding: EdgeInsets.all(0),
+                            initialSelection:
+                                snapshot.hasData ? snapshot.data : "+92",
+                            showDropDownButton: true,
+                            onChanged: (code) {
+                              profileBloc.changePhoneCode(code.toString());
+                            },
+                          );
+                        }),
+                  ),
+                  Container(
+                    width: SizeConfig.screenWidth * 0.5,
+                    child: StreamBuilder<String>(
+                        stream: profileBloc.phoneNo,
+                        builder: (context, snapshot) {
+                          return TextFormField(
+                            maxLength: 10,
+                            // controller: TextEditingController()
+                            //   ..selection = TextSelection.collapsed(
+                            //       offset: snapshot.hasData
+                            //           ? snapshot.data.length
+                            //           : 0)
+                            //   ..text = snapshot.hasData ? snapshot.data : '',
+                            keyboardType: TextInputType.number,
+                            onChanged: profileBloc.changePhoneNo,
+                            decoration: InputDecoration(
+                                counterText: "",
+                                contentPadding: EdgeInsets.only(left: 15),
+                                border: InputBorder.none,
+                                hintText: '3456789546',
+                                hintStyle: TextStyle(color: primaryTextColor)),
+                          );
+                        }),
+                  ),
+                ],
               ),
-              Container(
-                width: SizeConfig.screenWidth * 0.5,
-                child: TextFormField(
-                  keyboardType: TextInputType.number,
-                  // onChanged: widget.onChanged,
-                  decoration: InputDecoration(
-                      contentPadding: EdgeInsets.only(left: 15),
-                      border: InputBorder.none,
-                      hintText: '3456789',
-                      hintStyle: TextStyle(color: primaryTextColor)),
-                ),
-              ),
+              StreamBuilder<String>(
+                  stream: profileBloc.phoneNo,
+                  builder: (context, snapshot) {
+                    return Positioned(
+                        right: 10,
+                        top: 14,
+                        child: Icon(
+                          snapshot.hasError ? Icons.clear : Icons.check,
+                          size: 20,
+                          color: snapshot.hasError ? Colors.red : primaryColor,
+                        ));
+                  })
             ],
           ),
         ),

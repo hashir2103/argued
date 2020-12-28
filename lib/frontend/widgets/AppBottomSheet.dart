@@ -1,8 +1,10 @@
 import 'package:argued/ArguedConfigs/color.dart';
 import 'package:argued/ArguedConfigs/constant.dart';
+import 'package:argued/ArguedConfigs/constantsList.dart';
 import 'package:argued/ArguedConfigs/sizeConfig.dart';
 import 'package:argued/ArguedConfigs/textStyles.dart';
 import 'package:argued/frontend/widgets/AppButton.dart';
+import 'package:argued/frontend/widgets/AppDropDown.dart';
 import 'package:argued/frontend/widgets/AppNumberField.dart';
 import 'package:argued/frontend/widgets/AppTextField.dart';
 import 'package:argued/main.dart';
@@ -39,6 +41,220 @@ class AppBottomSheet {
             onTap: onTap,
           );
         });
+  }
+
+  changeMyInterest(context) {
+    showModalBottomSheet(
+        elevation: 0,
+        isScrollControlled: true,
+        isDismissible: false,
+        context: context,
+        builder: (context) {
+          return ChangeMyInterest();
+        });
+  }
+
+  geoInterest(context) {
+    showModalBottomSheet(
+        elevation: 0,
+        isScrollControlled: true,
+        isDismissible: false,
+        context: context,
+        builder: (context) {
+          return GeographicalInterest();
+        });
+  }
+}
+
+// ignore: must_be_immutable
+class GeographicalInterest extends StatelessWidget {
+  List<MultiSelectDialogItem<String>> multiItem = List();
+
+  void populateMultiselect() {
+    countryList2.forEach((c) {
+      multiItem.add(MultiSelectDialogItem(c['_id'], c['name']));
+    });
+  }
+
+  void _showMultiSelect(BuildContext context) async {
+    multiItem = [];
+    populateMultiselect();
+
+    final selectedValues = await showDialog<Set<String>>(
+      context: context,
+      builder: (BuildContext context) {
+        return MultiSelectDialog(
+            items: multiItem,
+            initialSelectedValues: dashboardBloc.getCountriesSelected());
+      },
+    );
+    dashboardBloc.changeCountries(selectedValues);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: kbaseHorizontalPadding),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          SizedBox(
+            height: 12,
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Container(
+                  padding: EdgeInsets.only(left: 8),
+                  child: Text(
+                    "Geograhpical Location Of Interest",
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
+                        fontSize: 16),
+                  )),
+              Container(
+                  child: IconButton(
+                      icon: Icon(
+                        Icons.clear,
+                        color: Colors.black,
+                      ),
+                      onPressed: () => Navigator.pop(context))),
+            ],
+          ),
+          SizedBox(
+            height: 20,
+          ),
+          Padding(
+              padding: EdgeInsets.symmetric(vertical: kbaseVerticalPadding),
+              child: AppTextField(
+                enable: false,
+                hintText: "Select",
+                label: "Select Countries",
+                icon: Icons.arrow_drop_down,
+                size: 30,
+                iconColor: primaryColor,
+                onTap: () {
+                  _showMultiSelect(context);
+                },
+              )),
+          Padding(
+              padding: EdgeInsets.symmetric(vertical: kbaseVerticalPadding),
+              child: StreamBuilder<Set<String>>(
+                stream: dashboardBloc.countries,
+                builder: (context, snapshot) {
+                  return AppTextField(
+                    enable: false,
+                    hintText: snapshot.hasData? "Select" : 'Select Countries first',
+                    label: "Select States",
+                    icon: Icons.arrow_drop_down,
+                    size: 30,
+                    iconColor: primaryColor,
+                    onTap: () {
+                      // _showMultiSelect(context);
+                    },
+                  );
+                }
+              )),
+          Padding(
+              padding: EdgeInsets.symmetric(vertical: kbaseVerticalPadding),
+              child: StreamBuilder<Set<String>>(
+                stream: dashboardBloc.states,
+                builder: (context, snapshot) {
+                  return AppTextField(
+                    enable: false,
+                    hintText: snapshot.hasData? "Select" : 'Select State(s) first',
+                    label: "Select Cities",
+                    icon: Icons.arrow_drop_down,
+                    size: 30,
+                    iconColor: primaryColor,
+                    onTap: () {
+                      // _showMultiSelect(context);
+                    },
+                  );
+                }
+              )),
+          SizedBox(
+            height: 20,
+          ),
+          AppButton(
+            height: 50,
+            text: 'Apply Filter',
+            onTap: () {},
+          ),
+          SizedBox(
+            height: 20,
+          )
+        ],
+      ),
+    );
+  }
+}
+
+class ChangeMyInterest extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: kbaseHorizontalPadding),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          SizedBox(
+            height: 12,
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Container(
+                  padding: EdgeInsets.only(left: 8),
+                  child: Text(
+                    "Change my Interests",
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
+                        fontSize: 20),
+                  )),
+              Container(
+                  child: IconButton(
+                      icon: Icon(
+                        Icons.clear,
+                        color: Colors.black,
+                      ),
+                      onPressed: () => Navigator.pop(context))),
+            ],
+          ),
+          SizedBox(
+            height: 20,
+          ),
+          AppButton(
+            height: 50,
+            text: 'Topic Of Interest',
+            onTap: () {},
+          ),
+          SizedBox(
+            height: 20,
+          ),
+          AppButton(
+            height: 50,
+            text: 'Geographical Locations Of Interest',
+            onTap: () {
+              AppBottomSheet().geoInterest(context);
+            },
+          ),
+          SizedBox(
+            height: 20,
+          ),
+          AppButton(
+            height: 50,
+            text: 'Set Default Location For New Video',
+            onTap: () {},
+          ),
+          SizedBox(
+            height: 20,
+          ),
+        ],
+      ),
+    );
   }
 }
 
@@ -175,7 +391,7 @@ class ResetUNamePassword extends StatelessWidget {
               AppButton(
                 text: 'Reset',
                 onTap: snapshot.data == true
-                    ? () async{
+                    ? () async {
                         await authBloc.resetUserCredential(false);
                         Navigator.pop(context);
                         authBloc.changeLoginPress(true);

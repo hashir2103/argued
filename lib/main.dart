@@ -1,18 +1,21 @@
 import 'package:argued/ArguedConfigs/theme.dart';
 import 'package:argued/controller/AuthBloc.dart';
 import 'package:argued/controller/DashboadBloc.dart';
+import 'package:argued/controller/ProfileBloc.dart';
 import 'package:argued/frontend/screens/loginScreen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-
 import 'ArguedConfigs/routes.dart';
 
 void main() {
   runApp(MyApp());
 }
 
+// All App Controllers
 final authBloc = AuthBloc();
 final dashboardBloc = DashboardBloc();
+final profileBloc = ProfileBloc();
 
 class MyApp extends StatefulWidget {
   @override
@@ -28,10 +31,13 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setPreferredOrientations(
+        [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
     return MultiProvider(
         providers: [
           Provider(create: (context) => authBloc),
           Provider(create: (context) => dashboardBloc),
+          Provider(create: (context) => profileBloc),
         ],
         child: MaterialApp(
           title: 'Argued.com',

@@ -7,8 +7,22 @@ import 'package:argued/model/LoginResponseModal.dart';
 import 'package:argued/model/loginModel.dart';
 import 'package:argued/model/signUpModel.dart';
 import 'package:rxdart/rxdart.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthBloc {
+  AuthBloc() {
+    {
+      _username
+          .debounce((_) => TimerStream(true, Duration(milliseconds: 500)))
+          .listen((query) async {
+        var response = await authServices.checkUesrname(query);
+        if (response['code'] == 200) {
+          _username.addError("error");
+        }
+        _username.add(query);
+      });
+    }
+  }
   final authServices = AuthServices();
   final _pin1 = BehaviorSubject<String>();
   final _pin2 = BehaviorSubject<String>();
@@ -101,7 +115,7 @@ class AuthBloc {
     if (password.length >= 8) {
       sink.add(password.trim());
     } else {
-      sink.addError("8 Characters Minimum");
+      sink.addError("8 Characters Minimun and a Uppercase Letter");
     }
   });
 
@@ -115,6 +129,10 @@ class AuthBloc {
   });
 
   //functions
+
+  String get getloginToken {
+    return _loginResponse.value.token;
+  }
 
   Map get responseValue {
     return _response.value;
@@ -142,13 +160,14 @@ class AuthBloc {
   }
 
   login() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
     var loginModel =
         LoginModel(username: _username.value, password: _password.value.trim());
     var response = await authServices.login(loginModel);
     if (response['code'] == 200) {
       var l = LoginResponse.fromJson(response['data']);
       changeLoginResponse(l);
-      print('Token : ${_loginResponse.value.token}');
+      prefs.setString('Token', _loginResponse.value.token);
     }
     // print(response);
     changeResponse(response);

@@ -1,33 +1,6 @@
-class Profile {
-    Profile({
-        this.data,
-        this.message,
-        this.key,
-        this.code,
-    });
 
-    Data data;
-    String message;
-    String key;
-    int code;
-
-    factory Profile.fromJson(Map<String, dynamic> json) => Profile(
-        data: Data.fromJson(json["data"]),
-        message: json["message"],
-        key: json["key"],
-        code: json["code"],
-    );
-
-    Map<String, dynamic> toJson() => {
-        "data": data.toJson(),
-        "message": message,
-        "key": key,
-        "code": code,
-    };
-}
-
-class Data {
-    Data({
+class ProfileModel {
+    ProfileModel({
         this.geoPreference,
         this.income,
         this.completion,
@@ -82,7 +55,7 @@ class Data {
         this.religion,
         this.opinions,
         this.videos,
-        this.dataId,
+        this.profileId,
     });
 
     GeoPreference geoPreference;
@@ -139,9 +112,9 @@ class Data {
     String religion;
     dynamic opinions;
     dynamic videos;
-    String dataId;
+    String profileId;
 
-    factory Data.fromJson(Map<String, dynamic> json) => Data(
+    factory ProfileModel.fromJson(Map<String, dynamic> json) => ProfileModel(
         geoPreference: GeoPreference.fromJson(json["geoPreference"]),
         income: json["income"],
         completion: Completion.fromJson(json["completion"]),
@@ -196,7 +169,7 @@ class Data {
         religion: json["religion"],
         opinions: json["opinions"],
         videos: json["videos"],
-        dataId: json["id"],
+        profileId: json["id"],
     );
 
     Map<String, dynamic> toJson() => {
@@ -254,7 +227,7 @@ class Data {
         "religion": religion,
         "opinions": opinions,
         "videos": videos,
-        "id": dataId,
+        "id": profileId,
     };
 }
 

@@ -12,7 +12,7 @@ class AppIcon extends StatelessWidget {
               margin: EdgeInsets.only(top: 30),
               width:SizeConfig.screenWidth*0.6,
               child: Image.asset(
-                'assets/icon.jpeg',
+                'assets/logo.png',
                 ),
             ),
           );
