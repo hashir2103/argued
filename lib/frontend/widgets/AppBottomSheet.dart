@@ -141,39 +141,41 @@ class GeographicalInterest extends StatelessWidget {
           Padding(
               padding: EdgeInsets.symmetric(vertical: kbaseVerticalPadding),
               child: StreamBuilder<Set<String>>(
-                stream: dashboardBloc.countries,
-                builder: (context, snapshot) {
-                  return AppTextField(
-                    enable: false,
-                    hintText: snapshot.hasData? "Select" : 'Select Countries first',
-                    label: "Select States",
-                    icon: Icons.arrow_drop_down,
-                    size: 30,
-                    iconColor: primaryColor,
-                    onTap: () {
-                      // _showMultiSelect(context);
-                    },
-                  );
-                }
-              )),
+                  stream: dashboardBloc.countries,
+                  builder: (context, snapshot) {
+                    return AppTextField(
+                      enable: false,
+                      hintText: snapshot.hasData
+                          ? "Select"
+                          : 'Select Countries first',
+                      label: "Select States",
+                      icon: Icons.arrow_drop_down,
+                      size: 30,
+                      iconColor: primaryColor,
+                      onTap: () {
+                        // dashboardBloc.getStates();
+                        // _showMultiSelect(context);
+                      },
+                    );
+                  })),
           Padding(
               padding: EdgeInsets.symmetric(vertical: kbaseVerticalPadding),
               child: StreamBuilder<Set<String>>(
-                stream: dashboardBloc.states,
-                builder: (context, snapshot) {
-                  return AppTextField(
-                    enable: false,
-                    hintText: snapshot.hasData? "Select" : 'Select State(s) first',
-                    label: "Select Cities",
-                    icon: Icons.arrow_drop_down,
-                    size: 30,
-                    iconColor: primaryColor,
-                    onTap: () {
-                      // _showMultiSelect(context);
-                    },
-                  );
-                }
-              )),
+                  stream: dashboardBloc.states,
+                  builder: (context, snapshot) {
+                    return AppTextField(
+                      enable: false,
+                      hintText:
+                          snapshot.hasData ? "Select" : 'Select State(s) first',
+                      label: "Select Cities",
+                      icon: Icons.arrow_drop_down,
+                      size: 30,
+                      iconColor: primaryColor,
+                      onTap: () {
+                        // _showMultiSelect(context);
+                      },
+                    );
+                  })),
           SizedBox(
             height: 20,
           ),

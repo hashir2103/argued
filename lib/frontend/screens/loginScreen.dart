@@ -22,14 +22,22 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   TapGestureRecognizer onTap;
+  FocusNode node;
+  TextEditingController c = TextEditingController();
+  TextEditingController c1 = TextEditingController();
+
   @override
   void initState() {
+    node = FocusNode();
     onTap = TapGestureRecognizer()..onTap = _handleOnTap;
     super.initState();
   }
 
   @override
   void dispose() {
+    c.dispose();
+    c1.dispose();
+    node.dispose();
     onTap.dispose();
     super.dispose();
   }
@@ -66,41 +74,56 @@ class _LoginScreenState extends State<LoginScreen> {
                         child: StreamBuilder<String>(
                             stream: authBloc.username,
                             builder: (context, snapshot) {
-                              return AppTextField(
-                                iconColor: snapshot.hasError
-                                    ? Colors.red
-                                    : primaryColor,
-                                icon: snapshot.hasError
-                                    ? Icons.clear
-                                    : Icons.check,
-                                onChanged: authBloc.changeusername,
-                                hintText: 'johndoe',
-                                label: 'Username',
-            
+                              return Focus(
+                                onFocusChange: (focus) {
+                                  if (!focus) {
+                                    authBloc.checkUserName();
+                                  }
+                                },
+                                child: AppTextField(
+                                  controller: c1
+                                    ..text =
+                                        snapshot.hasData ? snapshot.data : ''
+                                    ..selection = TextSelection.collapsed(
+                                        offset: snapshot.hasData
+                                            ? snapshot.data.length
+                                            : 0),
+                                  iconColor: snapshot.hasError
+                                      ? Colors.red
+                                      : primaryColor,
+                                  icon: snapshot.hasError
+                                      ? Icons.clear
+                                      : Icons.check,
+                                  onChanged: authBloc.changeusername,
+                                  hintText: 'johndoe',
+                                  label: 'Username',
+                                ),
                               );
                             })),
                     Padding(
                         padding: EdgeInsets.symmetric(
                             vertical: kbaseVerticalPadding),
-                        child: StreamBuilder<String>(
-                            stream: authBloc.password,
+                        child: StreamBuilder<bool>(
+                            stream: authBloc.hideText,
                             builder: (context, snapshot) {
-                              return StreamBuilder<bool>(
-                                  stream: authBloc.hideText,
-                                  builder: (context, snapshot) {
-                                    return AppTextField(
-                                        onTap: () {
-                                          authBloc
-                                              .changeHideText(!snapshot.data);
-                                        },
-                                        obsecureText: snapshot.data == false
-                                            ? false
-                                            : true,
-                                        onChanged: authBloc.changePassword,
-                                        hintText: '**********',
-                                        label: 'Password',
-                                        icon: FontAwesomeIcons.eye);
-                                  });
+                              return AppTextField(
+                                  controller: c
+                                    ..text = authBloc.pass != null
+                                        ? authBloc.pass
+                                        : ''
+                                    ..selection = TextSelection.collapsed(
+                                        offset: authBloc.pass != null
+                                            ? authBloc.pass.length
+                                            : 0),
+                                  onTap: () {
+                                    authBloc.changeHideText(!snapshot.data);
+                                  },
+                                  obsecureText:
+                                      snapshot.data == false ? false : true,
+                                  onChanged: authBloc.changePassword,
+                                  hintText: '**********',
+                                  label: 'Password',
+                                  icon: FontAwesomeIcons.eye);
                             })),
                     rememberMe(authBloc),
                     SizedBox(

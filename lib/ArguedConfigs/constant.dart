@@ -37,3 +37,5 @@ const String kProfile = '/api/user/profile';
 const String kCountry = '/api/country';
 const String kStates = '/api/country/statesWithCities/';
 
+//HiveDB
+const String loginBox = 'loginBox';

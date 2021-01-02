@@ -5,16 +5,6 @@ import 'package:argued/model/ProfileModel.dart';
 import 'package:rxdart/rxdart.dart';
 
 class ProfileBloc {
-  ProfileBloc() {
-    _username
-        .debounce((_) => TimerStream(true, Duration(milliseconds: 500)))
-        .listen((query) async {
-      var response = await profileService.checkUesrname(query);
-      if (response['code'] != 200) {
-        _username.sink.addError("error");
-      }
-    });
-  }
   //varaible
   ProfileService profileService = ProfileService();
   final _profile = BehaviorSubject<ProfileModel>();
@@ -31,7 +21,7 @@ class ProfileBloc {
   final _currency = BehaviorSubject<String>.seeded('Pakistani rupee');
   final _maritalStatus = BehaviorSubject<String>.seeded('Single');
   final _religion = BehaviorSubject<String>.seeded('Islam');
-  final _occupation = BehaviorSubject<String>.seeded('Pakistani rupee');
+  final _occupation = BehaviorSubject<String>.seeded("Agriculture, Food and Natural Resources");
   final _hideText = BehaviorSubject<bool>.seeded(true);
   final _showMyOccupation = BehaviorSubject<bool>.seeded(false);
   final _geographicalInterest = BehaviorSubject<bool>.seeded(true);
@@ -121,8 +111,19 @@ class ProfileBloc {
   });
 
   //Functions
+  bool get getHideText => _hideText.value;
+  String get pass => _password.value;
+  String get confirmpass => _confirmPassword.value;
+
   getProfile() async {
     var data = await profileService.getProfile();
     changeProfile(data);
+  }
+
+  checkUserName() async {
+    var response = await profileService.checkUesrname(_username.value ?? '');
+    if (response['code'] != 200) {
+      _username.addError("error");
+    }
   }
 }

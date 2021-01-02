@@ -1,14 +1,17 @@
 import 'package:argued/ArguedConfigs/theme.dart';
+import 'package:argued/backend/hiveDB.dart';
 import 'package:argued/controller/AuthBloc.dart';
 import 'package:argued/controller/DashboadBloc.dart';
 import 'package:argued/controller/ProfileBloc.dart';
-import 'package:argued/frontend/screens/loginScreen.dart';
+import 'package:argued/frontend/screens/splashScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'ArguedConfigs/routes.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await HiveDB.init;
   runApp(MyApp());
 }
 
@@ -44,7 +47,7 @@ class _MyAppState extends State<MyApp> {
           debugShowCheckedModeBanner: false,
           onGenerateRoute: Routes.materialPageRoute,
           theme: theme(),
-          home: LoginScreen(),
+          home: SplashScreen(),
         ));
   }
 }

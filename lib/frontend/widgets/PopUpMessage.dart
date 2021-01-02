@@ -25,10 +25,11 @@ class PopUpMessage {
                       );
                     }
                     if (response.data['key'] == "user.login_success") {
-                      Future.delayed(Duration(milliseconds: 1500))
+                      authBloc.saveCredential();
+                      Future.delayed(Duration(milliseconds: 1000))
                           .then((value) {
                         authBloc.changeLoginPress(false);
-                        Navigator.pushNamed(context, kHomeScreen);
+                        Navigator.pushNamed(context, kViewerDashBoardScreen);
                       });
                       return MyAppDailog()
                           .loginDailog(response.data['message'], context);

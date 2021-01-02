@@ -2,6 +2,7 @@ import 'package:argued/ArguedConfigs/color.dart';
 import 'package:argued/ArguedConfigs/constant.dart';
 import 'package:argued/ArguedConfigs/sizeConfig.dart';
 import 'package:argued/ArguedConfigs/textStyles.dart';
+import 'package:argued/controller/AuthBloc.dart';
 import 'package:argued/controller/DashboadBloc.dart';
 import 'package:argued/frontend/widgets/AppBottomSheet.dart';
 import 'package:argued/frontend/widgets/AppCard.dart';
@@ -19,22 +20,34 @@ class ViewerDashBoardScreen extends StatefulWidget {
 }
 
 class _ViewerDashBoardScreenState extends State<ViewerDashBoardScreen> {
+  ScrollController scrollController = ScrollController();
+  int pageNo = 1;
   @override
   void initState() {
-    super.initState();
     var dashboardBloc = Provider.of<DashboardBloc>(context, listen: false);
     dashboardBloc.getHotTopicOfHour();
     dashboardBloc.getMostWatchedTopic();
     dashboardBloc.getInterestingToYou('1');
+    scrollController.addListener(() {
+      if (scrollController.position.maxScrollExtent ==
+          scrollController.offset) {
+        dashboardBloc.getInterestingToYou((pageNo + 1).toString());
+        dashboardBloc.changeIsLoading(true);
+      }
+      // dashboardBloc.changeIsLoading(false);
+    });
+    super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     var dashboardBloc = Provider.of<DashboardBloc>(context);
+    var authBloc = Provider.of<AuthBloc>(context);
     return Scaffold(
-      appBar: appBar(),
+      appBar: appBar(authBloc),
       bottomNavigationBar: bottomNavBar(),
       body: SingleChildScrollView(
+        controller: scrollController,
         child: Padding(
           padding:
               const EdgeInsets.symmetric(horizontal: kbaseHorizontalPadding),
@@ -59,7 +72,7 @@ class _ViewerDashBoardScreenState extends State<ViewerDashBoardScreen> {
                       rating: s.rating.toString(),
                       videoURL: s.video.file,
                       thumbnail: s.video.thumbnail,
-                      userPostCover: 'https://via.placeholder.com/150',
+                      userPostCover: s.createdBy.profilePic,
                       stand: s.stand,
                       userName: s.details.userName,
                       topicName: s.details.topicName,
@@ -74,6 +87,19 @@ class _ViewerDashBoardScreenState extends State<ViewerDashBoardScreen> {
               AppCarousel(),
               bodyHeading(heading: "Interesting to you"),
               VerticalList(),
+              StreamBuilder<bool>(
+                  stream: dashboardBloc.isLoading,
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData & snapshot.data == true) {
+                      return Padding(
+                        padding: EdgeInsets.all(16),
+                        child: Center(
+                          child: CircularProgressIndicator(),
+                        ),
+                      );
+                    }
+                    return Container();
+                  })
             ],
           ),
         ),
@@ -118,7 +144,7 @@ class _ViewerDashBoardScreenState extends State<ViewerDashBoardScreen> {
     );
   }
 
-  appBar() {
+  appBar(AuthBloc authBloc) {
     return AppBar(
       centerTitle: false,
       backgroundColor: Colors.white,
@@ -153,6 +179,7 @@ class _ViewerDashBoardScreenState extends State<ViewerDashBoardScreen> {
           },
           child: CircleAvatar(
             radius: 15,
+            backgroundImage: NetworkImage(authBloc.getLoginResponse.profilePic),
           ),
         ),
         SizedBox(
@@ -164,6 +191,7 @@ class _ViewerDashBoardScreenState extends State<ViewerDashBoardScreen> {
 }
 
 class VerticalList extends StatelessWidget {
+  // int pageNo = 1;
   @override
   Widget build(BuildContext context) {
     var dashboardBloc = Provider.of<DashboardBloc>(context);
@@ -171,12 +199,7 @@ class VerticalList extends StatelessWidget {
         stream: dashboardBloc.interestingToYou,
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
-            return Container(
-              height: SizeConfig.screenHeight * 0.4,
-              child: Center(
-                child: CircularProgressIndicator(),
-              ),
-            );
+            return Container();
           }
           return ListView.builder(
               physics: NeverScrollableScrollPhysics(),

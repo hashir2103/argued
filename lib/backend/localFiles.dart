@@ -1,11 +1,12 @@
 import 'dart:io';
-
+import 'dart:async';
 import 'package:path_provider/path_provider.dart';
 
 class LocalFiles {
+
   static Future<File> _localFile(String name) async {
-    final path = await getApplicationDocumentsDirectory();
-    return File('$path/$name');
+    final dir = await getApplicationDocumentsDirectory();
+    return File('${dir.path}/$name');
   }
 
   static Future<String> readFile(String name) async {

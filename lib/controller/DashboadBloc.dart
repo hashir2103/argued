@@ -6,6 +6,7 @@ import 'package:rxdart/rxdart.dart';
 class DashboardBloc {
   //varaible
   DashboardServices dashboardServices = DashboardServices();
+  List<OpinionModel> opinionList = List<OpinionModel>();
   final _hotTopicOfHour = BehaviorSubject<HotTopicModel>();
   final _mostWatched = BehaviorSubject<List<OpinionModel>>();
   final _interestingToYou = BehaviorSubject<List<OpinionModel>>();
@@ -14,6 +15,7 @@ class DashboardBloc {
   final _countries = BehaviorSubject<Set<String>>();
   final _state = BehaviorSubject<Set<String>>();
   final _cities = BehaviorSubject<Set<String>>();
+  final _isLoading = BehaviorSubject<bool>.seeded(false);
 
   //Stream
   Stream<Set<String>> get countries => _countries.stream;
@@ -24,6 +26,7 @@ class DashboardBloc {
   Stream<List<OpinionModel>> get mostWatched => _mostWatched.stream;
   Stream<List<OpinionModel>> get interestingToYou => _interestingToYou.stream;
   Stream<double> get rating => _rating.stream;
+  Stream<bool> get isLoading => _isLoading.stream;
 
   //sink
   Function(Set<String>) get changeCountries => _countries.sink.add;
@@ -36,9 +39,11 @@ class DashboardBloc {
   Function(List<OpinionModel>) get changeInterestingToYou =>
       _interestingToYou.sink.add;
   Function(double) get changeRating => _rating.sink.add;
+  Function(bool) get changeIsLoading => _isLoading.sink.add;
 
   //dispose
   dispose() {
+    _isLoading.close();
     _cities.close();
     _countries.close();
     _state.close();
@@ -64,8 +69,9 @@ class DashboardBloc {
   }
 
   getInterestingToYou(pageNo) async {
-    var data = await dashboardServices.interestingToYou(pageNo);
-    changeInterestingToYou(data);
+    List<OpinionModel> data = await dashboardServices.interestingToYou(pageNo);
+    opinionList.addAll(data);
+    changeInterestingToYou(opinionList);
   }
 
   postRating(opinionId, stand) {

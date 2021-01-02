@@ -46,7 +46,7 @@ TextStyle get listTileTrailingText {
 TextStyle get chipText {
   return TextStyle(
     fontWeight: FontWeight.w500,
-      color: primaryColor, fontSize: 14);
+      color: primaryColor, fontSize: 10);
 }
 
 TextStyle get dropDownMenuText {

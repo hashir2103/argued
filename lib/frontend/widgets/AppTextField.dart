@@ -14,25 +14,32 @@ class AppTextField extends StatefulWidget {
   bool enable;
   TextEditingController controller;
   Color iconColor;
+  final FocusNode node;
   final void Function(String) onChanged;
-  AppTextField({
-    this.controller,
-    this.enable = true,
-    this.size = 20,
-    this.onChanged,
-    this.obsecureText = false,
-    this.hintText = '',
-    this.label = '',
-    this.icon,
-    this.onTap,
-    this.iconColor = primaryColor
-  });
+  
+  AppTextField(
+      {
+      this.node,
+      this.controller,
+      this.enable = true,
+      this.size = 20,
+      this.onChanged,
+      this.obsecureText = false,
+      this.hintText = '',
+      this.label = '',
+      this.icon,
+      this.onTap,
+      this.iconColor = primaryColor});
 
   @override
   _AppTextFieldState createState() => _AppTextFieldState();
 }
 
 class _AppTextFieldState extends State<AppTextField> {
+  @override
+  void dispose() {
+    super.dispose();
+  }
   @override
   Widget build(BuildContext context) {
     SizeConfig.init(context);
@@ -53,6 +60,8 @@ class _AppTextFieldState extends State<AppTextField> {
           child: Stack(
             children: [
               TextFormField(
+                focusNode: widget.node,
+                autofocus: false,
                 controller: widget.controller,
                 enabled: widget.enable,
                 obscureText: widget.obsecureText,
@@ -90,11 +99,13 @@ class AppSmallTextField extends StatefulWidget {
   final bool obsecureText;
   final double size;
   final bool enable;
+  final FocusNode node;
   double fractionOfwidth;
   TextInputType textInputType;
   final void Function(String) onChanged;
   TextEditingController controller;
   AppSmallTextField({
+    this.node,
     this.controller,
     this.textInputType = TextInputType.text,
     this.fractionOfwidth = 2.3,
@@ -133,6 +144,8 @@ class _AppSmallTextFieldState extends State<AppSmallTextField> {
           child: Stack(
             children: [
               TextFormField(
+                focusNode: widget.node,
+                autofocus: false,
                 controller: widget.controller,
                 enabled: widget.enable ?? true,
                 obscureText: widget.obsecureText ?? false,

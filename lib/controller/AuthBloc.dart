@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:argued/ArguedConfigs/constant.dart';
 import 'package:argued/backend/auth_Services.dart';
+import 'package:argued/backend/hiveDB.dart';
 import 'package:argued/main.dart';
 import 'package:argued/model/LoginResponseModal.dart';
 import 'package:argued/model/loginModel.dart';
@@ -10,20 +11,21 @@ import 'package:rxdart/rxdart.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthBloc {
-  AuthBloc() {
-    {
-      _username
-          .debounce((_) => TimerStream(true, Duration(milliseconds: 500)))
-          .listen((query) async {
-        var response = await authServices.checkUesrname(query);
-        if (response['code'] == 200) {
-          _username.addError("error");
-        }
-        _username.add(query);
-      });
-    }
-  }
+  // AuthBloc() {
+  //   {
+  //     _username
+  //         .debounce((_) => TimerStream(true, Duration(milliseconds: 500)))
+  //         .listen((query) async {
+  //       var response = await authServices.checkUesrname(query);
+  //       if (response['code'] == 200) {
+  //         _username.addError("error");
+  //       }
+  //       _username.add(query);
+  //     });
+  //   }
+  // }
   final authServices = AuthServices();
+  final db = HiveDB();
   final _pin1 = BehaviorSubject<String>();
   final _pin2 = BehaviorSubject<String>();
   final _pin3 = BehaviorSubject<String>();
@@ -138,6 +140,11 @@ class AuthBloc {
     return _response.value;
   }
 
+  bool get getHideText => _hideText.value;
+  String get pass => _password.value;
+  String get confirmpass => _confirmPassword.value;
+  LoginResponse get getLoginResponse => _loginResponse.value;
+
   Future signUp() async {
     changeusername(_email.value.split("@")[0]);
     var signUpModel = SignUpModel(
@@ -174,8 +181,33 @@ class AuthBloc {
   }
 
   resetUserCredential(bool isPass) async {
-    var response =
+    Map<String, dynamic> response =
         await authServices.resetCredential(isPass, _email.value.trim());
     changeResponse(response);
+  }
+
+  saveCredential() {
+    if (_rememberMe.value == true) {
+      var data = {
+        'username': _username.value.trim(),
+        'password': _password.value.trim(),
+      };
+      db.update(loginBox, data, 1);
+    }
+  }
+
+  retreiveCredential() async {
+    Map<dynamic, dynamic> data = await db.get(loginBox, 1);
+    if (data != null) {
+      changeusername(data['username']);
+      changePassword(data['password']);
+    }
+  }
+
+  checkUserName() async {
+    var response = await authServices.checkUesrname(_username.value ?? '');
+    if (response['code'] == 200) {
+      _username.addError("error");
+    }
   }
 }

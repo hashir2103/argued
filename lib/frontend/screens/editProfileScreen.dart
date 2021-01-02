@@ -21,17 +21,22 @@ class EditProfileScreen extends StatefulWidget {
 
 class _EditProfileScreenState extends State<EditProfileScreen> {
   StreamSubscription profiledata;
+  TextEditingController passwordController = TextEditingController();
+  TextEditingController confrimPassController = TextEditingController();
+
   @override
   void initState() {
     // var dashboardBloc = Provider.of<DashboardBloc>(context, listen: false);
     // // dashboardBloc.getCountries()
-    var profBloc = Provider.of<ProfileBloc>(context,listen: false);
+    var profBloc = Provider.of<ProfileBloc>(context, listen: false);
     profBloc.getProfile();
     super.initState();
   }
 
   @override
   void dispose() {
+    passwordController.dispose();
+    confrimPassController.dispose();
     profiledata.cancel();
     super.dispose();
   }
@@ -39,26 +44,26 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   @override
   Widget build(BuildContext context) {
     var profileBloc = Provider.of<ProfileBloc>(context);
-    profiledata = profileBloc.profile.listen((p) {
-      // countryList2.forEach((c) {
-      //   if (c['_id'] == p.countryOfResidence) {
-      //     profileBloc.changeCountry(c['name']);
-      //   }
-      // });
-      print('======= Updating ========');
-      profileBloc.changeSalutation(p.salutation);
-      profileBloc.changefirstname(p.firstname);
-      profileBloc.changeLastName(p.lastname);
-      profileBloc.changeUsername(p.username);
-      // profileBloc.changeDOB(Dat)
-      profileBloc.changePhoneCode('+${p.countryCode}');
-      profileBloc.changePhoneNo(p.phoneNumber);
-      profileBloc.changeCurrency(p.currency);
-      profileBloc.changeMaritalStatus(p.maritalStatus);
-      profileBloc.changeReligion(p.religion);
-      profileBloc.changeShowMyOccupation(p.settings.showOccupation);
-      profileBloc.changeGeographicalInterest(p.settings.useLocation);
-    });
+    // profiledata = profileBloc.profile.listen((p) {
+    //   // countryList2.forEach((c) {
+    //   //   if (c['_id'] == p.countryOfResidence) {
+    //   //     profileBloc.changeCountry(c['name']);
+    //   //   }
+    //   // });
+    //   print('======= Updating ========');
+    //   profileBloc.changeSalutation(p.salutation);
+    //   profileBloc.changefirstname(p.firstname);
+    //   profileBloc.changeLastName(p.lastname);
+    //   profileBloc.changeUsername(p.username);
+    //   // profileBloc.changeDOB(Dat)
+    //   profileBloc.changePhoneCode('+${p.countryCode}');
+    //   profileBloc.changePhoneNo(p.phoneNumber);
+    //   profileBloc.changeCurrency(p.currency);
+    //   profileBloc.changeMaritalStatus(p.maritalStatus);
+    //   profileBloc.changeReligion(p.religion);
+    //   profileBloc.changeShowMyOccupation(p.settings.showOccupation);
+    //   profileBloc.changeGeographicalInterest(p.settings.useLocation);
+    // });
     List<String> countryName =
         kcountryList.map((c) => c.name).toList().toSet().toList();
     List<String> currencyName =
@@ -87,17 +92,25 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               child: StreamBuilder<String>(
                   stream: profileBloc.username,
                   builder: (context, snapshot) {
-                    return AppTextField(
-                      iconColor: snapshot.hasError ? Colors.red : primaryColor,
-                      icon: snapshot.hasError ? Icons.clear : Icons.check,
-                      controller: TextEditingController()
-                        ..text = !snapshot.hasError ? snapshot.data : ''
-                        ..selection = TextSelection.collapsed(
-                            offset:
-                                snapshot.hasData ? snapshot.data.length : 0),
-                      label: 'Username',
-                      hintText: 'James',
-                      onChanged: profileBloc.changeUsername,
+                    return Focus(
+                      onFocusChange: (focus) {
+                        if (!focus) {
+                          profileBloc.checkUserName();
+                        }
+                      },
+                      child: AppTextField(
+                        iconColor:
+                            snapshot.hasError ? Colors.red : primaryColor,
+                        icon: snapshot.hasError ? Icons.clear : Icons.check,
+                        controller: TextEditingController()
+                          ..text = !snapshot.hasError ? snapshot.data : ''
+                          ..selection = TextSelection.collapsed(
+                              offset:
+                                  snapshot.hasData ? snapshot.data.length : 0),
+                        label: 'Username',
+                        hintText: 'James',
+                        onChanged: profileBloc.changeUsername,
+                      ),
                     );
                   }),
             ),
@@ -133,78 +146,83 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 padding: EdgeInsets.symmetric(vertical: kbaseVerticalPadding),
                 child: StreamBuilder<String>(
                     stream: profileBloc.password,
-                    builder: (context, pass) {
-                      return StreamBuilder<bool>(
-                          initialData: true,
-                          stream: profileBloc.hideText,
-                          builder: (context, hideText) {
-                            return Stack(
-                              alignment: AlignmentDirectional.bottomCenter,
-                              overflow: Overflow.visible,
-                              children: [
-                                AppTextField(
+                    builder: (context, snapshot) {
+                      return Stack(
+                        alignment: AlignmentDirectional.bottomCenter,
+                        children: [
+                          StreamBuilder<bool>(
+                              stream: profileBloc.hideText,
+                              builder: (context, show) {
+                                return AppTextField(
+                                    controller: passwordController
+                                      ..text = profileBloc.pass != null
+                                          ? profileBloc.pass
+                                          : ''
+                                      ..selection = TextSelection.collapsed(
+                                          offset: profileBloc.pass != null
+                                              ? profileBloc.pass.length
+                                              : 0),
                                     onTap: () {
-                                      profileBloc
-                                          .changeHideText(!hideText.data);
+                                      profileBloc.changeHideText(
+                                          !profileBloc.getHideText);
                                     },
-                                    // controller: TextEditingController()
-                                    //   ..text = pass.hasData ? pass.data : ''
-                                    //   ..selection = TextSelection.collapsed(
-                                    //       offset: pass.hasData
-                                    //           ? pass.data.length
-                                    //           : 0),
                                     obsecureText:
-                                        hideText.data == false ? false : true,
+                                        profileBloc.getHideText == false
+                                            ? false
+                                            : true,
                                     onChanged: profileBloc.changePassword,
                                     hintText: '**********',
                                     label: 'Password',
-                                    icon: FontAwesomeIcons.eye),
-                                pass.hasError
-                                    ? Text(
-                                        pass.error,
-                                        style: listTileTrailingText.copyWith(
-                                            color: Colors.red),
-                                      )
-                                    : Text('')
-                              ],
-                            );
-                          });
+                                    icon: FontAwesomeIcons.eye);
+                              }),
+                          (snapshot.hasError)
+                              ? Text(
+                                  snapshot.error,
+                                  style: listTileTrailingText.copyWith(
+                                      color: Colors.red),
+                                )
+                              : Container()
+                        ],
+                      );
                     })),
             Padding(
                 padding: EdgeInsets.symmetric(vertical: kbaseVerticalPadding),
-                child: StreamBuilder<String>(
-                    stream: profileBloc.confirmPassword,
-                    builder: (context, pass) {
-                      return StreamBuilder<bool>(
-                          initialData: true,
-                          stream: profileBloc.hideText,
-                          builder: (context, hideText) {
-                            return Stack(
-                              alignment: AlignmentDirectional.bottomCenter,
-                              overflow: Overflow.visible,
-                              children: [
-                                AppTextField(
-                                    onTap: () {
-                                      profileBloc.getProfile();
-                                      profileBloc
-                                          .changeHideText(!hideText.data);
-                                    },
-                                    // controller: TextEditingController()
-                                    //   ..text = pass.hasData ? pass.data : ''
-                                    //   ..selection = TextSelection.collapsed(
-                                    //       offset: pass.hasData
-                                    //           ? pass.data.length
-                                    //           : 0),
-                                    obsecureText:
-                                        hideText.data == false ? false : true,
-                                    onChanged:
-                                        profileBloc.changeConfrimPassword,
-                                    hintText: '**********',
-                                    label: 'Confirm Password',
-                                    icon: FontAwesomeIcons.eye),
-                              ],
-                            );
-                          });
+                child: StreamBuilder<bool>(
+                    stream: profileBloc.hideText,
+                    builder: (context, snapshot) {
+                      return Stack(
+                        alignment: AlignmentDirectional.bottomCenter,
+                        children: [
+                          AppTextField(
+                              controller: confrimPassController
+                                ..text = profileBloc.confirmpass != null
+                                    ? profileBloc.confirmpass
+                                    : ''
+                                ..selection = TextSelection.collapsed(
+                                    offset: profileBloc.confirmpass != null
+                                        ? profileBloc.confirmpass.length
+                                        : 0),
+                              onTap: () {
+                                profileBloc
+                                    .changeHideText(!profileBloc.getHideText);
+                              },
+                              obsecureText: profileBloc.getHideText == false
+                                  ? false
+                                  : true,
+                              onChanged: profileBloc.changeConfrimPassword,
+                              hintText: '**********',
+                              label: 'Confirm Password',
+                              icon: FontAwesomeIcons.eye),
+                          (passwordController.text !=
+                                  confrimPassController.text)
+                              ? Text(
+                                  'password do not match',
+                                  style: listTileTrailingText.copyWith(
+                                      color: Colors.red),
+                                )
+                              : Container()
+                        ],
+                      );
                     })),
             Padding(
                 padding: EdgeInsets.symmetric(vertical: kbaseVerticalPadding),
@@ -220,19 +238,15 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     itemList: currencyName,
                     onChange: profileBloc.changeCurrency,
                     stream: profileBloc.currency)),
+
             Padding(
-              padding: EdgeInsets.symmetric(vertical: kbaseVerticalPadding),
-              child: AppTextField(
-                label: 'Occupation',
-                hintText: 'Select',
-                icon: Icons.arrow_drop_down,
-                size: 30,
-                enable: false,
-                onTap: () {
-                  print('hello');
-                },
-              ),
-            ),
+                padding: EdgeInsets.symmetric(vertical: kbaseVerticalPadding),
+                child: AppDropDown(
+                    label: 'Occupation',
+                    itemList: occupationList,
+                    onChange: profileBloc.changeOccupation,
+                    stream: profileBloc.occupation)),
+
             Padding(
               padding:
                   const EdgeInsets.symmetric(vertical: kbaseVerticalPadding),

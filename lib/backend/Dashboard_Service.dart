@@ -1,11 +1,15 @@
 import 'package:argued/ArguedConfigs/constant.dart';
-import 'package:argued/backend/localFiles.dart';
 import 'package:argued/model/HotTopicModel.dart';
 import 'package:argued/model/opnionModel.dart';
 import 'package:dio/dio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class DashboardServices {
+  void printWrapped(String text) {
+    final pattern = RegExp('.{1,800}'); // 800 is the size of each chunk
+    pattern.allMatches(text).forEach((match) => print(match.group(0)));
+  }
+
   hotTopicOfHour() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     Map<String, dynamic> header = {'Authorization': prefs.getString('Token')};
@@ -14,6 +18,8 @@ class DashboardServices {
       Response response = await Dio()
           .get('$kendpoint$kHotTopicHour', options: Options(headers: header));
       // print("HotTopicResponse : ${response.data}");
+      printWrapped(response.data.toString());
+      // LocalFiles.writeFile('hotTopic.json', response.data.toString());
       return HotTopicModel.fromJson(response.data['data']);
     } on DioError catch (e) {
       if (e.response != null) {
@@ -125,7 +131,7 @@ class DashboardServices {
       Response response = await Dio()
           .get('$kendpoint$kStates$id', options: Options(headers: header));
       print(response.data);
-      LocalFiles.writeFile('statesResponse.txt', response.data.toString());
+
       // return response.data;
     } on DioError catch (e) {
       if (e.response != null) {

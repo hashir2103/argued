@@ -17,6 +17,9 @@ class SignUpScreen extends StatefulWidget {
 
 class _SignUpScreenState extends State<SignUpScreen> {
   TapGestureRecognizer onTap;
+  TextEditingController passwordController = TextEditingController();
+  TextEditingController confrimPassController = TextEditingController();
+
   @override
   void initState() {
     onTap = TapGestureRecognizer()..onTap = _handleOnTap;
@@ -25,6 +28,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   @override
   void dispose() {
+    passwordController.dispose();
+    confrimPassController.dispose();
     onTap.dispose();
     super.dispose();
   }
@@ -76,48 +81,91 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         child: StreamBuilder<String>(
                             stream: authBloc.password,
                             builder: (context, snapshot) {
-                              return StreamBuilder<bool>(
-                                  initialData: true,
-                                  stream: authBloc.hideText,
-                                  builder: (context, snapshot) {
-                                    return AppTextField(
-                                        onTap: () {
-                                          authBloc
-                                              .changeHideText(!snapshot.data);
-                                        },
-                                        obsecureText: snapshot.data == false
-                                            ? false
-                                            : true,
-                                        onChanged: authBloc.changePassword,
-                                        hintText: '**********',
-                                        label: 'Password',
-                                        icon: FontAwesomeIcons.eye);
-                                  });
+                              return Stack(
+                                alignment: AlignmentDirectional.bottomCenter,
+                                children: [
+                                  StreamBuilder<bool>(
+                                      stream: authBloc.hideText,
+                                      builder: (context, show) {
+                                        return AppTextField(
+                                            controller: passwordController
+                                              ..text = authBloc.pass != null
+                                                  ? authBloc.pass
+                                                  : ''
+                                              ..selection =
+                                                  TextSelection.collapsed(
+                                                      offset:
+                                                          authBloc.pass !=
+                                                                  null
+                                                              ? authBloc
+                                                                  .pass.length
+                                                              : 0),
+                                            onTap: () {
+                                              authBloc.changeHideText(
+                                                  !authBloc.getHideText);
+                                            },
+                                            obsecureText:
+                                                authBloc.getHideText == false
+                                                    ? false
+                                                    : true,
+                                            onChanged:
+                                                authBloc.changePassword,
+                                            hintText: '**********',
+                                            label: 'Password',
+                                            icon: FontAwesomeIcons.eye);
+                                      }),
+                                  (snapshot.hasError)
+                                      ? Text(
+                                          snapshot.error,
+                                          style: listTileTrailingText.copyWith(
+                                              color: Colors.red),
+                                        )
+                                      : Container()
+                                ],
+                              );
                             })),
                     Padding(
                         padding: EdgeInsets.symmetric(
                             vertical: kbaseVerticalPadding),
-                        child: StreamBuilder<String>(
-                            stream: authBloc.confirmPassword,
+                        child: StreamBuilder<bool>(
+                            stream: authBloc.hideText,
                             builder: (context, snapshot) {
-                              return StreamBuilder<bool>(
-                                  initialData: true,
-                                  stream: authBloc.hideText,
-                                  builder: (context, snapshot) {
-                                    return AppTextField(
-                                        onTap: () {
-                                          authBloc
-                                              .changeHideText(!snapshot.data);
-                                        },
-                                        obsecureText: snapshot.data == false
-                                            ? false
-                                            : true,
-                                        onChanged:
-                                            authBloc.changeConfirmPassword,
-                                        hintText: '**********',
-                                        label: 'Confirm Password',
-                                        icon: FontAwesomeIcons.eye);
-                                  });
+                              return Stack(
+                                alignment: AlignmentDirectional.bottomCenter,
+                                children: [
+                                  AppTextField(
+                                      controller: confrimPassController
+                                        ..text = authBloc.confirmpass != null
+                                            ? authBloc.confirmpass
+                                            : ''
+                                        ..selection = TextSelection.collapsed(
+                                            offset: authBloc.confirmpass !=
+                                                    null
+                                                ? authBloc.confirmpass.length
+                                                : 0),
+                                      onTap: () {
+                                        authBloc.changeHideText(
+                                            !authBloc.getHideText);
+                                      },
+                                      obsecureText:
+                                          authBloc.getHideText == false
+                                              ? false
+                                              : true,
+                                      onChanged:
+                                          authBloc.changeConfirmPassword,
+                                      hintText: '**********',
+                                      label: 'Confirm Password',
+                                      icon: FontAwesomeIcons.eye),
+                                  (passwordController.text !=
+                                          confrimPassController.text)
+                                      ? Text(
+                                          'password do not match',
+                                          style: listTileTrailingText.copyWith(
+                                              color: Colors.red),
+                                        )
+                                      : Container()
+                                ],
+                              );
                             })),
                     SizedBox(
                       height: 18,
@@ -129,7 +177,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           return AppButton(
                             text: 'Sign Up',
                             onTap: snapshot.data == true
-                                ? ()async {
+                                ? () async {
                                     await authBloc.signUp();
                                     authBloc.changeLoginPress(true);
                                   }
