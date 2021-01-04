@@ -3,6 +3,8 @@ import 'package:argued/backend/hiveDB.dart';
 import 'package:argued/controller/AuthBloc.dart';
 import 'package:argued/controller/DashboadBloc.dart';
 import 'package:argued/controller/ProfileBloc.dart';
+import 'package:argued/controller/LocationBloc.dart';
+import 'package:argued/controller/catergoryBloc.dart';
 import 'package:argued/frontend/screens/splashScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -19,6 +21,8 @@ void main() async {
 final authBloc = AuthBloc();
 final dashboardBloc = DashboardBloc();
 final profileBloc = ProfileBloc();
+final locationBloc = LocationBloc();
+final catergoryBloc = CatergoryBloc();
 
 class MyApp extends StatefulWidget {
   @override
@@ -41,6 +45,8 @@ class _MyAppState extends State<MyApp> {
           Provider(create: (context) => authBloc),
           Provider(create: (context) => dashboardBloc),
           Provider(create: (context) => profileBloc),
+          Provider(create: (context) => locationBloc),
+          Provider(create: (context) => catergoryBloc),
         ],
         child: MaterialApp(
           title: 'Argued.com',

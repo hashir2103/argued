@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 class AppDropDown extends StatelessWidget {
   final String label;
   final String disableHint;
+  final String hinttext;
   final List<String> itemList;
   final Function onChange;
   final Stream<String> stream;
@@ -14,6 +15,7 @@ class AppDropDown extends StatelessWidget {
   const AppDropDown(
       {this.disableHint = '',
       this.widthPercentage = 1,
+      this.hinttext,
       @required this.label,
       @required this.itemList,
       @required this.onChange,
@@ -42,6 +44,14 @@ class AppDropDown extends StatelessWidget {
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 8.0),
                     child: DropdownButton(
+                        hint: Container(
+                          width: 150, //and here
+                          child: Text(
+                            hinttext ?? "",
+                            style: listTileSubTitleText,
+                            textAlign: TextAlign.start,
+                          ),
+                        ),
                         disabledHint: Text(
                           disableHint,
                           style: listTileSubTitleText,
@@ -54,7 +64,8 @@ class AppDropDown extends StatelessWidget {
                           color: primaryColor,
                           size: 30,
                         ),
-                        value: snapshot.data,
+                        value:
+                            snapshot.data == 'Disable' ? null : snapshot.data,
                         items: itemList.map((String item) {
                           return DropdownMenuItem(
                               value: item,
@@ -63,97 +74,11 @@ class AppDropDown extends StatelessWidget {
                                 style: dropDownMenuText,
                               ));
                         }).toList(),
-                        onChanged: onChange),
+                        onChanged:
+                            snapshot.data == 'Disable' ? null : onChange),
                   ));
             }),
       ],
     );
   }
 }
-
-
-class MultiSelectDialogItem<V> {
-  const MultiSelectDialogItem(this.value, this.label);
-
-  final V value;
-  final String label;
-}
-
-class MultiSelectDialog<V> extends StatefulWidget {
-  MultiSelectDialog({Key key, this.items, this.initialSelectedValues})
-      : super(key: key);
-
-  final List<MultiSelectDialogItem<V>> items;
-  final Set<V> initialSelectedValues;
-
-  @override
-  State<StatefulWidget> createState() => _MultiSelectDialogState<V>();
-}
-
-class _MultiSelectDialogState<V> extends State<MultiSelectDialog<V>> {
-  final _selectedValues = Set<V>();
-
-  void initState() {
-    super.initState();
-    if (widget.initialSelectedValues != null) {
-      _selectedValues.addAll(widget.initialSelectedValues);
-    }
-  }
-
-  void _onItemCheckedChange(V itemValue, bool checked) {
-    setState(() {
-      if (checked) {
-        _selectedValues.add(itemValue);
-      } else {
-        _selectedValues.remove(itemValue);
-      }
-    });
-  }
-
-  void _onCancelTap() {
-    Navigator.pop(context);
-  }
-
-  void _onSubmitTap() {
-    Navigator.pop(context, _selectedValues);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return AlertDialog(
-      title: Text('Select Country'),
-      contentPadding: EdgeInsets.only(top: 12.0),
-      content: SingleChildScrollView(
-        child: ListTileTheme(
-          contentPadding: EdgeInsets.fromLTRB(14.0, 0.0, 24.0, 0.0),
-          child: ListBody(
-            children: widget.items.map(_buildItem).toList(),
-          ),
-        ),
-      ),
-      actions: <Widget>[
-        FlatButton(
-          child: Text('CANCEL'),
-          onPressed: _onCancelTap,
-        ),
-        FlatButton(
-          child: Text('OK'),
-          onPressed: _onSubmitTap,
-        )
-      ],
-    );
-  }
-
-  Widget _buildItem(MultiSelectDialogItem<V> item) {
-    final checked = _selectedValues.contains(item.value);
-    return CheckboxListTile(
-      value: checked,
-      title: Text(item.label??''),
-      controlAffinity: ListTileControlAffinity.leading,
-      onChanged: (checked) => _onItemCheckedChange(item.value, checked),
-    );
-  }
-}
-
-
-

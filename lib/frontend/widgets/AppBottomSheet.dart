@@ -1,14 +1,20 @@
 import 'package:argued/ArguedConfigs/color.dart';
 import 'package:argued/ArguedConfigs/constant.dart';
-import 'package:argued/ArguedConfigs/constantsList.dart';
 import 'package:argued/ArguedConfigs/sizeConfig.dart';
 import 'package:argued/ArguedConfigs/textStyles.dart';
+import 'package:argued/controller/LocationBloc.dart';
 import 'package:argued/frontend/widgets/AppButton.dart';
+import 'package:argued/frontend/widgets/AppDialogs.dart';
 import 'package:argued/frontend/widgets/AppDropDown.dart';
 import 'package:argued/frontend/widgets/AppNumberField.dart';
 import 'package:argued/frontend/widgets/AppTextField.dart';
+import 'package:argued/frontend/widgets/CitiesContainer.dart';
+import 'package:argued/frontend/widgets/TopicOfInterest.dart';
 import 'package:argued/main.dart';
+import 'package:argued/model/countryModel.dart';
+import 'package:argued/model/statesWithCItiesModel.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class AppBottomSheet {
   verifyCode(context, onTap) {
@@ -64,35 +70,187 @@ class AppBottomSheet {
           return GeographicalInterest();
         });
   }
+
+  topicOfInterest(context) {
+    showModalBottomSheet(
+        elevation: 0,
+        isScrollControlled: true,
+        isDismissible: false,
+        context: context,
+        builder: (context) {
+          return TopicOfInterest();
+        });
+  }
+
+  defaultLocationOfVideo(context) {
+    showModalBottomSheet(
+        elevation: 0,
+        isScrollControlled: true,
+        isDismissible: false,
+        context: context,
+        builder: (context) {
+          return DefaultLocation();
+        });
+  }
+}
+
+class DefaultLocation extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    var locationBloc = Provider.of<LocationBloc>(context);
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: kbaseHorizontalPadding),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          SizedBox(
+            height: 12,
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Container(
+                  padding: EdgeInsets.only(left: 8),
+                  child: Text(
+                    "Default Location Of New Video",
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
+                        fontSize: 16),
+                  )),
+              Container(
+                  child: IconButton(
+                      icon: Icon(
+                        Icons.clear,
+                        color: Colors.black,
+                      ),
+                      onPressed: () => Navigator.pop(context))),
+            ],
+          ),
+          SizedBox(
+            height: 20,
+          ),
+          StreamBuilder<CountryModel>(
+              stream: locationBloc.listOfcountries,
+              builder: (context, snapshot) {
+                List<String> _countriesNameList = List();
+                if (!snapshot.hasData) {
+                  return Padding(
+                      padding:
+                          EdgeInsets.symmetric(vertical: kbaseVerticalPadding),
+                      child: AppDropDown(
+                          disableHint: "Please wait Fetching Countries...",
+                          label: "Select Country",
+                          itemList: [''],
+                          onChange: null,
+                          stream: null));
+                }
+                snapshot.data.data.forEach((c) {
+                  _countriesNameList.add(c.name);
+                });
+                return Padding(
+                    padding:
+                        EdgeInsets.symmetric(vertical: kbaseVerticalPadding),
+                    child: AppDropDown(
+                        hinttext: 'Select Country',
+                        label: "Select Country",
+                        itemList: _countriesNameList,
+                        onChange: (value) async {
+                          locationBloc.changedefaultCountry(value);
+                          locationBloc.getDefaultStatesWithCities();
+                        },
+                        stream: locationBloc.defaultcountry));
+              }),
+          StreamBuilder<StatesModel>(
+              stream: locationBloc.defaultlistOfStates,
+              builder: (context, snapshot) {
+                List<String> _statesList = List();
+                if (!snapshot.hasData) {
+                  return Padding(
+                      padding:
+                          EdgeInsets.symmetric(vertical: kbaseVerticalPadding),
+                      child: AppDropDown(
+                          disableHint: "Select Country First",
+                          label: "Select State",
+                          itemList: [''],
+                          onChange: null,
+                          stream: null));
+                }
+                snapshot.data.data.forEach((c) {
+                  _statesList.add(c.name);
+                });
+                return Padding(
+                    padding:
+                        EdgeInsets.symmetric(vertical: kbaseVerticalPadding),
+                    child: AppDropDown(
+                        hinttext: 'Select States',
+                        label: "Select States",
+                        itemList: _statesList,
+                        onChange: (v) {
+                          locationBloc.changedefaultStates(v);
+                          locationBloc.getDefaultCities();
+                        },
+                        stream: locationBloc.defaultstates));
+              }),
+          StreamBuilder<List<City>>(
+              stream: locationBloc.defaultlistOfcities,
+              builder: (context, snapshot) {
+                List<String> _cityList = List();
+                if (!snapshot.hasData) {
+                  return Padding(
+                      padding:
+                          EdgeInsets.symmetric(vertical: kbaseVerticalPadding),
+                      child: AppDropDown(
+                          disableHint: "Select State First",
+                          label: "Select City",
+                          itemList: [''],
+                          onChange: null,
+                          stream: null));
+                }
+                snapshot.data.forEach((c) {
+                  _cityList.add(c.name);
+                });
+                print(_cityList);
+                return Padding(
+                    padding:
+                        EdgeInsets.symmetric(vertical: kbaseVerticalPadding),
+                    child: AppDropDown(
+                        hinttext: 'Select States',
+                        label: "Select States",
+                        itemList: _cityList,
+                        onChange: locationBloc.changedefaultCities,
+                        stream: locationBloc.defaultcities));
+              }),
+          SizedBox(
+            height: 20,
+          ),
+          AppButton(
+            height: 50,
+            text: 'Save Default Location',
+            onTap: () {
+              // locationBloc.updateProfile();
+              Navigator.pop(context);
+            },
+          ),
+          SizedBox(
+            height: 20,
+          )
+        ],
+      ),
+    );
+  }
 }
 
 // ignore: must_be_immutable
-class GeographicalInterest extends StatelessWidget {
-  List<MultiSelectDialogItem<String>> multiItem = List();
+class GeographicalInterest extends StatefulWidget {
+  @override
+  _GeographicalInterestState createState() => _GeographicalInterestState();
+}
 
-  void populateMultiselect() {
-    countryList2.forEach((c) {
-      multiItem.add(MultiSelectDialogItem(c['_id'], c['name']));
-    });
-  }
-
-  void _showMultiSelect(BuildContext context) async {
-    multiItem = [];
-    populateMultiselect();
-
-    final selectedValues = await showDialog<Set<String>>(
-      context: context,
-      builder: (BuildContext context) {
-        return MultiSelectDialog(
-            items: multiItem,
-            initialSelectedValues: dashboardBloc.getCountriesSelected());
-      },
-    );
-    dashboardBloc.changeCountries(selectedValues);
-  }
-
+class _GeographicalInterestState extends State<GeographicalInterest> {
   @override
   Widget build(BuildContext context) {
+    var countryBloc = Provider.of<LocationBloc>(context);
     return Container(
       padding: EdgeInsets.symmetric(horizontal: kbaseHorizontalPadding),
       child: Column(
@@ -125,64 +283,83 @@ class GeographicalInterest extends StatelessWidget {
           SizedBox(
             height: 20,
           ),
-          Padding(
-              padding: EdgeInsets.symmetric(vertical: kbaseVerticalPadding),
-              child: AppTextField(
-                enable: false,
-                hintText: "Select",
-                label: "Select Countries",
-                icon: Icons.arrow_drop_down,
-                size: 30,
-                iconColor: primaryColor,
-                onTap: () {
-                  _showMultiSelect(context);
-                },
-              )),
-          Padding(
-              padding: EdgeInsets.symmetric(vertical: kbaseVerticalPadding),
-              child: StreamBuilder<Set<String>>(
-                  stream: dashboardBloc.countries,
-                  builder: (context, snapshot) {
-                    return AppTextField(
-                      enable: false,
-                      hintText: snapshot.hasData
-                          ? "Select"
-                          : 'Select Countries first',
-                      label: "Select States",
-                      icon: Icons.arrow_drop_down,
-                      size: 30,
-                      iconColor: primaryColor,
-                      onTap: () {
-                        // dashboardBloc.getStates();
-                        // _showMultiSelect(context);
-                      },
-                    );
-                  })),
-          Padding(
-              padding: EdgeInsets.symmetric(vertical: kbaseVerticalPadding),
-              child: StreamBuilder<Set<String>>(
-                  stream: dashboardBloc.states,
-                  builder: (context, snapshot) {
-                    return AppTextField(
-                      enable: false,
-                      hintText:
-                          snapshot.hasData ? "Select" : 'Select State(s) first',
-                      label: "Select Cities",
-                      icon: Icons.arrow_drop_down,
-                      size: 30,
-                      iconColor: primaryColor,
-                      onTap: () {
-                        // _showMultiSelect(context);
-                      },
-                    );
-                  })),
+          StreamBuilder<CountryModel>(
+              stream: countryBloc.listOfcountries,
+              builder: (context, snapshot) {
+                List<String> _countriesNameList = List();
+                if (!snapshot.hasData) {
+                  return Padding(
+                      padding:
+                          EdgeInsets.symmetric(vertical: kbaseVerticalPadding),
+                      child: AppDropDown(
+                          disableHint: "Please wait Fetching Countries...",
+                          label: "Select Country",
+                          itemList: [''],
+                          onChange: null,
+                          stream: null));
+                }
+                snapshot.data.data.forEach((c) {
+                  _countriesNameList.add(c.name);
+                });
+                return Padding(
+                    padding:
+                        EdgeInsets.symmetric(vertical: kbaseVerticalPadding),
+                    child: AppDropDown(
+                        hinttext: 'Select country',
+                        label: "Select Country",
+                        itemList: _countriesNameList,
+                        onChange: (value) async {
+                          countryBloc.changeCountry(value);
+                          countryBloc.getStatesWithCities();
+                        },
+                        stream: countryBloc.country));
+              }),
+          StreamBuilder<StatesModel>(
+              stream: countryBloc.listOfStatesWithCities,
+              builder: (context, snapshot) {
+                List<String> _statesList = List();
+                if (!snapshot.hasData) {
+                  return Padding(
+                      padding:
+                          EdgeInsets.symmetric(vertical: kbaseVerticalPadding),
+                      child: AppDropDown(
+                          disableHint: "Select Country First",
+                          label: "Select State",
+                          itemList: [''],
+                          onChange: null,
+                          stream: null));
+                }
+                snapshot.data.data.forEach((c) {
+                  _statesList.add(c.name);
+                });
+                return Padding(
+                    padding:
+                        EdgeInsets.symmetric(vertical: kbaseVerticalPadding),
+                    child: AppDropDown(
+                        hinttext: "Select States",
+                        label: "Select States",
+                        itemList: _statesList,
+                        onChange: (v) {
+                          countryBloc.changeStates(v);
+                          countryBloc.getCities();
+                        },
+                        stream: countryBloc.states));
+              }),
+          CitiesContainer(),
           SizedBox(
             height: 20,
           ),
           AppButton(
             height: 50,
             text: 'Apply Filter',
-            onTap: () {},
+            onTap: () async {
+              var response = await countryBloc.updateProfile();
+              MyAppDailog().responseDailog(response['message'], context);
+              Future.delayed(Duration(milliseconds: 600)).then((value) {
+                Navigator.pop(context);
+                Navigator.pop(context);
+              });
+            },
           ),
           SizedBox(
             height: 20,
@@ -231,7 +408,9 @@ class ChangeMyInterest extends StatelessWidget {
           AppButton(
             height: 50,
             text: 'Topic Of Interest',
-            onTap: () {},
+            onTap: () {
+              AppBottomSheet().topicOfInterest(context);
+            },
           ),
           SizedBox(
             height: 20,
@@ -249,7 +428,9 @@ class ChangeMyInterest extends StatelessWidget {
           AppButton(
             height: 50,
             text: 'Set Default Location For New Video',
-            onTap: () {},
+            onTap: () {
+              AppBottomSheet().defaultLocationOfVideo(context);
+            },
           ),
           SizedBox(
             height: 20,

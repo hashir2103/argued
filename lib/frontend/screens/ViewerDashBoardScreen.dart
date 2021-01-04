@@ -4,6 +4,7 @@ import 'package:argued/ArguedConfigs/sizeConfig.dart';
 import 'package:argued/ArguedConfigs/textStyles.dart';
 import 'package:argued/controller/AuthBloc.dart';
 import 'package:argued/controller/DashboadBloc.dart';
+import 'package:argued/controller/LocationBloc.dart';
 import 'package:argued/frontend/widgets/AppBottomSheet.dart';
 import 'package:argued/frontend/widgets/AppCard.dart';
 import 'package:argued/frontend/widgets/AppCarousel.dart';
@@ -40,12 +41,19 @@ class _ViewerDashBoardScreenState extends State<ViewerDashBoardScreen> {
   }
 
   @override
+  void dispose() {
+    scrollController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     var dashboardBloc = Provider.of<DashboardBloc>(context);
     var authBloc = Provider.of<AuthBloc>(context);
+    var locationBloc = Provider.of<LocationBloc>(context);
     return Scaffold(
-      appBar: appBar(authBloc),
-      bottomNavigationBar: bottomNavBar(),
+      appBar: appBar(authBloc, locationBloc),
+      bottomNavigationBar: bottomNavBar(dashboardBloc),
       body: SingleChildScrollView(
         controller: scrollController,
         child: Padding(
@@ -116,35 +124,47 @@ class _ViewerDashBoardScreenState extends State<ViewerDashBoardScreen> {
     );
   }
 
-  bottomNavBar() {
-    return CurvedNavigationBar(
-      height: 60,
-      animationDuration: Duration(milliseconds: 200),
-      index: 1,
-      backgroundColor: Colors.white,
-      buttonBackgroundColor: Colors.grey.withOpacity(0.2),
-      items: [
-        Icon(
-          Icons.group,
-          size: 30,
-          color: primaryColor,
-        ),
-        Icon(
-          Icons.add,
-          size: 30,
-          color: primaryColor,
-        ),
-        Icon(
-          Icons.contact_page,
-          size: 30,
-          color: primaryColor,
-        ),
-      ],
-      onTap: (index) {},
-    );
+  bottomNavBar(DashboardBloc dashboardBloc) {
+    return StreamBuilder<int>(
+        stream: dashboardBloc.index,
+        builder: (context, snapshot) {
+          return CurvedNavigationBar(
+            height: 60,
+            animationDuration: Duration(milliseconds: 200),
+            index: snapshot.data,
+            backgroundColor: Colors.white,
+            buttonBackgroundColor: Colors.grey.withOpacity(0.2),
+            items: [
+              Icon(
+                Icons.group,
+                size: 30,
+                color: primaryColor,
+              ),
+              Icon(
+                Icons.add,
+                size: 30,
+                color: primaryColor,
+              ),
+              Icon(
+                Icons.contact_page,
+                size: 30,
+                color: primaryColor,
+              ),
+            ],
+            onTap: (index) {
+              if (index == 0) {
+                // dashboardBloc.changeIndex(1);
+                Navigator.pushNamed(context, kGroupScreen);
+              } else if (index == 2) {
+                // dashboardBloc.changeIndex(1);
+                Navigator.pushNamed(context, kContactScreen);
+              }
+            },
+          );
+        });
   }
 
-  appBar(AuthBloc authBloc) {
+  appBar(AuthBloc authBloc, LocationBloc locationBloc) {
     return AppBar(
       centerTitle: false,
       backgroundColor: Colors.white,
@@ -168,6 +188,7 @@ class _ViewerDashBoardScreenState extends State<ViewerDashBoardScreen> {
         IconButton(
             icon: Icon(Icons.tune, color: primaryColor, size: 30),
             onPressed: () {
+              locationBloc.getCountry();
               AppBottomSheet().changeMyInterest(context);
             }),
         SizedBox(

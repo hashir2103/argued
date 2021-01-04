@@ -30,6 +30,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     // // dashboardBloc.getCountries()
     var profBloc = Provider.of<ProfileBloc>(context, listen: false);
     profBloc.getProfile();
+    // profBloc.getConstant();
     super.initState();
   }
 
@@ -238,7 +239,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     itemList: currencyName,
                     onChange: profileBloc.changeCurrency,
                     stream: profileBloc.currency)),
-
             Padding(
                 padding: EdgeInsets.symmetric(vertical: kbaseVerticalPadding),
                 child: AppDropDown(
@@ -246,7 +246,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     itemList: occupationList,
                     onChange: profileBloc.changeOccupation,
                     stream: profileBloc.occupation)),
-
             Padding(
               padding:
                   const EdgeInsets.symmetric(vertical: kbaseVerticalPadding),
@@ -341,18 +340,23 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     buttonTextColor: primaryColor,
                     buttonText: 'Back'),
                 AppSmallButton(
-                    onTap: () {},
+                    onTap: (true)
+                        ? () {
+                            print('available');
+                          }
+                        : () {
+                            print('Not available');
+                          },
                     screenWidthPercentage: 0.4,
-                    buttonColor: primaryColor,
+                    buttonColor:
+                        (true) ? primaryColor : primaryColor.withOpacity(0.5),
                     buttonTextColor: Colors.white,
-                    buttonText: 'Submit'),
+                    buttonText: 'Submit')
               ],
             ),
             SizedBox(
               height: 16,
             )
-
-            // alreadyHaveAcc(),
           ],
         ),
       ),

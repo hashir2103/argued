@@ -11,6 +11,8 @@ const String kLoginScreen = '/login';
 const String kSignUpScreen = '/signup';
 const String kSplashScreen = '/splashscreen';
 const String kHomeScreen = '/homescreen';
+const String kContactScreen = '/Contactscreen';
+const String kGroupScreen = '/Groupscreen';
 const String kEditProfileScreen = '/editProfile';
 const String kViewerDashBoardScreen = '/VDashBoard';
 
@@ -36,6 +38,8 @@ const String kRateOpinion = '/api/opinion/rating';
 const String kProfile = '/api/user/profile';
 const String kCountry = '/api/country';
 const String kStates = '/api/country/statesWithCities/';
+const String kCategory = '/api/category';
+const String kContact = '/api/user/contacts';
 
 //HiveDB
 const String loginBox = 'loginBox';

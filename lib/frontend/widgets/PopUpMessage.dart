@@ -11,6 +11,7 @@ class PopUpMessage {
       right: 0,
       left: 0,
       child: StreamBuilder<bool>(
+        initialData: false,
           stream: authBloc.loginPress,
           builder: (context, snapshot) {
             if (snapshot.data) {
@@ -29,7 +30,7 @@ class PopUpMessage {
                       Future.delayed(Duration(milliseconds: 1000))
                           .then((value) {
                         authBloc.changeLoginPress(false);
-                        Navigator.pushNamed(context, kViewerDashBoardScreen);
+                        Navigator.pushReplacementNamed(context, kViewerDashBoardScreen);
                       });
                       return MyAppDailog()
                           .loginDailog(response.data['message'], context);

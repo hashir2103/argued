@@ -12,26 +12,19 @@ class DashboardBloc {
   final _interestingToYou = BehaviorSubject<List<OpinionModel>>();
   final _rating = BehaviorSubject<double>.seeded(55.0);
 
-  final _countries = BehaviorSubject<Set<String>>();
-  final _state = BehaviorSubject<Set<String>>();
-  final _cities = BehaviorSubject<Set<String>>();
   final _isLoading = BehaviorSubject<bool>.seeded(false);
+  final _index = BehaviorSubject<int>.seeded(1);
 
   //Stream
-  Stream<Set<String>> get countries => _countries.stream;
-  Stream<Set<String>> get states => _state.stream;
-  Stream<Set<String>> get cities => _cities.stream;
 
   Stream<HotTopicModel> get hotTopicOfHour => _hotTopicOfHour.stream;
   Stream<List<OpinionModel>> get mostWatched => _mostWatched.stream;
   Stream<List<OpinionModel>> get interestingToYou => _interestingToYou.stream;
   Stream<double> get rating => _rating.stream;
   Stream<bool> get isLoading => _isLoading.stream;
+  Stream<int> get index => _index.stream;
 
   //sink
-  Function(Set<String>) get changeCountries => _countries.sink.add;
-  Function(Set<String>) get changeStates => _state.sink.add;
-  Function(Set<String>) get changeCities => _cities.sink.add;
 
   Function(HotTopicModel) get changeHotTopicOfHour => _hotTopicOfHour.sink.add;
   Function(List<OpinionModel>) get changeHotMostWatched =>
@@ -40,13 +33,12 @@ class DashboardBloc {
       _interestingToYou.sink.add;
   Function(double) get changeRating => _rating.sink.add;
   Function(bool) get changeIsLoading => _isLoading.sink.add;
+  Function(int) get changeIndex => _index.sink.add;
 
   //dispose
   dispose() {
+    _index.close();
     _isLoading.close();
-    _cities.close();
-    _countries.close();
-    _state.close();
     _interestingToYou.close();
     _mostWatched.close();
     _rating.close();
@@ -54,9 +46,6 @@ class DashboardBloc {
   }
 
   //Functions
-  Set<String> getCountriesSelected() {
-    return _countries.value;
-  }
 
   getHotTopicOfHour() async {
     HotTopicModel data = await dashboardServices.hotTopicOfHour();
@@ -80,13 +69,5 @@ class DashboardBloc {
       "stand": stand
     };
     dashboardServices.ratingOpinion(opinionId, rating);
-  }
-
-  getCountries() async {
-    await dashboardServices.getCountry();
-  }
-
-  getStates() async {
-    await dashboardServices.getStates(_countries.value.toList()[0]);
   }
 }

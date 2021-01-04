@@ -1,51 +1,22 @@
 import 'package:argued/ArguedConfigs/constant.dart';
-import 'package:argued/model/HotTopicModel.dart';
-import 'package:argued/model/opnionModel.dart';
+import 'package:argued/model/countryModel.dart';
+import 'package:argued/model/statesWithCItiesModel.dart';
 import 'package:dio/dio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class DashboardServices {
+class LocationService {
   void printWrapped(String text) {
     final pattern = RegExp('.{1,800}'); // 800 is the size of each chunk
     pattern.allMatches(text).forEach((match) => print(match.group(0)));
   }
 
-  hotTopicOfHour() async {
+  getConstant() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     Map<String, dynamic> header = {'Authorization': prefs.getString('Token')};
     try {
-      // var response = await http.get('$kendpoint$kHotTopicHour',headers: header);
-      Response response = await Dio()
-          .get('$kendpoint$kHotTopicHour', options: Options(headers: header));
-      // print("HotTopicResponse : ${response.data}");
-      // printWrapped(response.data.toString());
-      // LocalFiles.writeFile('hotTopic.json', response.data.toString());
-      return HotTopicModel.fromJson(response.data['data']);
-    } on DioError catch (e) {
-      if (e.response != null) {
-        print(e.response.data);
-        print(e.response.headers);
-        print(e.response.request);
-      } else {
-        print(e.request);
-        print(e.message);
-      }
-    }
-  }
-
-  mostWatchedTopic() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    Map<String, dynamic> header = {'Authorization': prefs.getString('Token')};
-    List<OpinionModel> _list = [];
-    try {
-      Response response = await Dio()
-          .get('$kendpoint$kMostWatched', options: Options(headers: header));
+      Response response = await Dio().get('$kendpoint' + '/api/constant',
+          options: Options(headers: header));
       printWrapped(response.data.toString());
-      for (var i = 0; i < response.data.length; i++) {
-        var data = OpinionModel.fromJson(response.data['data'][i]);
-        _list.add(data);
-      }
-      return _list;
     } on DioError catch (e) {
       if (e.response != null) {
         print(e.response.data);
@@ -58,18 +29,14 @@ class DashboardServices {
     }
   }
 
-  interestingToYou(String pageNo) async {
+  getCountries() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     Map<String, dynamic> header = {'Authorization': prefs.getString('Token')};
-    List<OpinionModel> _list = [];
+    // List<CountryModel> _list = List();
     try {
-      Response response = await Dio().get('$kendpoint$kInterestingToYou$pageNo',
-          options: Options(headers: header));
-      for (var i = 0; i < response.data.length; i++) {
-        var data = OpinionModel.fromJson(response.data['data'][i]);
-        _list.add(data);
-      }
-      return _list;
+      Response response = await Dio()
+          .get('$kendpoint$kCountry', options: Options(headers: header));
+      return CountryModel.fromJson(response.data);
     } on DioError catch (e) {
       if (e.response != null) {
         print(e.response.data);
@@ -82,17 +49,13 @@ class DashboardServices {
     }
   }
 
-  ratingOpinion(String opinionId, rating) async {
-    print('opinionId : $opinionId');
+  getStatesWithCities(String id) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     Map<String, dynamic> header = {'Authorization': prefs.getString('Token')};
     try {
-      Response response = await Dio().post(
-          '$kendpoint$kRateOpinion/5fda27b2ca2cc614f6caf879',
-          data: rating,
-          options: Options(headers: header));
-      print(response.data);
-      // return response.data;
+      Response response = await Dio()
+          .get('$kendpoint$kStates$id', options: Options(headers: header));
+      return StatesModel.fromJson(response.data);
     } on DioError catch (e) {
       if (e.response != null) {
         print(e.response.data);
@@ -105,5 +68,23 @@ class DashboardServices {
     }
   }
 
-  
+  updateProfile(Map<String,dynamic> data) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    Map<String, dynamic> header = {'Authorization': prefs.getString('Token')};
+    try {
+      Response response =
+          await Dio().put('$kendpoint$kProfile-mobile', data: data,options: Options(headers:header ));
+      // print(response.data);
+      return response.data;
+    } on DioError catch (e) {
+      if (e.response != null) {
+        print(e.response.data);
+        print(e.response.headers);
+        print(e.response.request);
+      } else {
+        print(e.request);
+        print(e.message);
+      }
+    }
+  }
 }

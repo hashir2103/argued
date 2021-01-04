@@ -21,7 +21,8 @@ class ProfileBloc {
   final _currency = BehaviorSubject<String>.seeded('Pakistani rupee');
   final _maritalStatus = BehaviorSubject<String>.seeded('Single');
   final _religion = BehaviorSubject<String>.seeded('Islam');
-  final _occupation = BehaviorSubject<String>.seeded("Agriculture, Food and Natural Resources");
+  final _occupation =
+      BehaviorSubject<String>.seeded("Agriculture, Food and Natural Resources");
   final _hideText = BehaviorSubject<bool>.seeded(true);
   final _showMyOccupation = BehaviorSubject<bool>.seeded(false);
   final _geographicalInterest = BehaviorSubject<bool>.seeded(true);
@@ -46,6 +47,8 @@ class ProfileBloc {
   Stream<ProfileModel> get profile => _profile.stream;
   Stream<bool> get showMyOccupation => _showMyOccupation.stream;
   Stream<bool> get showGeographicalInterest => _geographicalInterest.stream;
+  Stream<bool> get isValidProfile =>
+      CombineLatestStream.combine3(username,password,phoneNo, (a, b,c) => true);
 
   //sink
   Function(bool) get changeHideText => _hideText.sink.add;
@@ -119,6 +122,16 @@ class ProfileBloc {
     var data = await profileService.getProfile();
     changeProfile(data);
   }
+
+  editProfile() async {
+    var profileModel = ProfileModel(
+      salutation: _salutation.value,
+      username: _username.value,
+    
+    );
+    await profileService.editProfile(profileModel);
+  }
+
 
   checkUserName() async {
     var response = await profileService.checkUesrname(_username.value ?? '');
