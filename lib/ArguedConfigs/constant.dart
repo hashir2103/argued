@@ -15,6 +15,7 @@ const String kContactScreen = '/Contactscreen';
 const String kGroupScreen = '/Groupscreen';
 const String kEditProfileScreen = '/editProfile';
 const String kViewerDashBoardScreen = '/VDashBoard';
+const String kWatchListScreen = '/WatchList';
 
 // animation
 const kAnimationDuration = Duration(milliseconds: 200);

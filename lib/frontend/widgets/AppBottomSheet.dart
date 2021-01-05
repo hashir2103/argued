@@ -210,7 +210,6 @@ class DefaultLocation extends StatelessWidget {
                 snapshot.data.forEach((c) {
                   _cityList.add(c.name);
                 });
-                print(_cityList);
                 return Padding(
                     padding:
                         EdgeInsets.symmetric(vertical: kbaseVerticalPadding),

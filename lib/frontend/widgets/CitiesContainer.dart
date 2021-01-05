@@ -94,7 +94,6 @@ class _CitiesContainerState extends State<CitiesContainer> {
                                                         .add(_items[i].label);
                                                   }
                                                 }
-                                                print(values);
                                                 countryBloc
                                                     .changeListOfCitiesId(
                                                         values);

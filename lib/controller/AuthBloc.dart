@@ -163,7 +163,7 @@ class AuthBloc {
     String id = _response.value['data']['_id'];
     var response = await authServices.verifyCode(code, id);
     authBloc.changeResponse(response);
-    print('Code : $code, Id : $id');
+    // print('Code : $code, Id : $id');
   }
 
   login() async {

@@ -10,7 +10,7 @@ class AppCarousel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var dashboardBloc = Provider.of<DashboardBloc>(context);
-    return StreamBuilder<List<OpinionModel>>(
+    return StreamBuilder<OpinionModel>(
         stream: dashboardBloc.mostWatched,
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
@@ -21,7 +21,7 @@ class AppCarousel extends StatelessWidget {
               ),
             );
           }
-          var s = snapshot.data;
+          var s = snapshot.data.data;
           return CarouselSlider(
             options: CarouselOptions(
               height: 430,
@@ -43,12 +43,12 @@ class AppCarousel extends StatelessWidget {
                         rating: i.rating.toString(),
                         videoURL: i.video.file,
                         thumbnail: i.video.thumbnail,
-                          stand: i.stand??"",
-                          userName: i.details.userName??"",
+                          stand: i.stand.toString().split(".")[1]??"",
+                          userName: i.details.userName.toString().split(".")[1]??"",
                           topicName: i.details.topicName??"",
                           categoryName: i.details.categoryName??'',
                           subCategoryName: i.details.subCategoryName??'',
-                          language: i.language??'',
+                          language: i.language.toString().split(".")[1]??'',
                           createdAt: i.createdAt,
                           opinionID: i.id??'',
                           userPostCover: i.createdBy.profilePic));

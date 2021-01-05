@@ -28,7 +28,7 @@ class CatergoryService {
     try {
       Response response =
           await Dio().put('$kendpoint$kProfile-mobile', data: data,options: Options(headers:header ));
-      print(response.data);
+      // print(response.data);
       return response.data;
     } on DioError catch (e) {
       if (e.response != null) {

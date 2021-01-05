@@ -109,7 +109,6 @@ class _AppCardState extends State<AppCard> {
 
   @override
   Widget build(BuildContext context) {
-    print("imageUrl : ${widget.userPostCover}");
     var dashboardBloc = Provider.of<DashboardBloc>(context);
     var month = getMonth(widget.createdAt.month);
     return Container(
@@ -165,8 +164,9 @@ class _AppCardState extends State<AppCard> {
                 style: listTileTitleText,
               ),
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            Wrap(
+              alignment: WrapAlignment.center,
+              // mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Wrap(
                   spacing: 8,
@@ -193,6 +193,7 @@ class _AppCardState extends State<AppCard> {
                 Wrap(
                   spacing: 8,
                   children: [
+                    SizedBox(width: 8,),
                     Chip(
                       label: Text(
                         widget.language,
@@ -200,9 +201,9 @@ class _AppCardState extends State<AppCard> {
                       ),
                       backgroundColor: primaryColor.withOpacity(0.2),
                     ),
-                    SizedBox(
-                      width: 8,
-                    ),
+                    // SizedBox(
+                    //   width: 8,
+                    // ),
                   ],
                 ),
               ],
@@ -385,7 +386,6 @@ class _AppCard2State extends State<AppCard2> {
   @override
   Widget build(BuildContext context) {
     var dashboardBloc = Provider.of<DashboardBloc>(context);
-    print('UserCover :${widget.userPostCover}');
     // var month = getMonth(createdAt.month);
     return Container(
       child: Card(
@@ -418,8 +418,8 @@ class _AppCard2State extends State<AppCard2> {
                 SizedBox(
                   height: 8,
                 ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
+                Wrap(
+                  // mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     SizedBox(
                       width: 8,

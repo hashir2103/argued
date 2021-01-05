@@ -95,7 +95,7 @@ class LocationBloc {
     _listCountries.value.data.forEach((c) async {
       if (c.name == _defaultcountry.value) {
         var statesWithCities = await countryServices.getStatesWithCities(c.id);
-        print(c.id);
+        // print(c.id);
         changeDefaultListOfStates(statesWithCities);
         changedefaultStates(_defaultlistStates.value.data.first.name);
         getDefaultCities();
@@ -148,9 +148,9 @@ class LocationBloc {
     }
   }
 
-  getConstant() async {
-    await countryServices.getConstant();
-  }
+  // getConstant() async {
+  //   await countryServices.getConstant();
+  // }
 
   get getCountryName => _country.value;
 }

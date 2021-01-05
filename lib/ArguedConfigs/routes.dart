@@ -6,6 +6,7 @@ import 'package:argued/frontend/screens/contactScreen.dart';
 import 'package:argued/frontend/screens/loginScreen.dart';
 import 'package:argued/frontend/screens/signUpScreen.dart';
 import 'package:argued/frontend/screens/splashScreen.dart';
+import 'package:argued/frontend/screens/watchListScreen.dart';
 import 'package:flutter/material.dart';
 
 abstract class Routes {
@@ -25,6 +26,8 @@ abstract class Routes {
         return MaterialPageRoute(builder: (context) => GroupScreen());
       case kContactScreen:
         return MaterialPageRoute(builder: (context) => ContactScreen());
+      case kWatchListScreen:
+        return MaterialPageRoute(builder: (context) => WatchListScreen());
 
       default:
         return MaterialPageRoute(builder: (context) => LoginScreen());

@@ -9,7 +9,7 @@ class AuthServices {
     try {
       Response response =
           await Dio().post('$kendpoint$ksignUp', data: signUpModel.toMap());
-      print(response.data);
+      // print(response.data);
       return response.data;
     } on DioError catch (e) {
       if (e.response != null) {
@@ -27,7 +27,7 @@ class AuthServices {
     try {
       Response response = await Dio()
           .post('$kendpoint$kverifyCode/$id', data: {"verificationCode": code});
-      print(response);
+      // print(response);
       return response.data;
     } catch (e) {
       print(e);
@@ -50,7 +50,7 @@ class AuthServices {
     var data = {"email": email};
     try {
       Response response = await Dio().post(url, data: data);
-      print(response.data);
+      // print(response.data);
       return response.data;
     } catch (e) {
       print(e);

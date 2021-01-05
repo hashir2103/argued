@@ -10,24 +10,24 @@ class LocationService {
     pattern.allMatches(text).forEach((match) => print(match.group(0)));
   }
 
-  getConstant() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    Map<String, dynamic> header = {'Authorization': prefs.getString('Token')};
-    try {
-      Response response = await Dio().get('$kendpoint' + '/api/constant',
-          options: Options(headers: header));
-      printWrapped(response.data.toString());
-    } on DioError catch (e) {
-      if (e.response != null) {
-        print(e.response.data);
-        print(e.response.headers);
-        print(e.response.request);
-      } else {
-        print(e.request);
-        print(e.message);
-      }
-    }
-  }
+  // getConstant() async {
+  //   SharedPreferences prefs = await SharedPreferences.getInstance();
+  //   Map<String, dynamic> header = {'Authorization': prefs.getString('Token')};
+  //   try {
+  //     // Response response = await Dio().get('$kendpoint' + '/api/constant',
+  //     //     options: Options(headers: header));
+  //     // printWrapped(response.data.toString());
+  //   } on DioError catch (e) {
+  //     if (e.response != null) {
+  //       print(e.response.data);
+  //       print(e.response.headers);
+  //       print(e.response.request);
+  //     } else {
+  //       print(e.request);
+  //       print(e.message);
+  //     }
+  //   }
+  // }
 
   getCountries() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();

@@ -19,7 +19,6 @@ class DashboardServices {
           .get('$kendpoint$kHotTopicHour', options: Options(headers: header));
       // print("HotTopicResponse : ${response.data}");
       // printWrapped(response.data.toString());
-      // LocalFiles.writeFile('hotTopic.json', response.data.toString());
       return HotTopicModel.fromJson(response.data['data']);
     } on DioError catch (e) {
       if (e.response != null) {
@@ -36,16 +35,11 @@ class DashboardServices {
   mostWatchedTopic() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     Map<String, dynamic> header = {'Authorization': prefs.getString('Token')};
-    List<OpinionModel> _list = [];
+    // List<OpinionModel> _list = [];
     try {
       Response response = await Dio()
           .get('$kendpoint$kMostWatched', options: Options(headers: header));
-      printWrapped(response.data.toString());
-      for (var i = 0; i < response.data.length; i++) {
-        var data = OpinionModel.fromJson(response.data['data'][i]);
-        _list.add(data);
-      }
-      return _list;
+      return OpinionModel.fromMap(response.data);
     } on DioError catch (e) {
       if (e.response != null) {
         print(e.response.data);
@@ -61,15 +55,12 @@ class DashboardServices {
   interestingToYou(String pageNo) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     Map<String, dynamic> header = {'Authorization': prefs.getString('Token')};
-    List<OpinionModel> _list = [];
+    // List<OpinionModel> _list = [];
     try {
       Response response = await Dio().get('$kendpoint$kInterestingToYou$pageNo',
           options: Options(headers: header));
-      for (var i = 0; i < response.data.length; i++) {
-        var data = OpinionModel.fromJson(response.data['data'][i]);
-        _list.add(data);
-      }
-      return _list;
+      print("=====Response fetcheddd========");
+      return OpinionModel.fromMap(response.data);
     } on DioError catch (e) {
       if (e.response != null) {
         print(e.response.data);
@@ -83,7 +74,7 @@ class DashboardServices {
   }
 
   ratingOpinion(String opinionId, rating) async {
-    print('opinionId : $opinionId');
+    // print('opinionId : $opinionId');
     SharedPreferences prefs = await SharedPreferences.getInstance();
     Map<String, dynamic> header = {'Authorization': prefs.getString('Token')};
     try {
@@ -91,8 +82,8 @@ class DashboardServices {
           '$kendpoint$kRateOpinion/5fda27b2ca2cc614f6caf879',
           data: rating,
           options: Options(headers: header));
-      print(response.data);
-      // return response.data;
+      // print(response.data);
+      return response.data;
     } on DioError catch (e) {
       if (e.response != null) {
         print(e.response.data);
@@ -104,6 +95,4 @@ class DashboardServices {
       }
     }
   }
-
-  
 }

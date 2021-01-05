@@ -5,6 +5,8 @@ import 'package:argued/ArguedConfigs/textStyles.dart';
 import 'package:argued/controller/AuthBloc.dart';
 import 'package:argued/controller/DashboadBloc.dart';
 import 'package:argued/controller/LocationBloc.dart';
+import 'package:argued/controller/contactBloc.dart';
+import 'package:argued/controller/watchListBloc.dart';
 import 'package:argued/frontend/widgets/AppBottomSheet.dart';
 import 'package:argued/frontend/widgets/AppCard.dart';
 import 'package:argued/frontend/widgets/AppCarousel.dart';
@@ -22,20 +24,26 @@ class ViewerDashBoardScreen extends StatefulWidget {
 
 class _ViewerDashBoardScreenState extends State<ViewerDashBoardScreen> {
   ScrollController scrollController = ScrollController();
-  int pageNo = 1;
+
   @override
   void initState() {
     var dashboardBloc = Provider.of<DashboardBloc>(context, listen: false);
+    var contactBloc = Provider.of<ContactBloc>(context, listen: false);
+    var watchListBloc = Provider.of<WatchListBloc>(context, listen: false);
     dashboardBloc.getHotTopicOfHour();
     dashboardBloc.getMostWatchedTopic();
-    dashboardBloc.getInterestingToYou('1');
+    dashboardBloc.getInterestingToYou();
+
+    // watchListBloc.getWatchList();
+    // contactBloc.getContact();
     scrollController.addListener(() {
       if (scrollController.position.maxScrollExtent ==
           scrollController.offset) {
-        dashboardBloc.getInterestingToYou((pageNo + 1).toString());
+        dashboardBloc.changePageNum(dashboardBloc.getPageNo + 1);
+        dashboardBloc.getInterestingToYou();
+        print('========Getting more pages=======');
         dashboardBloc.changeIsLoading(true);
       }
-      // dashboardBloc.changeIsLoading(false);
     });
     super.initState();
   }
@@ -51,6 +59,8 @@ class _ViewerDashBoardScreenState extends State<ViewerDashBoardScreen> {
     var dashboardBloc = Provider.of<DashboardBloc>(context);
     var authBloc = Provider.of<AuthBloc>(context);
     var locationBloc = Provider.of<LocationBloc>(context);
+
+    // dashboardBloc.getInterestingToYou('3');
     return Scaffold(
       appBar: appBar(authBloc, locationBloc),
       bottomNavigationBar: bottomNavBar(dashboardBloc),
@@ -125,43 +135,41 @@ class _ViewerDashBoardScreenState extends State<ViewerDashBoardScreen> {
   }
 
   bottomNavBar(DashboardBloc dashboardBloc) {
-    return StreamBuilder<int>(
-        stream: dashboardBloc.index,
-        builder: (context, snapshot) {
-          return CurvedNavigationBar(
-            height: 60,
-            animationDuration: Duration(milliseconds: 200),
-            index: snapshot.data,
-            backgroundColor: Colors.white,
-            buttonBackgroundColor: Colors.grey.withOpacity(0.2),
-            items: [
-              Icon(
-                Icons.group,
-                size: 30,
-                color: primaryColor,
-              ),
-              Icon(
-                Icons.add,
-                size: 30,
-                color: primaryColor,
-              ),
-              Icon(
-                Icons.contact_page,
-                size: 30,
-                color: primaryColor,
-              ),
-            ],
-            onTap: (index) {
-              if (index == 0) {
-                // dashboardBloc.changeIndex(1);
-                Navigator.pushNamed(context, kGroupScreen);
-              } else if (index == 2) {
-                // dashboardBloc.changeIndex(1);
-                Navigator.pushNamed(context, kContactScreen);
-              }
-            },
-          );
-        });
+    return CurvedNavigationBar(
+      height: 60,
+      animationDuration: Duration(milliseconds: 200),
+      index: 1,
+      backgroundColor: Colors.white,
+      buttonBackgroundColor: Colors.grey.withOpacity(0.2),
+      items: [
+        Icon(
+          Icons.group,
+          size: 30,
+          color: primaryColor,
+        ),
+        Icon(
+          Icons.add,
+          size: 30,
+          color: primaryColor,
+        ),
+        Icon(
+          Icons.contact_page,
+          size: 30,
+          color: primaryColor,
+        ),
+      ],
+      onTap: (index) {
+        if (index == 0) {
+          // dashboardBloc.changeIndex(1);
+          Navigator.pushNamed(context, kGroupScreen);
+        } else if (index == 2) {
+          // dashboardBloc.changeIndex(1);
+          Navigator.pushNamed(context, kContactScreen);
+        } else {
+          Navigator.pushNamed(context, kWatchListScreen);
+        }
+      },
+    );
   }
 
   appBar(AuthBloc authBloc, LocationBloc locationBloc) {
@@ -216,7 +224,7 @@ class VerticalList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var dashboardBloc = Provider.of<DashboardBloc>(context);
-    return StreamBuilder<List<OpinionModel>>(
+    return StreamBuilder<List<OpinionData>>(
         stream: dashboardBloc.interestingToYou,
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
@@ -236,12 +244,12 @@ class VerticalList extends StatelessWidget {
                     videoURL: s.video.file,
                     userPostCover: s.createdBy.profilePic,
                     thumbnail: s.video.thumbnail,
-                    stand: s.stand,
-                    userName: s.details.userName,
+                    stand: s.stand.toString().split(".")[1],
+                    userName: s.details.userName.toString().split(".")[1],
                     topicName: s.details.topicName,
                     categoryName: s.details.categoryName,
                     subCategoryName: s.details.subCategoryName,
-                    language: s.language,
+                    language: s.language.toString().split(".")[1],
                     createdAt: s.createdAt,
                     opinionID: s.video.id,
                   ),
