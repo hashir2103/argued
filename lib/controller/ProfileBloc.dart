@@ -5,6 +5,17 @@ import 'package:argued/model/ProfileModel.dart';
 import 'package:rxdart/rxdart.dart';
 
 class ProfileBloc {
+  ProfileBloc() {
+    {
+      _profile.listen((ProfileModel p) async {
+        _salutation.add(p.salutation);
+        _username.add(p.username);
+        _firstname.add(p.displayName);
+        _showMyOccupation.add(p.settings.showOccupation);
+        _geographicalInterest.add(p.settings.useLocation);
+      });
+    }
+  }
   //varaible
   ProfileService profileService = ProfileService();
   final _profile = BehaviorSubject<ProfileModel>();
@@ -47,8 +58,8 @@ class ProfileBloc {
   Stream<ProfileModel> get profile => _profile.stream;
   Stream<bool> get showMyOccupation => _showMyOccupation.stream;
   Stream<bool> get showGeographicalInterest => _geographicalInterest.stream;
-  Stream<bool> get isValidProfile =>
-      CombineLatestStream.combine3(username,password,phoneNo, (a, b,c) => true);
+  Stream<bool> get isValidProfile => CombineLatestStream.combine3(
+      username, password, phoneNo, (a, b, c) => true);
 
   //sink
   Function(bool) get changeHideText => _hideText.sink.add;
@@ -127,11 +138,9 @@ class ProfileBloc {
     var profileModel = ProfileModel(
       salutation: _salutation.value,
       username: _username.value,
-    
     );
     await profileService.editProfile(profileModel);
   }
-
 
   checkUserName() async {
     var response = await profileService.checkUesrname(_username.value ?? '');

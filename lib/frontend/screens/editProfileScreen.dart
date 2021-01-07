@@ -1,8 +1,7 @@
-import 'dart:async';
-
 import 'package:argued/ArguedConfigs/color.dart';
 import 'package:argued/ArguedConfigs/constantsList.dart';
 import 'package:argued/controller/ProfileBloc.dart';
+import 'package:argued/frontend/widgets/AppBottomSheet.dart';
 import 'package:argued/frontend/widgets/AppButton.dart';
 import 'package:argued/frontend/widgets/AppDropDown.dart';
 import 'package:argued/frontend/widgets/AppPhoneNumberField.dart';
@@ -20,17 +19,13 @@ class EditProfileScreen extends StatefulWidget {
 }
 
 class _EditProfileScreenState extends State<EditProfileScreen> {
-  StreamSubscription profiledata;
   TextEditingController passwordController = TextEditingController();
   TextEditingController confrimPassController = TextEditingController();
 
   @override
   void initState() {
-    // var dashboardBloc = Provider.of<DashboardBloc>(context, listen: false);
-    // // dashboardBloc.getCountries()
     var profBloc = Provider.of<ProfileBloc>(context, listen: false);
     profBloc.getProfile();
-    // profBloc.getConstant();
     super.initState();
   }
 
@@ -38,33 +33,12 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   void dispose() {
     passwordController.dispose();
     confrimPassController.dispose();
-    profiledata.cancel();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     var profileBloc = Provider.of<ProfileBloc>(context);
-    // profiledata = profileBloc.profile.listen((p) {
-    //   // countryList2.forEach((c) {
-    //   //   if (c['_id'] == p.countryOfResidence) {
-    //   //     profileBloc.changeCountry(c['name']);
-    //   //   }
-    //   // });
-    //   print('======= Updating ========');
-    //   profileBloc.changeSalutation(p.salutation);
-    //   profileBloc.changefirstname(p.firstname);
-    //   profileBloc.changeLastName(p.lastname);
-    //   profileBloc.changeUsername(p.username);
-    //   // profileBloc.changeDOB(Dat)
-    //   profileBloc.changePhoneCode('+${p.countryCode}');
-    //   profileBloc.changePhoneNo(p.phoneNumber);
-    //   profileBloc.changeCurrency(p.currency);
-    //   profileBloc.changeMaritalStatus(p.maritalStatus);
-    //   profileBloc.changeReligion(p.religion);
-    //   profileBloc.changeShowMyOccupation(p.settings.showOccupation);
-    //   profileBloc.changeGeographicalInterest(p.settings.useLocation);
-    // });
     List<String> countryName =
         kcountryList.map((c) => c.name).toList().toSet().toList();
     List<String> currencyName =
@@ -324,9 +298,21 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 )
               ],
             ),
-            bottomBlock('Topics Of Interest'),
-            bottomBlock('Geographical Location of Interest'),
-            bottomBlock('Set Default Location For New Video'),
+            bottomBlock(
+              'Topics Of Interest',
+              () {
+                AppBottomSheet().topicOfInterest(context);
+              },
+            ),
+            bottomBlock('Geographical Location of Interest', () {
+              AppBottomSheet().geoInterest(context);
+            }),
+            bottomBlock(
+              'Set Default Location For New Video',
+              () {
+                AppBottomSheet().defaultLocationOfVideo(context);
+              },
+            ),
             SizedBox(
               height: 18,
             ),
@@ -363,23 +349,26 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     ));
   }
 
-  bottomBlock(String text) {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Container(
-          margin: EdgeInsets.only(top: 8),
-          padding: EdgeInsets.symmetric(horizontal: 12, vertical: 12),
-          decoration: BoxDecoration(
-            border: Border.all(color: Colors.red.shade700, width: 1),
-            borderRadius: BorderRadius.circular(20),
+  bottomBlock(String text, Function onTap) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            margin: EdgeInsets.only(top: 8),
+            padding: EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+            decoration: BoxDecoration(
+              border: Border.all(color: Colors.red.shade700, width: 1),
+              borderRadius: BorderRadius.circular(20),
+            ),
+            child: Text(
+              text,
+              style: TextStyle(color: Colors.red.shade700, fontSize: 16),
+            ),
           ),
-          child: Text(
-            text,
-            style: TextStyle(color: Colors.red.shade700, fontSize: 16),
-          ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 

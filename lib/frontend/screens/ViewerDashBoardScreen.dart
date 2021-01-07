@@ -3,6 +3,7 @@ import 'package:argued/ArguedConfigs/constant.dart';
 import 'package:argued/ArguedConfigs/sizeConfig.dart';
 import 'package:argued/ArguedConfigs/textStyles.dart';
 import 'package:argued/controller/DashboadBloc.dart';
+import 'package:argued/controller/ProfileBloc.dart';
 import 'package:argued/controller/contactBloc.dart';
 import 'package:argued/controller/watchListBloc.dart';
 import 'package:argued/frontend/widgets/AppCard.dart';
@@ -30,9 +31,11 @@ class _ViewerDashBoardScreenState extends State<ViewerDashBoardScreen> {
     var contactBloc = Provider.of<ContactBloc>(context, listen: false);
     // ignore: unused_local_variable
     var watchListBloc = Provider.of<WatchListBloc>(context, listen: false);
+    var profileBloc = Provider.of<ProfileBloc>(context, listen: false);
     dashboardBloc.getHotTopicOfHour();
     dashboardBloc.getMostWatchedTopic();
     dashboardBloc.getInterestingToYou();
+    profileBloc.getProfile();
 
     // watchListBloc.getWatchList();
     // contactBloc.getContact();

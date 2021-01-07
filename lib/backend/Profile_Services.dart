@@ -15,10 +15,8 @@ class ProfileService {
     try {
       Response response = await Dio()
           .get('$kendpoint$kProfile', options: Options(headers: header));
-      printWrapped("Profile :  ${response.data['data']}",response.data.toString().length);
-      // debugPrint("Profile :  ${response.data['data'].toString()}");
-      // var data  = ProfileModel.fromJson(response.data['data']);
-      // return data;
+      var data  = ProfileModel.fromJson(response.data['data']);
+      return data;
     } on DioError catch (e) {
       if (e.response != null) {
         print(e.response.data);

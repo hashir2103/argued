@@ -1,183 +1,82 @@
 {
-  "data":[
-     {
-        "_id":"5fcde199495d8a4233b5f7ff",
-        "room":"5f5b578674ae224ee925a389",
-        "message":"hello 😀",
-        "sentBy":{
-           "_id":"5f5ade7ce590b141d2f3c7c9",
-           "username":"demov",
-           "profilePic":"https://argueds3.s3.amazonaws.com/user/1607843693716.PNG",
-           "opinions":null,
-           "videos":null,
-           "id":"5f5ade7ce590b141d2f3c7c9"
-        },
-        "createdAt":"2020-12-07T08:02:33.134Z",
-        "updatedAt":"2020-12-07T08:02:33.134Z",
-        "__v":0
-     },
-     {
-        "_id":"5fc99c82495d8a4233b5f762",
-        "room":"5f5b578674ae224ee925a389",
-        "message":"hi",
-        "sentBy":{
-           "_id":"5f5ade7ce590b141d2f3c7c9",
-           "username":"demov",
-           "profilePic":"https://argueds3.s3.amazonaws.com/user/1607843693716.PNG",
-           "opinions":null,
-           "videos":null,
-           "id":"5f5ade7ce590b141d2f3c7c9"
-        },
-        "createdAt":"2020-12-04T02:18:42.362Z",
-        "updatedAt":"2020-12-04T02:18:42.362Z",
-        "__v":0
-     },
-     {
-        "_id":"5fc2124a34a78661d648a8a0",
-        "room":"5f5b578674ae224ee925a389",
-        "message":"😇",
-        "sentBy":{
-           "_id":"5f5ade7ce590b141d2f3c7c9",
-           "username":"demov",
-           "profilePic":"https://argueds3.s3.amazonaws.com/user/1607843693716.PNG",
-           "opinions":null,
-           "videos":null,
-           "id":"5f5ade7ce590b141d2f3c7c9"
-        },
-        "createdAt":"2020-11-28T09:03:06.986Z",
-        "updatedAt":"2020-11-28T09:03:06.986Z",
-        "__v":0
-     },
-     {
-        "_id":"5fc2124034a78661d648a89f",
-        "room":"5f5b578674ae224ee925a389",
-        "message":"test",
-        "sentBy":{
-           "_id":"5f5ade7ce590b141d2f3c7c9",
-           "username":"demov",
-           "profilePic":"https://argueds3.s3.amazonaws.com/user/1607843693716.PNG",
-           "opinions":null,
-           "videos":null,
-           "id":"5f5ade7ce590b141d2f3c7c9"
-        },
-        "createdAt":"2020-11-28T09:02:56.102Z",
-        "updatedAt":"2020-11-28T09:02:56.102Z",
-        "__v":0
-     },
-     {
-        "_id":"5fc0d4ad34a78661d648a7e8",
-        "room":"5f5b578674ae224ee925a389",
-        "message":"hi",
-        "sentBy":{
-           "_id":"5f5ade7ce590b141d2f3c7c9",
-           "username":"demov",
-           "profilePic":"https://argueds3.s3.amazonaws.com/user/1607843693716.PNG",
-           "opinions":null,
-           "videos":null,
-           "id":"5f5ade7ce590b141d2f3c7c9"
-        },
-        "createdAt":"2020-11-27T10:27:57.714Z",
-        "updatedAt":"2020-11-27T10:27:57.714Z",
-        "__v":0
-     },
-     {
-        "_id":"5fc0b24634a78661d648a773",
-        "room":"5f5b578674ae224ee925a389",
-        "message":"hi",
-        "sentBy":{
-           "_id":"5f5ade7ce590b141d2f3c7c9",
-           "username":"demov",
-           "profilePic":"https://argueds3.s3.amazonaws.com/user/1607843693716.PNG",
-           "opinions":null,
-           "videos":null,
-           "id":"5f5ade7ce590b141d2f3c7c9"
-        },
-        "createdAt":"2020-11-27T08:01:10.621Z",
-        "updatedAt":"2020-11-27T08:01:10.621Z",
-        "__v":0
-     },
-     {
-        "_id":"5fc0a98934a78661d648a717",
-        "room":"5f5b578674ae224ee925a389",
-        "message":"hlo",
-        "sentBy":{
-           "_id":"5f5ade7ce590b141d2f3c7c9",
-           "username":"demov",
-           "profilePic":"https://argueds3.s3.amazonaws.com/user/1607843693716.PNG",
-           "opinions":null,
-           "videos":null,
-           "id":"5f5ade7ce590b141d2f3c7c9"
-        },
-        "createdAt":"2020-11-27T07:23:53.173Z",
-        "updatedAt":"2020-11-27T07:23:53.173Z",
-        "__v":0
-     },
-     {
-        "_id":"5fbdec75cfbf0a5a91d9b18a",
-        "room":"5f5b578674ae224ee925a389",
-        "message":"hello",
-        "sentBy":{
-           "_id":"5f5ade7ce590b141d2f3c7c9",
-           "username":"demov",
-           "profilePic":"https://argueds3.s3.amazonaws.com/user/1607843693716.PNG",
-           "opinions":null,
-           "videos":null,
-           "id":"5f5ade7ce590b141d2f3c7c9"
-        },
-        "createdAt":"2020-11-25T05:32:37.376Z",
-        "updatedAt":"2020-11-25T05:32:37.376Z",
-        "__v":0
-     },
-     {
-        "_id":"5fbdbecfcfbf0a5a91d9b08a",
-        "room":"5f5b578674ae224ee925a389",
-        "message":"good morning",
-        "sentBy":{
-           "_id":"5de4d6cf26d43127ca9a46e6",
-           "username":"speakup",
-           "profilePic":"https://argueds3.s3.amazonaws.com/user/1576027457650.png",
-           "opinions":null,
-           "videos":null,
-           "id":"5de4d6cf26d43127ca9a46e6"
-        },
-        "createdAt":"2020-11-25T02:17:51.036Z",
-        "updatedAt":"2020-11-25T02:17:51.036Z",
-        "__v":0
-     },
-     {
-        "_id":"5f91378bcec1e21753349bab",
-        "room":"5f5b578674ae224ee925a389",
-        "message":"morning",
-        "sentBy":{
-           "_id":"5de4d6cf26d43127ca9a46e6",
-           "username":"speakup",
-           "profilePic":"https://argueds3.s3.amazonaws.com/user/1576027457650.png",
-           "opinions":null,
-           "videos":null,
-           "id":"5de4d6cf26d43127ca9a46e6"
-        },
-        "createdAt":"2020-10-22T07:40:59.248Z",
-        "updatedAt":"2020-10-22T07:40:59.248Z",
-        "__v":0
-     },
-     {
-        "_id":"5f5b57c074ae224ee925a399",
-        "room":"5f5b578674ae224ee925a389",
-        "message":"Good morning ",
-        "sentBy":{
-           "_id":"5f5ade7ce590b141d2f3c7c9",
-           "username":"demov",
-           "profilePic":"https://argueds3.s3.amazonaws.com/user/1607843693716.PNG",
-           "opinions":null,
-           "videos":null,
-           "id":"5f5ade7ce590b141d2f3c7c9"
-        },
-        "createdAt":"2020-09-11T10:56:00.690Z",
-        "updatedAt":"2020-09-11T10:56:00.690Z",
-        "__v":0
-     }
+  "income": null,
+  "completion": { "percentage": 45, "title": "Silver" },
+  "settings": { "showOccupation": false, "useLocation": false },
+  "verified": true,
+  "paid": true,
+  "agreeTerms": false,
+  "languagesSpoken": ["English"],
+  "followers": [],
+  "following": [
+    "5f56dc6d76b9290ef9f22fcb",
+    "5f34d18f999c4c2cae1e7000",
+    "5dc4b01fd758663286e553af",
+    "5f57160476b9290ef9f230d9"
   ],
-  "message":"Messages retrived successfully.",
-  "key":"group.messages_retrive_success",
-  "code":200
+  "topicOfInterests": [],
+  "subCategories": [
+    "5e3aa7559d265a745118f48e",
+    "5e3aa7cb9d265a745118f48f",
+    "5e3aa7fe9d265a745118f490",
+    "5e3aa8369d265a745118f491",
+    "5e3aa8559d265a745118f492"
+  ],
+  "countriesFollowing": ["5cf8b39a635e13083beadc50"],
+  "statesFollowing": ["5d43230f3c57234310b6d6d0"],
+  "citiesFollowing": ["5d43230f3c57234310b6d6d1"],
+  "storage": 0,
+  "countriesToShow": [],
+  "activityScore": 79.91999999999996,
+  "subscription": true,
+  "keywordsToWatch": [],
+  "auto": false,
+  "_id": "5f5ade7ce590b141d2f3c7c9",
+  "username": "demov",
+  "role": {
+    "modules": [
+      "category",
+      "category.request",
+      "country",
+      "state",
+      "city",
+      "subcategory",
+      "topic",
+      "topic.request",
+      "topic.update",
+      "contact-requests",
+      "group-requests",
+      "group-nominations"
+    ],
+    "isAdmin": false,
+    "_id": "5cdd02a52c15a633b4821aa9",
+    "name": "regular"
+  },
+  "displayLanguage": "English",
+  "displayName": "Traveller",
+  "email": "dv@dv.com",
+  "plan": "5d77acabc3d8ce5511a84eb9",
+  "salutation": "Mr.",
+  "confirmId": "5f5ade7ce590b141d2f3c7c8",
+  "businessWebsite": [],
+  "contacts": [
+    {
+      "_id": "5f5b578674ae224ee925a38a",
+      "user": "5de4d6cf26d43127ca9a46e6",
+      "room": "5f5b578674ae224ee925a389",
+      "lastRead": "2021-01-05T09:10:53.140Z",
+      "updatedAt": "2021-01-05T09:10:53.140Z",
+      "createdAt": "2020-09-11T10:55:02.009Z"
+    }
+  ],
+  "supportedCategories": [],
+  "createdAt": "2020-09-11T02:18:36.318Z",
+  "updatedAt": "2021-01-07T01:10:42.064Z",
+  "__v": 4,
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ZjVhZGU3Y2U1OTBiMTQxZDJmM2M3YzkiLCJkYXRlIjoiMjAyMS0wMS0wN1QwMToxMDo0Mi4wNjNaIiwiaWF0IjoxNjA5OTgxODQyfQ.LaIMytAW8BSx3tr_4e-fzX-TCKoJtkqu7i8ltfgLzls",
+  "activityMovement": "Up",
+  "lastLogin": "2021-01-07T01:10:42.062Z",
+  "profilePic": "https://argueds3.s3.amazonaws.com/user/1607843693716.PNG",
+  "opinions": null,
+  "videos": null,
+  "id": "5f5ade7ce590b141d2f3c7c9"
 }

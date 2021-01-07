@@ -13,6 +13,7 @@ class ProfileModel {
         this.subCategories,
         this.countriesFollowing,
         this.statesFollowing,
+        this.citiesFollowing,
         this.storage,
         this.countriesToShow,
         this.activityScore,
@@ -50,12 +51,13 @@ class ProfileModel {
     bool paid;
     bool agreeTerms;
     List<String> languagesSpoken;
-    List<String> followers;
+    List<dynamic> followers;
     List<String> following;
     List<dynamic> topicOfInterests;
     List<String> subCategories;
     List<String> countriesFollowing;
     List<String> statesFollowing;
+    List<String> citiesFollowing;
     int storage;
     List<dynamic> countriesToShow;
     double activityScore;
@@ -93,12 +95,13 @@ class ProfileModel {
         paid: json["paid"],
         agreeTerms: json["agreeTerms"],
         languagesSpoken: List<String>.from(json["languagesSpoken"].map((x) => x)),
-        followers: List<String>.from(json["followers"].map((x) => x)),
+        followers: List<dynamic>.from(json["followers"].map((x) => x)),
         following: List<String>.from(json["following"].map((x) => x)),
         topicOfInterests: List<dynamic>.from(json["topicOfInterests"].map((x) => x)),
         subCategories: List<String>.from(json["subCategories"].map((x) => x)),
         countriesFollowing: List<String>.from(json["countriesFollowing"].map((x) => x)),
         statesFollowing: List<String>.from(json["statesFollowing"].map((x) => x)),
+        citiesFollowing: List<String>.from(json["citiesFollowing"].map((x) => x)),
         storage: json["storage"],
         countriesToShow: List<dynamic>.from(json["countriesToShow"].map((x) => x)),
         activityScore: json["activityScore"].toDouble(),
@@ -143,6 +146,7 @@ class ProfileModel {
         "subCategories": List<dynamic>.from(subCategories.map((x) => x)),
         "countriesFollowing": List<dynamic>.from(countriesFollowing.map((x) => x)),
         "statesFollowing": List<dynamic>.from(statesFollowing.map((x) => x)),
+        "citiesFollowing": List<dynamic>.from(citiesFollowing.map((x) => x)),
         "storage": storage,
         "countriesToShow": List<dynamic>.from(countriesToShow.map((x) => x)),
         "activityScore": activityScore,
