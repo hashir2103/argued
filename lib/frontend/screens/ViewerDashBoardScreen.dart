@@ -28,7 +28,9 @@ class _ViewerDashBoardScreenState extends State<ViewerDashBoardScreen> {
   @override
   void initState() {
     var dashboardBloc = Provider.of<DashboardBloc>(context, listen: false);
+    // ignore: unused_local_variable
     var contactBloc = Provider.of<ContactBloc>(context, listen: false);
+    // ignore: unused_local_variable
     var watchListBloc = Provider.of<WatchListBloc>(context, listen: false);
     dashboardBloc.getHotTopicOfHour();
     dashboardBloc.getMostWatchedTopic();
@@ -36,16 +38,20 @@ class _ViewerDashBoardScreenState extends State<ViewerDashBoardScreen> {
 
     // watchListBloc.getWatchList();
     // contactBloc.getContact();
+    super.initState();
+
     scrollController.addListener(() {
       if (scrollController.position.maxScrollExtent ==
           scrollController.offset) {
-        dashboardBloc.changePageNum(dashboardBloc.getPageNo + 1);
-        dashboardBloc.getInterestingToYou();
-        print('========Getting more pages=======');
-        dashboardBloc.changeIsLoading(true);
+        if (!dashboardBloc.shouldStopSearching) {
+          dashboardBloc.changePageNum(dashboardBloc.getPageNo + 1);
+          dashboardBloc.getInterestingToYou();
+          print('========Getting more pages=======');
+          dashboardBloc.changeIsLoading(true);
+        }
+        print('Stop Searching Now......');
       }
     });
-    super.initState();
   }
 
   @override
@@ -60,6 +66,7 @@ class _ViewerDashBoardScreenState extends State<ViewerDashBoardScreen> {
     var authBloc = Provider.of<AuthBloc>(context);
     var locationBloc = Provider.of<LocationBloc>(context);
 
+    dashboardBloc.getInterestingToYou();
     // dashboardBloc.getInterestingToYou('3');
     return Scaffold(
       appBar: appBar(authBloc, locationBloc),
@@ -106,6 +113,7 @@ class _ViewerDashBoardScreenState extends State<ViewerDashBoardScreen> {
               bodyHeading(heading: "Interesting to you"),
               VerticalList(),
               StreamBuilder<bool>(
+                  initialData: true,
                   stream: dashboardBloc.isLoading,
                   builder: (context, snapshot) {
                     if (snapshot.hasData & snapshot.data == true) {
@@ -116,7 +124,14 @@ class _ViewerDashBoardScreenState extends State<ViewerDashBoardScreen> {
                         ),
                       );
                     }
-                    return Container();
+                    return Container(
+                      child: Center(
+                        child: Text(
+                          "No more post to show",
+                          style: listTileSubTitleText,
+                        ),
+                      ),
+                    );
                   })
             ],
           ),

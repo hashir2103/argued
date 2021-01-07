@@ -13,6 +13,7 @@ class DashboardBloc {
   final _rating = BehaviorSubject<double>.seeded(55.0);
 
   final _isLoading = BehaviorSubject<bool>.seeded(false);
+  final _stopSearching = BehaviorSubject<bool>.seeded(false);
   final pageNo = BehaviorSubject<int>.seeded(1);
 
   //Stream
@@ -32,10 +33,12 @@ class DashboardBloc {
       _interestingToYou.sink.add;
   Function(double) get changeRating => _rating.sink.add;
   Function(bool) get changeIsLoading => _isLoading.sink.add;
+  Function(bool) get changeStopSearching => _stopSearching.sink.add;
   Function(int) get changePageNum => pageNo.sink.add;
 
   //dispose
   dispose() {
+    _stopSearching.close();
     pageNo.close();
     _isLoading.close();
     _interestingToYou.close();
@@ -57,13 +60,18 @@ class DashboardBloc {
   }
 
   getInterestingToYou() async {
+    print("==========${pageNo.value}==============");
     OpinionModel data =
         await dashboardServices.interestingToYou(pageNo.value.toString());
-    print("==========${pageNo.value}==============");
-
     print("opinon List ===> ${opinionList.length}");
-    print("new response : ${data.message}");
-    changeInterestingToYou(opinionList);
+    print("new response ${pageNo.value} : ${data.message}");
+    if (data.data.isNotEmpty && data.data != []) {
+      opinionList.addAll(data.data);
+      changeInterestingToYou(opinionList);
+    } else {
+      changeIsLoading(false);
+      changeStopSearching(true);
+    }
   }
 
   postRating(opinionId, stand) {
@@ -75,4 +83,5 @@ class DashboardBloc {
   }
 
   int get getPageNo => pageNo.value;
+  bool get shouldStopSearching => _stopSearching.value;
 }

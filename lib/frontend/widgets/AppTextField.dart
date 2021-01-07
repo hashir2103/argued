@@ -12,14 +12,15 @@ class AppTextField extends StatefulWidget {
   bool obsecureText;
   double size;
   bool enable;
+  bool showLabel;
   TextEditingController controller;
   Color iconColor;
   final FocusNode node;
   final void Function(String) onChanged;
-  
+
   AppTextField(
-      {
-      this.node,
+      {this.node,
+      this.showLabel = true,
       this.controller,
       this.enable = true,
       this.size = 20,
@@ -40,19 +41,24 @@ class _AppTextFieldState extends State<AppTextField> {
   void dispose() {
     super.dispose();
   }
+
   @override
   Widget build(BuildContext context) {
     SizeConfig.init(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Padding(
-          padding: const EdgeInsets.only(bottom: 4),
-          child: Text(
-            widget.label,
-            style: smallHeadingText(),
-          ),
-        ),
+        (widget.showLabel)
+            ? Padding(
+                padding: const EdgeInsets.only(bottom: 4),
+                child: Text(
+                  widget.label,
+                  style: smallHeadingText(),
+                ),
+              )
+            : SizedBox(
+                height: 0,
+              ),
         Container(
           decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(10),

@@ -27,6 +27,10 @@ class _ContactScreenState extends State<ContactScreen> {
     var contactBloc = Provider.of<ContactBloc>(context);
     return Scaffold(
         appBar: AppAppBar(title: 'My Contacts'),
+        floatingActionButton: FloatingActionButton(
+          backgroundColor: primaryColor,
+          child: Center(child: Icon(Icons.add,color: Colors.white,size: 40,),),
+          onPressed: ()=> Navigator.pushNamed(context, kInviteContactScreen)),
         body: Padding(
           padding:
               const EdgeInsets.symmetric(horizontal: kbaseHorizontalPadding),
@@ -34,6 +38,7 @@ class _ContactScreenState extends State<ContactScreen> {
             // mainAxisSize: MainAxisSize.min,
             children: [
               AppTextField(
+                showLabel: false,
                 onChanged: contactBloc.changeSearchQuery,
                 hintText: 'Find my contacts',
                 icon: Icons.search,
@@ -48,7 +53,7 @@ class _ContactScreenState extends State<ContactScreen> {
                     padding:
                         EdgeInsets.symmetric(vertical: kbaseVerticalPadding),
                     child: StreamBuilder<ContactModel>(
-                        stream: contactBloc.contact,
+                        stream: contactBloc.contacts,
                         builder: (context, snapshot) {
                           if (!snapshot.hasData) {
                             return Center(
@@ -69,21 +74,22 @@ class _ContactScreenState extends State<ContactScreen> {
                                       var c = data[index];
                                       if (c.user.username
                                           .contains(snapshot.data)) {
-                                        return contactViewContainer(
-                                            c.user.profilePic,
-                                            c.user.username,
-                                            c.lastMessage.message,
-                                            c.unreadCount,
-                                            c.lastMessageMobile);
+                                        return GestureDetector(
+                                          onTap: () {
+                                            contactBloc.getChatRoom(c.room);
+                                            Navigator.pushNamed(
+                                                context, kChatScreen,
+                                                arguments: c.user.username);
+                                          },
+                                          child: contactViewContainer(
+                                              c.user.profilePic,
+                                              c.user.username,
+                                              c.lastMessage.message,
+                                              c.unreadCount,
+                                              c.lastMessageMobile),
+                                        );
                                       }
-                                      return Container(
-                                        child: Center(
-                                          child: Text(
-                                            'No Contact found!',
-                                            style: listTileSubTitleText,
-                                          ),
-                                        ),
-                                      );
+                                      return Container();
                                     },
                                   );
                                 }
@@ -91,12 +97,21 @@ class _ContactScreenState extends State<ContactScreen> {
                                   itemCount: data.length,
                                   itemBuilder: (context, index) {
                                     var c = data[index];
-                                    return contactViewContainer(
-                                        c.user.profilePic,
-                                        c.user.username,
-                                        c.lastMessage.message,
-                                        c.unreadCount,
-                                        c.lastMessageMobile);
+                                    return GestureDetector(
+                                      onTap: () {
+                                        contactBloc.getChatRoom(c.room);
+                                        print('Room Id : ${c.room}');
+                                        Navigator.pushNamed(
+                                            context, kChatScreen,
+                                            arguments: c.user.username);
+                                      },
+                                      child: contactViewContainer(
+                                          c.user.profilePic,
+                                          c.user.username,
+                                          c.lastMessage.message,
+                                          c.unreadCount,
+                                          c.lastMessageMobile),
+                                    );
                                   },
                                 );
                               });
@@ -105,22 +120,6 @@ class _ContactScreenState extends State<ContactScreen> {
             ],
           ),
         ));
-  }
-
-  String getFormatedTime(DateTime time) {
-    var t;
-    if (time.hour < 10) {
-      if (time.minute < 10) {
-        t = "0${time.hour}:0${time.minute}";
-      } else {
-        t = "0${time.hour}:${time.minute}";
-      }
-    } else if (time.minute < 10) {
-      t = "${time.hour}:0${time.minute}";
-    } else {
-      t = "${time.hour}:${time.minute}";
-    }
-    return t;
   }
 
   contactViewContainer(String profilePic, String username, String lastmsg,
@@ -175,4 +174,20 @@ class _ContactScreenState extends State<ContactScreen> {
       ),
     );
   }
+}
+
+String getFormatedTime(DateTime time) {
+  var t;
+  if (time.hour < 10) {
+    if (time.minute < 10) {
+      t = "0${time.hour}:0${time.minute}";
+    } else {
+      t = "0${time.hour}:${time.minute}";
+    }
+  } else if (time.minute < 10) {
+    t = "${time.hour}:0${time.minute}";
+  } else {
+    t = "${time.hour}:${time.minute}";
+  }
+  return t;
 }

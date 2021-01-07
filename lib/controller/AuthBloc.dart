@@ -11,19 +11,6 @@ import 'package:rxdart/rxdart.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthBloc {
-  // AuthBloc() {
-  //   {
-  //     _username
-  //         .debounce((_) => TimerStream(true, Duration(milliseconds: 500)))
-  //         .listen((query) async {
-  //       var response = await authServices.checkUesrname(query);
-  //       if (response['code'] == 200) {
-  //         _username.addError("error");
-  //       }
-  //       _username.add(query);
-  //     });
-  //   }
-  // }
   final authServices = AuthServices();
   final db = HiveDB();
   final _pin1 = BehaviorSubject<String>();
@@ -135,6 +122,8 @@ class AuthBloc {
   String get getloginToken {
     return _loginResponse.value.token;
   }
+
+  String get getuserId => _loginResponse.value.id;
 
   Map get responseValue {
     return _response.value;

@@ -16,6 +16,8 @@ const String kGroupScreen = '/Groupscreen';
 const String kEditProfileScreen = '/editProfile';
 const String kViewerDashBoardScreen = '/VDashBoard';
 const String kWatchListScreen = '/WatchList';
+const String kChatScreen = '/ChatScreen';
+const String kInviteContactScreen = '/InviteContact';
 
 // animation
 const kAnimationDuration = Duration(milliseconds: 200);
@@ -41,6 +43,9 @@ const String kCountry = '/api/country';
 const String kStates = '/api/country/statesWithCities/';
 const String kCategory = '/api/category';
 const String kContact = '/api/user/contacts';
+const String kChatRoom = '/api/chat-room/messages/';
+const String kInviteContact = '/api/user/by-username/';
+const String kAddContact = '/api/contact-requests';
 
 //HiveDB
 const String loginBox = 'loginBox';

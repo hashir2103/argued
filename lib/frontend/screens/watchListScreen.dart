@@ -17,7 +17,7 @@ class WatchListScreen extends StatefulWidget {
 class _WatchListScreenState extends State<WatchListScreen> {
   @override
   void initState() {
-    var watchListBloc = Provider.of<WatchListBloc>(context,listen: false);
+    var watchListBloc = Provider.of<WatchListBloc>(context, listen: false);
     watchListBloc.getWatchList();
     super.initState();
   }
@@ -32,9 +32,9 @@ class _WatchListScreenState extends State<WatchListScreen> {
           padding:
               const EdgeInsets.symmetric(horizontal: kbaseHorizontalPadding),
           child: Column(
-            // mainAxisSize: MainAxisSize.min,
             children: [
               AppTextField(
+                showLabel: false,
                 onChanged: watchListBloc.changeSearchQuery,
                 hintText: 'Find my hosts',
                 icon: Icons.search,
@@ -63,25 +63,18 @@ class _WatchListScreenState extends State<WatchListScreen> {
 
                           return StreamBuilder<String>(
                               stream: watchListBloc.searchQuery,
-                              builder: (context, snapshot) {
-                                if (snapshot.hasData && snapshot.data != "") {
+                              builder: (context, query) {
+                                if (query.hasData && query.data != "") {
                                   return ListView.builder(
                                     itemCount: data.length,
                                     itemBuilder: (context, index) {
                                       var d = data[index];
 
-                                      if (d.username.contains(snapshot.data)) {
+                                      if (d.username.contains(query.data)) {
                                         return hostViewContainer(
                                             d.profilePic, d.username, d.id);
                                       }
-                                      return Container(
-                                        child: Center(
-                                          child: Text(
-                                            'No Host found!',
-                                            style: listTileSubTitleText,
-                                          ),
-                                        ),
-                                      );
+                                      return Container();
                                     },
                                   );
                                 }
@@ -104,16 +97,18 @@ class _WatchListScreenState extends State<WatchListScreen> {
   hostViewContainer(String profilePic, String username, String email) {
     return ListTile(
       leading: Container(
-        width: 20,
-        height: 20,
+        width: 40,
+        height: 40,
         decoration: BoxDecoration(shape: BoxShape.circle),
-        child: CachedNetworkImage(
-          fit: BoxFit.cover,
-          imageUrl: profilePic,
-          placeholder: (context, url) =>
-              Center(child: CircularProgressIndicator()),
-          errorWidget: (context, url, error) =>
-              Center(child: Icon(Icons.error)),
+        child: ClipOval(
+          child: CachedNetworkImage(
+            fit: BoxFit.cover,
+            imageUrl: profilePic,
+            placeholder: (context, url) =>
+                Center(child: CircularProgressIndicator()),
+            errorWidget: (context, url, error) =>
+                Center(child: Icon(Icons.error)),
+          ),
         ),
       ),
       title: Text(

@@ -59,7 +59,7 @@ class DashboardServices {
     try {
       Response response = await Dio().get('$kendpoint$kInterestingToYou$pageNo',
           options: Options(headers: header));
-      print("=====Response fetcheddd========");
+
       return OpinionModel.fromMap(response.data);
     } on DioError catch (e) {
       if (e.response != null) {

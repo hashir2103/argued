@@ -1,5 +1,7 @@
 import 'package:argued/ArguedConfigs/constant.dart';
+import 'package:argued/frontend/screens/InviteContactScreen.dart';
 import 'package:argued/frontend/screens/ViewerDashBoardScreen.dart';
+import 'package:argued/frontend/screens/chatScreen.dart';
 import 'package:argued/frontend/screens/groupScreen.dart';
 import 'package:argued/frontend/screens/editProfileScreen.dart';
 import 'package:argued/frontend/screens/contactScreen.dart';
@@ -28,6 +30,10 @@ abstract class Routes {
         return MaterialPageRoute(builder: (context) => ContactScreen());
       case kWatchListScreen:
         return MaterialPageRoute(builder: (context) => WatchListScreen());
+      case kChatScreen:
+        return MaterialPageRoute(builder: (context) =>  ChatScreen(userName:settings.arguments,));
+      case kInviteContactScreen:
+        return MaterialPageRoute(builder: (context) =>  InviteContactScreen());
 
       default:
         return MaterialPageRoute(builder: (context) => LoginScreen());

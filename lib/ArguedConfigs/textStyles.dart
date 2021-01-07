@@ -17,6 +17,10 @@ TextStyle normalText() {
   return TextStyle(
       color: primaryTextColor, fontSize: 20);
 }
+TextStyle get chatText {
+  return TextStyle(
+      color: Colors.black, fontSize: 20);
+}
 
 TextStyle appBarTitleText() {
   return TextStyle(
