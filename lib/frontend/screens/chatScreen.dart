@@ -6,9 +6,9 @@ import 'package:argued/controller/AuthBloc.dart';
 import 'package:argued/controller/contactBloc.dart';
 import 'package:argued/frontend/screens/contactScreen.dart';
 import 'package:argued/frontend/widgets/AppTextField.dart';
+import 'package:argued/frontend/widgets/AppUserProfileCircle.dart';
 import 'package:argued/frontend/widgets/AppappBar.dart';
 import 'package:argued/model/chatModel.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -151,20 +151,7 @@ class SenderContainer extends StatelessWidget {
           SizedBox(
             width: 4,
           ),
-          Container(
-            height: 40,
-            width: 40,
-            child: ClipOval(
-              child: CachedNetworkImage(
-                fit: BoxFit.cover,
-                imageUrl: profilePic,
-                placeholder: (context, url) =>
-                    Center(child: CircularProgressIndicator()),
-                errorWidget: (context, url, error) =>
-                    Center(child: Icon(Icons.error)),
-              ),
-            ),
-          ),
+          UserCirle(profilePic: profilePic),
         ],
       ),
     );
@@ -192,20 +179,7 @@ class RecieverContainer extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          Container(
-            height: 40,
-            width: 40,
-            child: ClipOval(
-              child: CachedNetworkImage(
-                fit: BoxFit.cover,
-                imageUrl: profilePic,
-                placeholder: (context, url) =>
-                    Center(child: CircularProgressIndicator()),
-                errorWidget: (context, url, error) =>
-                    Center(child: Icon(Icons.error)),
-              ),
-            ),
-          ),
+          UserCirle(profilePic: profilePic),
           SizedBox(
             width: 4,
           ),

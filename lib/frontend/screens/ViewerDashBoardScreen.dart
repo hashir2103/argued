@@ -2,14 +2,12 @@ import 'package:argued/ArguedConfigs/color.dart';
 import 'package:argued/ArguedConfigs/constant.dart';
 import 'package:argued/ArguedConfigs/sizeConfig.dart';
 import 'package:argued/ArguedConfigs/textStyles.dart';
-import 'package:argued/controller/AuthBloc.dart';
 import 'package:argued/controller/DashboadBloc.dart';
-import 'package:argued/controller/LocationBloc.dart';
 import 'package:argued/controller/contactBloc.dart';
 import 'package:argued/controller/watchListBloc.dart';
-import 'package:argued/frontend/widgets/AppBottomSheet.dart';
 import 'package:argued/frontend/widgets/AppCard.dart';
 import 'package:argued/frontend/widgets/AppCarousel.dart';
+import 'package:argued/frontend/widgets/dashBoardAppBar.dart';
 import 'package:argued/model/HotTopicModel.dart';
 import 'package:argued/model/opnionModel.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
@@ -63,13 +61,9 @@ class _ViewerDashBoardScreenState extends State<ViewerDashBoardScreen> {
   @override
   Widget build(BuildContext context) {
     var dashboardBloc = Provider.of<DashboardBloc>(context);
-    var authBloc = Provider.of<AuthBloc>(context);
-    var locationBloc = Provider.of<LocationBloc>(context);
 
-    dashboardBloc.getInterestingToYou();
-    // dashboardBloc.getInterestingToYou('3');
     return Scaffold(
-      appBar: appBar(authBloc, locationBloc),
+      appBar: DashboardAppBar(),
       bottomNavigationBar: bottomNavBar(dashboardBloc),
       body: SingleChildScrollView(
         controller: scrollController,
@@ -111,7 +105,7 @@ class _ViewerDashBoardScreenState extends State<ViewerDashBoardScreen> {
               bodyHeading(heading: "Most watched in your selected topics"),
               AppCarousel(),
               bodyHeading(heading: "Interesting to you"),
-              VerticalList(),
+              InterestingToYou(),
               StreamBuilder<bool>(
                   initialData: true,
                   stream: dashboardBloc.isLoading,
@@ -186,55 +180,9 @@ class _ViewerDashBoardScreenState extends State<ViewerDashBoardScreen> {
       },
     );
   }
-
-  appBar(AuthBloc authBloc, LocationBloc locationBloc) {
-    return AppBar(
-      centerTitle: false,
-      backgroundColor: Colors.white,
-      title: Text(
-        'DashBoard',
-        style: appBarTitleText(),
-      ),
-      leading: IconButton(
-        icon: Icon(Icons.menu_open),
-        onPressed: () {},
-      ),
-      actions: [
-        Icon(
-          Icons.notifications,
-          color: primaryColor,
-          size: 30,
-        ),
-        SizedBox(
-          width: 15,
-        ),
-        IconButton(
-            icon: Icon(Icons.tune, color: primaryColor, size: 30),
-            onPressed: () {
-              locationBloc.getCountry();
-              AppBottomSheet().changeMyInterest(context);
-            }),
-        SizedBox(
-          width: 15,
-        ),
-        GestureDetector(
-          onTap: () {
-            Navigator.pushNamed(context, kEditProfileScreen);
-          },
-          child: CircleAvatar(
-            radius: 15,
-            backgroundImage: NetworkImage(authBloc.getLoginResponse.profilePic),
-          ),
-        ),
-        SizedBox(
-          width: 15,
-        ),
-      ],
-    );
-  }
 }
 
-class VerticalList extends StatelessWidget {
+class InterestingToYou extends StatelessWidget {
   // int pageNo = 1;
   @override
   Widget build(BuildContext context) {

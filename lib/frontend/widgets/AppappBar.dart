@@ -1,6 +1,7 @@
 import 'package:argued/ArguedConfigs/constant.dart';
 import 'package:argued/ArguedConfigs/textStyles.dart';
 import 'package:argued/controller/AuthBloc.dart';
+import 'package:argued/frontend/widgets/AppUserProfileCircle.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -29,9 +30,12 @@ class AppAppBar extends StatelessWidget with PreferredSizeWidget {
           onTap: () {
             Navigator.pushNamed(context, kEditProfileScreen);
           },
-          child: CircleAvatar(
-            radius: 18,
-            backgroundImage: NetworkImage(authBloc.getLoginResponse.profilePic),
+          child: Column(
+            
+            children: [
+              SizedBox(height: 4,),
+              Expanded(child: UserCirle(profilePic: authBloc.getLoginResponse.profilePic,height: 20,width: 50,)),
+            ],
           ),
         ),
         SizedBox(
@@ -42,5 +46,5 @@ class AppAppBar extends StatelessWidget with PreferredSizeWidget {
   }
 
   @override
-  Size get preferredSize => Size.fromHeight(kToolbarHeight);
+  Size get preferredSize => Size.fromHeight(kToolbarHeight + 10);
 }
