@@ -18,6 +18,7 @@ class ProfileBloc {
   }
   //varaible
   ProfileService profileService = ProfileService();
+  final _profileResponse = BehaviorSubject<Map<dynamic, dynamic>>();
   final _profile = BehaviorSubject<ProfileModel>();
   final _salutation = BehaviorSubject<String>.seeded('Mr.');
   final _username = BehaviorSubject<String>();
@@ -40,6 +41,7 @@ class ProfileBloc {
 
   //Stream
   Stream<bool> get hideText => _hideText.stream;
+  Stream<Map<dynamic, dynamic>> get profileResponse => _profileResponse.stream;
   Stream<String> get salutation => _salutation.stream;
   Stream<String> get username => _username.stream;
   Stream<String> get firstname => _firstname.stream;
@@ -84,6 +86,7 @@ class ProfileBloc {
 
   //dispose
   dispose() {
+    _profileResponse.close();
     _occupation.close();
     _religion.close();
     _maritalStatus.close();
@@ -135,11 +138,27 @@ class ProfileBloc {
   }
 
   editProfile() async {
-    var profileModel = ProfileModel(
-      salutation: _salutation.value,
-      username: _username.value,
-    );
-    await profileService.editProfile(profileModel);
+    var data = {
+      "salutation": _salutation.value,
+      "username": _username.value,
+      "firstname": _firstname.value,
+      "lastname": _lastname.value,
+      "dob": _dob.value.toIso8601String(),
+      "countryCode": _phoneCode.value,
+      "password": _password.value,
+      "confirmPassword": _confirmPassword.value,
+      "phoneNumber": _phoneNo.value,
+      "nationality": _country.value,
+      "occupation": _occupation.value,
+      "currency": _currency.value,
+      "religion": _religion.value,
+      "settings": {
+        "showOccupation": _showMyOccupation.value,
+        "useLocation": _geographicalInterest.value
+      },
+    };
+    var res = await profileService.editProfile(data);
+    _profileResponse.add(res);
   }
 
   checkUserName() async {

@@ -50,7 +50,7 @@ class InviteContactScreen extends StatelessWidget {
                                   () {
                                     contactBloc.addToContact(d.username);
                                     MyAppDailog()
-                                        .addContactDailog(context, contactBloc);
+                                        .appResponseDailog(context, contactBloc.addContact,1);
                                   },
                                 );
                               });

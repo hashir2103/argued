@@ -3,6 +3,7 @@ import 'package:argued/ArguedConfigs/constantsList.dart';
 import 'package:argued/controller/ProfileBloc.dart';
 import 'package:argued/frontend/widgets/AppBottomSheet.dart';
 import 'package:argued/frontend/widgets/AppButton.dart';
+import 'package:argued/frontend/widgets/AppDialogs.dart';
 import 'package:argued/frontend/widgets/AppDropDown.dart';
 import 'package:argued/frontend/widgets/AppPhoneNumberField.dart';
 import 'package:flutter/material.dart';
@@ -202,7 +203,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             Padding(
                 padding: EdgeInsets.symmetric(vertical: kbaseVerticalPadding),
                 child: AppDropDown(
-                    label: 'Counrty',
+                    label: 'Nationality',
                     itemList: countryName,
                     onChange: profileBloc.changeCountry,
                     stream: profileBloc.country)),
@@ -328,6 +329,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 AppSmallButton(
                     onTap: (true)
                         ? () {
+                            profileBloc.editProfile();
+                            MyAppDailog()
+                                        .appResponseDailog(context, profileBloc.profileResponse,2);
                             print('available');
                           }
                         : () {

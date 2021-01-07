@@ -12,7 +12,7 @@ class ContactBloc {
           .listen((query) async {
         if (query.isNotEmpty) {
           var response = await await contactService.findContact(query);
-          print("Response======> $response");
+      
           if (response['code'] == 200) {
             var obj = FindContactModel.fromJson(response);
             print("Length =====>>${obj.data.length}");

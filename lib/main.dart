@@ -6,6 +6,7 @@ import 'package:argued/controller/ProfileBloc.dart';
 import 'package:argued/controller/LocationBloc.dart';
 import 'package:argued/controller/catergoryBloc.dart';
 import 'package:argued/controller/contactBloc.dart';
+import 'package:argued/controller/groupBloc.dart';
 import 'package:argued/controller/watchListBloc.dart';
 import 'package:argued/frontend/screens/splashScreen.dart';
 import 'package:flutter/material.dart';
@@ -27,6 +28,7 @@ final locationBloc = LocationBloc();
 final catergoryBloc = CatergoryBloc();
 final contactBloc = ContactBloc();
 final watchListBloc = WatchListBloc();
+final groupBloc = GroupBloc();
 
 class MyApp extends StatefulWidget {
   @override
@@ -53,6 +55,7 @@ class _MyAppState extends State<MyApp> {
           Provider(create: (context) => catergoryBloc),
           Provider(create: (context) => contactBloc),
           Provider(create: (context) => watchListBloc),
+          Provider(create: (context) => groupBloc),
         ],
         child: MaterialApp(
           title: 'Argued.com',

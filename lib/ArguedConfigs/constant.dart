@@ -46,6 +46,9 @@ const String kContact = '/api/user/contacts';
 const String kChatRoom = '/api/chat-room/messages/';
 const String kInviteContact = '/api/user/by-username/';
 const String kAddContact = '/api/contact-requests';
+const String kGroups = '/api/group/my-groups';
+const String kTempImage =
+    "https://www.colorbook.io/imagecreator.php?width=300&height=300?hex=0xadd8e6";
 
 //HiveDB
 const String loginBox = 'loginBox';

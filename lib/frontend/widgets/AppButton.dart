@@ -8,7 +8,8 @@ class AppButton extends StatelessWidget {
   Function onTap;
   double height;
   double fontSize;
-  AppButton({this.height = 45, this.text = '', this.onTap,this.fontSize =20});
+  Color color;
+  AppButton({this.color=primaryColor,this.height = 45, this.text = '', this.onTap, this.fontSize = 20});
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -16,7 +17,7 @@ class AppButton extends StatelessWidget {
       child: Container(
         height: height,
         decoration: BoxDecoration(
-          color: primaryColor,
+          color: color,
           borderRadius: BorderRadius.circular(10),
         ),
         child: Center(

@@ -2,7 +2,6 @@ import 'package:argued/ArguedConfigs/color.dart';
 import 'package:argued/ArguedConfigs/sizeConfig.dart';
 import 'package:argued/ArguedConfigs/textStyles.dart';
 import 'package:argued/controller/DashboadBloc.dart';
-import 'package:argued/controller/contactBloc.dart';
 import 'package:flutter/material.dart';
 
 class MyAppDailog {
@@ -68,11 +67,11 @@ class MyAppDailog {
     showDialog(context: context, builder: (context) => dailog);
   }
 
-  addContactDailog(context, ContactBloc contactBloc) {
+  appResponseDailog(context, Stream<Map<dynamic,dynamic>> stream,int popPageCount) {
     showDialog(
         context: context,
         builder: (context) => StreamBuilder<Map<dynamic, dynamic>>(
-            stream: contactBloc.addContact,
+            stream: stream,
             builder: (context, snapshot) {
               if (!snapshot.hasData) {
                 return Center(
@@ -80,7 +79,9 @@ class MyAppDailog {
                 );
               }
               Future.delayed(Duration(milliseconds: 3000)).then((value) {
-                Navigator.pop(context);
+                for(int i =0; i< popPageCount; i++){
+                  Navigator.pop(context);
+                }
               });
               return Dialog(
                 elevation: 0,
