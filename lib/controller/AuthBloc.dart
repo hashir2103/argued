@@ -25,6 +25,7 @@ class AuthBloc {
   final _confirmPassword = BehaviorSubject<String>();
   final _rememberMe = BehaviorSubject<bool>.seeded(false);
   final _loginPress = BehaviorSubject<bool>.seeded(false);
+  final _button = BehaviorSubject<bool>.seeded(false);
   final _hideText = BehaviorSubject<bool>.seeded(true);
   final _resetCredential = BehaviorSubject<bool>.seeded(true);
   final _response = BehaviorSubject<Map>();
@@ -35,6 +36,7 @@ class AuthBloc {
   Stream<Map> get response => _response.stream;
   Stream<LoginResponse> get loginResponse => _loginResponse.stream;
   Stream<bool> get hideText => _hideText.stream;
+  Stream<bool> get button => _button.stream;
   Stream<bool> get resetCredential => _resetCredential.stream;
   Stream<bool> get rememberMe => _rememberMe.stream;
   Stream<bool> get loginPress => _loginPress.stream;
@@ -55,6 +57,7 @@ class AuthBloc {
   Function(bool) get changeRememberMe => _rememberMe.sink.add;
   Function(LoginResponse) get changeLoginResponse => _loginResponse.sink.add;
   Function(bool) get changeHideText => _hideText.sink.add;
+  Function(bool) get changeButton => _button.sink.add;
   Function(bool) get changeResetCredential => _resetCredential.sink.add;
   Function(bool) get changeLoginPress => _loginPress.sink.add;
   Function(Map) get changeResponse => _response.sink.add;
@@ -75,6 +78,7 @@ class AuthBloc {
     _hideText.close();
     _username.close();
     _response.close();
+    _button.close();
     _pin1.close();
     _pin2.close();
     _pin3.close();

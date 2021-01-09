@@ -8,7 +8,19 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class TopicOfInterest extends StatelessWidget {
+class TopicOfInterest extends StatefulWidget {
+  @override
+  _TopicOfInterestState createState() => _TopicOfInterestState();
+}
+
+class _TopicOfInterestState extends State<TopicOfInterest> {
+  @override
+  void initState() {
+    var catergoryBloc = Provider.of<CatergoryBloc>(context, listen: false);
+    catergoryBloc.getCategory();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     var catergoryBloc = Provider.of<CatergoryBloc>(context);
@@ -164,7 +176,7 @@ class _SubTopicOfInterestState extends State<SubTopicOfInterest> {
                   onChanged: catergoryBloc.changeSelectAll);
             }),
         Container(
-            height: 400,
+            height: 350,
             padding: EdgeInsets.all(12),
             child: GridView.builder(
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
@@ -259,8 +271,7 @@ class CategoryCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: 150,
+    return Container(
       child: Card(
           clipBehavior: Clip.antiAliasWithSaveLayer,
           semanticContainer: true,
@@ -283,13 +294,19 @@ class CategoryCard extends StatelessWidget {
                       fontWeight: FontWeight.w300),
                 )),
               ),
-              CachedNetworkImage(
-                fit: BoxFit.cover,
-                imageUrl: imgUrl,
-                placeholder: (context, url) =>
-                    Center(child: CircularProgressIndicator()),
-                errorWidget: (context, url, error) =>
-                    Center(child: Icon(Icons.error)),
+              Wrap(
+                children: [
+                  CachedNetworkImage(
+                    height: 145.2,
+                    // width: 100,
+                    fit: BoxFit.cover,
+                    imageUrl: imgUrl,
+                    placeholder: (context, url) =>
+                        Center(child: CircularProgressIndicator()),
+                    errorWidget: (context, url, error) =>
+                        Center(child: Icon(Icons.error)),
+                  ),
+                ],
               ),
             ],
           )),

@@ -45,7 +45,8 @@ class _SplashScreenState extends State<SplashScreen> {
               child: Padding(
                 padding: const EdgeInsets.all(12.0),
                 child: Text(
-                  'Argument is the cornerstone of a free society. Anything preventing argument is oppression.',
+                  // 'Argument is the cornerstone of a free society. Anything preventing argument is oppression.',
+                  'Created By Electromates!',
                   style: bigHeadingText().copyWith(color: Colors.black),
                   textAlign: TextAlign.center,
                 ),

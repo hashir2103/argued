@@ -2,6 +2,8 @@ import 'package:argued/ArguedConfigs/color.dart';
 import 'package:argued/ArguedConfigs/constant.dart';
 import 'package:argued/ArguedConfigs/sizeConfig.dart';
 import 'package:argued/ArguedConfigs/textStyles.dart';
+import 'package:argued/controller/AuthBloc.dart';
+import 'package:argued/controller/DashboadBloc.dart';
 import 'package:argued/controller/LocationBloc.dart';
 import 'package:argued/frontend/widgets/AppButton.dart';
 import 'package:argued/frontend/widgets/AppDialogs.dart';
@@ -156,6 +158,11 @@ class DefaultLocation extends StatelessWidget {
                         label: "Select Country",
                         itemList: _countriesNameList,
                         onChange: (value) async {
+                          if (value == 'Global') {
+                            locationBloc.changedefaultCountry(value);
+                            locationBloc.changeDefaultListOfStates(null);
+                            locationBloc.changedefaultCities(null);
+                          }
                           locationBloc.changedefaultCountry(value);
                           locationBloc.getDefaultStatesWithCities();
                         },
@@ -176,6 +183,18 @@ class DefaultLocation extends StatelessWidget {
                           onChange: null,
                           stream: null));
                 }
+                if (snapshot.data == null) {
+                  return Padding(
+                      padding:
+                          EdgeInsets.symmetric(vertical: kbaseVerticalPadding),
+                      child: AppDropDown(
+                          disableHint: "",
+                          label: "",
+                          itemList: [''],
+                          onChange: null,
+                          stream: null));
+                }
+
                 snapshot.data.data.forEach((c) {
                   _statesList.add(c.name);
                 });
@@ -203,6 +222,17 @@ class DefaultLocation extends StatelessWidget {
                       child: AppDropDown(
                           disableHint: "Select State First",
                           label: "Select City",
+                          itemList: [''],
+                          onChange: null,
+                          stream: null));
+                }
+                if (snapshot.data == null) {
+                  return Padding(
+                      padding:
+                          EdgeInsets.symmetric(vertical: kbaseVerticalPadding),
+                      child: AppDropDown(
+                          disableHint: "",
+                          label: "",
                           itemList: [''],
                           onChange: null,
                           stream: null));
@@ -250,6 +280,9 @@ class _GeographicalInterestState extends State<GeographicalInterest> {
   @override
   Widget build(BuildContext context) {
     var countryBloc = Provider.of<LocationBloc>(context);
+    var authBloc = Provider.of<AuthBloc>(context);
+    var dashboardBloc = Provider.of<DashboardBloc>(context, listen: false);
+
     return Container(
       padding: EdgeInsets.symmetric(horizontal: kbaseHorizontalPadding),
       child: Column(
@@ -352,8 +385,12 @@ class _GeographicalInterestState extends State<GeographicalInterest> {
             height: 50,
             text: 'Apply Filter',
             onTap: () async {
+              authBloc.changeButton(true);
               var response = await countryBloc.updateProfile();
+              dashboardBloc.getMostWatchedTopic();
+              dashboardBloc.getInterestingToYou();
               MyAppDailog().responseDailog(response['message'], context);
+              authBloc.changeButton(false);
               Future.delayed(Duration(milliseconds: 600)).then((value) {
                 Navigator.pop(context);
                 Navigator.pop(context);

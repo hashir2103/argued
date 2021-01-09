@@ -74,15 +74,15 @@ class DashboardServices {
   }
 
   ratingOpinion(String opinionId, rating) async {
-    // print('opinionId : $opinionId');
+    print('opinionId : $opinionId');
     SharedPreferences prefs = await SharedPreferences.getInstance();
     Map<String, dynamic> header = {'Authorization': prefs.getString('Token')};
     try {
       Response response = await Dio().post(
-          '$kendpoint$kRateOpinion/5fda27b2ca2cc614f6caf879',
+          '$kendpoint$kRateOpinion$opinionId',
           data: rating,
           options: Options(headers: header));
-      // print(response.data);
+      print("Response ===> ${response.data}");
       return response.data;
     } on DioError catch (e) {
       if (e.response != null) {

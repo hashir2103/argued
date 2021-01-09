@@ -126,7 +126,22 @@ class LocationBloc {
   updateProfile() async {
     String countryId;
     String stateId;
-    if (_country.value.isNotEmpty && _listCitiesId.value.isNotEmpty) {
+    if (_country.value == 'Global') {
+      _listCountries.value.data.forEach((c) async {
+        if (c.name == _country.value) {
+          countryId = c.id;
+        }
+      });
+      Map<String, dynamic> data = {
+        "countriesFollowing": [countryId],
+        "statesFollowing": [],
+        "citiesFollowing": [],
+        "fromMobile": true
+      };
+      var response = await countryServices.updateProfile(data);
+      return response;
+    }
+    if (_country.value.isNotEmpty && _country.value != "Global") {
       _listCountries.value.data.forEach((c) async {
         if (c.name == _country.value) {
           countryId = c.id;

@@ -13,6 +13,7 @@ import 'package:argued/model/HotTopicModel.dart';
 import 'package:argued/model/opnionModel.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
@@ -26,12 +27,12 @@ class _ViewerDashBoardScreenState extends State<ViewerDashBoardScreen> {
 
   @override
   void initState() {
-    var dashboardBloc = Provider.of<DashboardBloc>(context, listen: false);
     // ignore: unused_local_variable
     var contactBloc = Provider.of<ContactBloc>(context, listen: false);
     // ignore: unused_local_variable
     var watchListBloc = Provider.of<WatchListBloc>(context, listen: false);
     var profileBloc = Provider.of<ProfileBloc>(context, listen: false);
+    var dashboardBloc = Provider.of<DashboardBloc>(context, listen: false);
     dashboardBloc.getHotTopicOfHour();
     dashboardBloc.getMostWatchedTopic();
     dashboardBloc.getInterestingToYou();
@@ -149,25 +150,65 @@ class _ViewerDashBoardScreenState extends State<ViewerDashBoardScreen> {
   bottomNavBar(DashboardBloc dashboardBloc) {
     return CurvedNavigationBar(
       height: 60,
+      // animationCurve: Curves.easeOutCubic,
       animationDuration: Duration(milliseconds: 200),
       index: 1,
-      backgroundColor: Colors.white,
-      buttonBackgroundColor: Colors.grey.withOpacity(0.2),
+      color: Colors.white,
+      backgroundColor: Colors.grey.withOpacity(0.1),
+      buttonBackgroundColor: Colors.white,
       items: [
-        Icon(
-          Icons.group,
-          size: 30,
-          color: primaryColor,
+        Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              FontAwesomeIcons.users,
+              // size: 25,
+              color: primaryColor,
+            ),
+            Text(
+              '  Groups',
+              style: listTileTrailingText.copyWith(
+                  color: Colors.black, fontSize: 10),
+            )
+          ],
         ),
-        Icon(
-          Icons.add,
-          size: 30,
-          color: primaryColor,
+        Container(
+          padding: EdgeInsets.symmetric(horizontal: 2),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                Icons.add,
+                // size: 25,
+                color: primaryColor,
+              ),
+              Text(
+                'Watchlist',
+                textWidthBasis: TextWidthBasis.parent,
+                style: listTileTrailingText.copyWith(
+                    color: Colors.black, fontSize: 10),
+              )
+            ],
+          ),
         ),
-        Icon(
-          Icons.contact_page,
-          size: 30,
-          color: primaryColor,
+        Container(
+          padding: EdgeInsets.symmetric(horizontal: 2),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                FontAwesomeIcons.solidAddressBook,
+                // size: 25,
+                color: primaryColor,
+              ),
+              Text(
+                'Contacts',
+                textWidthBasis: TextWidthBasis.parent,
+                style: listTileTrailingText.copyWith(
+                    color: Colors.black, fontSize: 10),
+              )
+            ],
+          ),
         ),
       ],
       onTap: (index) {
@@ -211,7 +252,10 @@ class InterestingToYou extends StatelessWidget {
                     userPostCover: s.createdBy.profilePic,
                     thumbnail: s.video.thumbnail,
                     stand: s.stand.toString().split(".")[1],
-                    userName: s.details.userName.toString().split(".")[1],
+                    userName: s.details.userName
+                        .toString()
+                        .split(".")[1]
+                        .toLowerCase(),
                     topicName: s.details.topicName,
                     categoryName: s.details.categoryName,
                     subCategoryName: s.details.subCategoryName,

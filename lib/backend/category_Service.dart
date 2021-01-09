@@ -10,6 +10,7 @@ class CatergoryService {
     try {
       Response response = await Dio()
           .get('$kendpoint$kCategory', options: Options(headers: header));
+      print("Categoriess ====> ${response.data}");
       return CategoryModel.fromJson(response.data);
     } on DioError catch (e) {
       if (e.response != null) {
@@ -22,12 +23,13 @@ class CatergoryService {
       }
     }
   }
-  updateProfile(Map<String,dynamic> data) async {
+
+  updateProfile(Map<String, dynamic> data) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     Map<String, dynamic> header = {'Authorization': prefs.getString('Token')};
     try {
-      Response response =
-          await Dio().put('$kendpoint$kProfile-mobile', data: data,options: Options(headers:header ));
+      Response response = await Dio().put('$kendpoint$kProfile-mobile',
+          data: data, options: Options(headers: header));
       // print(response.data);
       return response.data;
     } on DioError catch (e) {

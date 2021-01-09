@@ -6,6 +6,7 @@ import 'package:argued/ArguedConfigs/color.dart';
 import 'package:argued/ArguedConfigs/sizeConfig.dart';
 import 'package:argued/ArguedConfigs/textStyles.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_share/flutter_share.dart';
 import 'package:provider/provider.dart';
 import 'package:video_player/video_player.dart';
 
@@ -83,19 +84,13 @@ class _AppCardState extends State<AppCard> {
           DeviceOrientation.portraitUp
         ],
         videoPlayerController: VideoPlayerController.network(widget.videoURL),
-        aspectRatio: 5/2.3,
+        aspectRatio: 5 / 2.3,
         allowFullScreen: true,
         autoInitialize: true,
         autoPlay: false,
-        looping: true,
+        looping: false,
         errorBuilder: (context, errorMsg) {
-          return Center(
-              child: Padding(
-                  padding: EdgeInsets.all(8),
-                  child: Text(
-                    errorMsg,
-                    style: listTileSubTitleText,
-                  )));
+          return Center(child: Icon(Icons.error));
         });
     super.initState();
   }
@@ -148,11 +143,11 @@ class _AppCardState extends State<AppCard> {
             Container(
               height: SizeConfig.screenHeight * 0.2,
               decoration: BoxDecoration(
-                  color: Colors.white,
-                  // image: DecorationImage(
-                  //     image: NetworkImage(widget.thumbnail),
-                  //     fit: BoxFit.cover)
-                      ),
+                color: Colors.white,
+                image: DecorationImage(
+                    image: NetworkImage(widget.thumbnail),
+                    fit: BoxFit.cover)
+              ),
               child: Chewie(
                 controller: _chewieController,
               ),
@@ -193,7 +188,9 @@ class _AppCardState extends State<AppCard> {
                 Wrap(
                   spacing: 8,
                   children: [
-                    SizedBox(width: 8,),
+                    SizedBox(
+                      width: 8,
+                    ),
                     Chip(
                       label: Text(
                         widget.language,
@@ -222,11 +219,15 @@ class _AppCardState extends State<AppCard> {
                     padding: const EdgeInsets.all(12.0),
                     child: GestureDetector(
                       onTap: () {
-                        MyAppDailog().ratingDailog(widget.rating,dashboardBloc,
+                        MyAppDailog().ratingDailog(widget.rating, dashboardBloc,
                             widget.topicName, widget.userName, context, () {
                           dashboardBloc.postRating(
                               widget.opinionID, widget.stand);
-                          Navigator.pop(context);
+                          MyAppDailog().appResponseDailog(
+                            context,
+                            dashboardBloc.ratingResponse,
+                            2,
+                          );
                         });
                       },
                       child: Row(
@@ -254,52 +255,66 @@ class _AppCardState extends State<AppCard> {
                   ),
                 ),
                 Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.all(12.0),
-                    child: Row(
-                      children: [
-                        CircleAvatar(
-                          radius: 15,
-                          backgroundColor: Colors.grey.withOpacity(0.2),
-                          child: Center(
-                            child: Icon(
-                              Icons.reply,
-                              color: primaryTextColor,
+                  child: GestureDetector(
+                    onTap: () {
+                      MyAppDailog().responseDailog(
+                          'Upgrade to be a host and post \nUpgrade at argued.com',
+                          context,
+                          showClosebutton: true);
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.all(12.0),
+                      child: Row(
+                        children: [
+                          CircleAvatar(
+                            radius: 15,
+                            backgroundColor: Colors.grey.withOpacity(0.2),
+                            child: Center(
+                              child: Icon(
+                                Icons.reply,
+                                color: primaryTextColor,
+                              ),
                             ),
                           ),
-                        ),
-                        SizedBox(
-                          width: 6,
-                        ),
-                        Text(
-                          'Reply',
-                          style: listTileSubTitleText,
-                        )
-                      ],
+                          SizedBox(
+                            width: 6,
+                          ),
+                          Text(
+                            'Reply',
+                            style: listTileSubTitleText,
+                          )
+                        ],
+                      ),
                     ),
                   ),
                 ),
                 Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.all(12.0),
-                    child: Row(
-                      children: [
-                        CircleAvatar(
-                          radius: 15,
-                          backgroundColor: Colors.grey.withOpacity(0.2),
-                          child: Center(
-                            child:
-                                Icon(Icons.ios_share, color: primaryTextColor),
+                  child: GestureDetector(
+                    onTap: () async {
+                      await FlutterShare.share(
+                          title: widget.topicName, linkUrl: widget.videoURL);
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.all(12.0),
+                      child: Row(
+                        children: [
+                          CircleAvatar(
+                            radius: 15,
+                            backgroundColor: Colors.grey.withOpacity(0.2),
+                            child: Center(
+                              child: Icon(Icons.ios_share,
+                                  color: primaryTextColor),
+                            ),
                           ),
-                        ),
-                        SizedBox(
-                          width: 6,
-                        ),
-                        Text(
-                          'Share',
-                          style: listTileSubTitleText,
-                        )
-                      ],
+                          SizedBox(
+                            width: 6,
+                          ),
+                          Text(
+                            'Share',
+                            style: listTileSubTitleText,
+                          )
+                        ],
+                      ),
                     ),
                   ),
                 ),
@@ -365,13 +380,7 @@ class _AppCard2State extends State<AppCard2> {
         autoPlay: false,
         looping: true,
         errorBuilder: (context, errorMsg) {
-          return Center(
-              child: Padding(
-                  padding: EdgeInsets.all(8),
-                  child: Text(
-                    errorMsg,
-                    style: listTileSubTitleText,
-                  )));
+          return Center(child: Icon(Icons.error));
         });
     super.initState();
   }
@@ -394,11 +403,11 @@ class _AppCard2State extends State<AppCard2> {
             Container(
               height: 180,
               decoration: BoxDecoration(
-                  color: Colors.white,
-                  // image: DecorationImage(
-                  //     image: NetworkImage(widget.thumbnail),
-                  //     fit: BoxFit.cover)
-                      ),
+                color: Colors.white,
+                image: DecorationImage(
+                    image: NetworkImage(widget.thumbnail),
+                    fit: BoxFit.cover)
+              ),
               child: Chewie(
                 controller: _chewieController,
               ),
@@ -452,11 +461,12 @@ class _AppCard2State extends State<AppCard2> {
                   padding: const EdgeInsets.all(12.0),
                   child: GestureDetector(
                     onTap: () {
-                      MyAppDailog().ratingDailog(widget.rating,dashboardBloc,
+                      MyAppDailog().ratingDailog(widget.rating, dashboardBloc,
                           widget.topicName, widget.userName, context, () {
                         dashboardBloc.postRating(
                             widget.opinionID, widget.stand);
-                        Navigator.pop(context);
+                        MyAppDailog().appResponseDailog(
+                            context, dashboardBloc.ratingResponse, 2);
                       });
                     },
                     child: CircleAvatar(
@@ -471,28 +481,42 @@ class _AppCard2State extends State<AppCard2> {
                     ),
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.all(12.0),
-                  child: CircleAvatar(
-                    radius: 15,
-                    backgroundColor: Colors.grey.withOpacity(0.2),
-                    child: Center(
-                      child: Icon(
-                        Icons.reply,
-                        color: primaryTextColor,
+                GestureDetector(
+                  onTap: () {
+                    MyAppDailog().responseDailog(
+                        'Upgrade to be a host and post \nUpgrade at argued.com',
+                        context,
+                        showClosebutton: true);
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.all(12.0),
+                    child: CircleAvatar(
+                      radius: 15,
+                      backgroundColor: Colors.grey.withOpacity(0.2),
+                      child: Center(
+                        child: Icon(
+                          Icons.reply,
+                          color: primaryTextColor,
+                        ),
                       ),
                     ),
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.all(12.0),
-                  child: CircleAvatar(
-                    radius: 15,
-                    backgroundColor: Colors.grey.withOpacity(0.2),
-                    child: Center(
-                      child: Icon(
-                        Icons.ios_share,
-                        color: primaryTextColor,
+                GestureDetector(
+                  onTap: () async {
+                    await FlutterShare.share(
+                        title: widget.topicName, linkUrl: widget.videoURL);
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.all(12.0),
+                    child: CircleAvatar(
+                      radius: 15,
+                      backgroundColor: Colors.grey.withOpacity(0.2),
+                      child: Center(
+                        child: Icon(
+                          Icons.ios_share,
+                          color: primaryTextColor,
+                        ),
                       ),
                     ),
                   ),

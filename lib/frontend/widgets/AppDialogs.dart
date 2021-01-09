@@ -5,6 +5,14 @@ import 'package:argued/controller/DashboadBloc.dart';
 import 'package:flutter/material.dart';
 
 class MyAppDailog {
+  loading(context) {
+    showDialog(
+        context: context,
+        builder: (context) => Center(
+              child: CircularProgressIndicator(),
+            ));
+  }
+
   loginDailog(msg, context) {
     var dailog = Dialog(
       elevation: 0,
@@ -36,7 +44,7 @@ class MyAppDailog {
     return dailog;
   }
 
-  responseDailog(msg, context) {
+  responseDailog(msg, context, {bool showClosebutton = false}) {
     var dailog = Dialog(
       elevation: 0,
       backgroundColor: Colors.transparent,
@@ -47,27 +55,50 @@ class MyAppDailog {
             color: primaryColor,
             borderRadius: BorderRadius.circular(15),
           ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
+          child: Stack(
+            alignment: Alignment.center,
             children: [
-              Text(
-                "Argued.com",
-                style: TextStyle(color: Colors.white, fontSize: 30),
+              Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    "Argued.com",
+                    style: TextStyle(color: Colors.white, fontSize: 30),
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Text(
+                    msg,
+                    style: normalText(),
+                    textAlign: TextAlign.center,
+                  ),
+                ],
               ),
-              SizedBox(
-                height: 10,
-              ),
-              Text(
-                msg,
-                style: normalText(),
-              ),
+              (showClosebutton)
+                  ? Positioned(
+                      top: -10,
+                      right: -10,
+                      child: IconButton(
+                        icon: Icon(
+                          Icons.clear,
+                          color: Colors.black,
+                          size: 20,
+                        ),
+                        onPressed: () => Navigator.pop(context),
+                      ))
+                  : SizedBox(
+                      height: 0,
+                      width: 0,
+                    ),
             ],
           )),
     );
     showDialog(context: context, builder: (context) => dailog);
   }
 
-  appResponseDailog(context, Stream<Map<dynamic,dynamic>> stream,int popPageCount) {
+  appResponseDailog(
+      context, Stream<Map<dynamic, dynamic>> stream, int popPageCount) {
     showDialog(
         context: context,
         builder: (context) => StreamBuilder<Map<dynamic, dynamic>>(
@@ -79,7 +110,7 @@ class MyAppDailog {
                 );
               }
               Future.delayed(Duration(milliseconds: 3000)).then((value) {
-                for(int i =0; i< popPageCount; i++){
+                for (int i = 0; i < popPageCount; i++) {
                   Navigator.pop(context);
                 }
               });
@@ -150,20 +181,7 @@ class MyAppDailog {
               SizedBox(
                 height: 12,
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  emojiContainer('sad'),
-                  SizedBox(
-                    width: 8,
-                  ),
-                  emojiContainer('ok'),
-                  SizedBox(
-                    width: 8,
-                  ),
-                  emojiContainer('happy'),
-                ],
-              ),
+              emojiContainer(dashboardBloc),
               SizedBox(
                 height: 16,
               ),
@@ -304,14 +322,68 @@ class MyAppDailog {
   }
 }
 
-emojiContainer(String name) {
-  return Container(
-    padding: EdgeInsets.symmetric(horizontal: 20),
-    height: 40,
-    width: 40,
-    decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        image: DecorationImage(
-            image: AssetImage('assets/$name.png'), fit: BoxFit.contain)),
-  );
+emojiContainer(DashboardBloc dashboardBloc) {
+  return StreamBuilder<List<bool>>(
+      stream: dashboardBloc.emojiList,
+      builder: (context, snapshot) {
+        return Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            GestureDetector(
+              onTap: () {
+                dashboardBloc.changeEmojiList([true, false, false]);
+              },
+              child: AnimatedContainer(
+                duration: Duration(milliseconds: 100),
+                padding: EdgeInsets.symmetric(horizontal: 20),
+                height: snapshot.data[0] == true ? 80 : 40,
+                width: snapshot.data[0] == true ? 80 : 40,
+                decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    image: DecorationImage(
+                        image: AssetImage('assets/sad.png'),
+                        fit: BoxFit.contain)),
+              ),
+            ),
+            SizedBox(
+              width: 8,
+            ),
+            GestureDetector(
+              onTap: () {
+                dashboardBloc.changeEmojiList([false, true, false]);
+              },
+              child: AnimatedContainer(
+                duration: Duration(milliseconds: 100),
+                padding: EdgeInsets.symmetric(horizontal: 20),
+                height: snapshot.data[1] == true ? 80 : 40,
+                width: snapshot.data[1] == true ? 80 : 40,
+                decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    image: DecorationImage(
+                        image: AssetImage('assets/ok.png'),
+                        fit: BoxFit.contain)),
+              ),
+            ),
+            SizedBox(
+              width: 8,
+            ),
+            GestureDetector(
+              onTap: () {
+                dashboardBloc.changeEmojiList([false, false, true]);
+              },
+              child: AnimatedContainer(
+                duration: Duration(milliseconds: 100),
+                padding: EdgeInsets.symmetric(horizontal: 20),
+                height: snapshot.data[2] == true ? 80 : 40,
+                width: snapshot.data[2] == true ? 80 : 40,
+                decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    image: DecorationImage(
+                        image: AssetImage('assets/happy.png'),
+                        fit: BoxFit.contain)),
+              ),
+            ),
+          ],
+        );
+      });
 }

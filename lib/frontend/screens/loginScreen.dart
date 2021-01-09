@@ -7,6 +7,7 @@ import 'package:argued/ArguedConfigs/textStyles.dart';
 import 'package:argued/controller/AuthBloc.dart';
 import 'package:argued/frontend/widgets/AppBottomSheet.dart';
 import 'package:argued/frontend/widgets/AppButton.dart';
+import 'package:argued/frontend/widgets/AppDialogs.dart';
 import 'package:argued/frontend/widgets/AppIcon.dart';
 import 'package:argued/frontend/widgets/AppTextField.dart';
 import 'package:argued/frontend/widgets/PopUpMessage.dart';
@@ -133,25 +134,34 @@ class _LoginScreenState extends State<LoginScreen> {
                         initialData: false,
                         stream: authBloc.isValidLogin,
                         builder: (context, snapshot) {
-                          return AppButton(
-                            text: 'Login',
-                            onTap: snapshot.data == true
-                                ? () async {
-                                    await authBloc.login();
-                                    authBloc.changeLoginPress(true);
-                                    var response = authBloc.responseValue;
-                                    if (response['key'] ==
-                                        "user.account_inactive") {
-                                      AppBottomSheet().verifyCode(context,
-                                          () async {
-                                        await authBloc.verifyCode();
-                                        Navigator.pop(context);
-                                        authBloc.changeLoginPress(true);
-                                      });
-                                    }
-                                  }
-                                : () {},
-                          );
+                          return StreamBuilder<bool>(
+                              stream: authBloc.button,
+                              builder: (context, loginpress) {
+                                return AppButton(
+                                  text: 'Login',
+                                  onTap: snapshot.data == true
+                                      ? () async {
+                                          authBloc.changeButton(true);
+                                          MyAppDailog().loading(context);
+                                          await authBloc.login();
+                                          Navigator.pop(context);
+                                          authBloc.changeLoginPress(true);
+                                          authBloc.changeButton(false);
+                                          var response = authBloc.responseValue;
+
+                                          if (response['key'] ==
+                                              "user.account_inactive") {
+                                            AppBottomSheet().verifyCode(context,
+                                                () async {
+                                              await authBloc.verifyCode();
+                                              Navigator.pop(context);
+                                              authBloc.changeLoginPress(true);
+                                            });
+                                          }
+                                        }
+                                      : () {},
+                                );
+                              });
                         }),
                     SizedBox(
                       height: 35,

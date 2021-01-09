@@ -11,6 +11,8 @@ class DashboardBloc {
   final _mostWatched = BehaviorSubject<OpinionModel>();
   final _interestingToYou = BehaviorSubject<List<OpinionData>>();
   final _rating = BehaviorSubject<double>.seeded(55.0);
+  final _ratingResponse = PublishSubject<Map<dynamic, dynamic>>();
+  final _emojiList = BehaviorSubject<List<bool>>.seeded([false, true, false]);
 
   final _isLoading = BehaviorSubject<bool>.seeded(false);
   final _stopSearching = BehaviorSubject<bool>.seeded(false);
@@ -21,6 +23,8 @@ class DashboardBloc {
   Stream<HotTopicModel> get hotTopicOfHour => _hotTopicOfHour.stream;
   Stream<OpinionModel> get mostWatched => _mostWatched.stream;
   Stream<List<OpinionData>> get interestingToYou => _interestingToYou.stream;
+  Stream<List<bool>> get emojiList => _emojiList.stream;
+  Stream<Map<dynamic, dynamic>> get ratingResponse => _ratingResponse.stream;
   Stream<double> get rating => _rating.stream;
   Stream<bool> get isLoading => _isLoading.stream;
   Stream<int> get pageNumber => pageNo.stream;
@@ -31,6 +35,9 @@ class DashboardBloc {
   Function(OpinionModel) get changeHotMostWatched => _mostWatched.sink.add;
   Function(List<OpinionData>) get changeInterestingToYou =>
       _interestingToYou.sink.add;
+  Function(List<bool>) get changeEmojiList => _emojiList.sink.add;
+  Function(Map<dynamic, dynamic>) get changeRatingResponse =>
+      _ratingResponse.sink.add;
   Function(double) get changeRating => _rating.sink.add;
   Function(bool) get changeIsLoading => _isLoading.sink.add;
   Function(bool) get changeStopSearching => _stopSearching.sink.add;
@@ -38,6 +45,8 @@ class DashboardBloc {
 
   //dispose
   dispose() {
+    _emojiList.close();
+    _ratingResponse.close();
     _stopSearching.close();
     pageNo.close();
     _isLoading.close();
@@ -56,6 +65,7 @@ class DashboardBloc {
 
   getMostWatchedTopic() async {
     var data = await dashboardServices.mostWatchedTopic();
+    print('getting most watch : ${data.data.length}');
     changeHotMostWatched(data);
   }
 
@@ -74,12 +84,13 @@ class DashboardBloc {
     }
   }
 
-  postRating(opinionId, stand) {
+  postRating(opinionId, stand) async {
     var rating = {
       "rating": _rating.value.toString().split('.')[0],
       "stand": stand
     };
-    dashboardServices.ratingOpinion(opinionId, rating);
+    var data = await dashboardServices.ratingOpinion(opinionId, rating);
+    _ratingResponse.add(data);
   }
 
   int get getPageNo => pageNo.value;

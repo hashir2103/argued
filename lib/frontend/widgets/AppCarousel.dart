@@ -44,7 +44,7 @@ class AppCarousel extends StatelessWidget {
                         videoURL: i.video.file,
                         thumbnail: i.video.thumbnail,
                           stand: i.stand.toString().split(".")[1]??"",
-                          userName: i.details.userName.toString().split(".")[1]??"",
+                          userName: i.details.userName.toString().split(".")[1].toLowerCase()??"",
                           topicName: i.details.topicName??"",
                           categoryName: i.details.categoryName??'',
                           subCategoryName: i.details.subCategoryName??'',

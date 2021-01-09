@@ -37,7 +37,7 @@ const String kforgotPassword = '/api/user/forgotPassword';
 const String kHotTopicHour = '/api/opinion/hotest';
 const String kMostWatched = '/api/opinion/most-watched';
 const String kInterestingToYou = '/api/opinion/lates?page=';
-const String kRateOpinion = '/api/opinion/rating';
+const String kRateOpinion = '/api/opinion/rating/';
 const String kProfile = '/api/user/profile';
 const String kCountry = '/api/country';
 const String kStates = '/api/country/statesWithCities/';
