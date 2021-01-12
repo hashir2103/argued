@@ -51,10 +51,13 @@ class AppCard extends StatefulWidget {
   final String thumbnail;
   final String videoURL;
   final String rating;
+  final String hostId;
+  final bool alreadyRated;
 
   const AppCard({
     Key key,
     @required this.rating,
+    @required this.alreadyRated,
     @required this.thumbnail,
     @required this.videoURL,
     @required this.stand,
@@ -66,6 +69,7 @@ class AppCard extends StatefulWidget {
     @required this.createdAt,
     @required this.opinionID,
     @required this.userPostCover,
+    @required this.hostId,
   }) : super(key: key);
 
   @override
@@ -90,7 +94,12 @@ class _AppCardState extends State<AppCard> {
         autoPlay: false,
         looping: false,
         errorBuilder: (context, errorMsg) {
-          return Center(child: Icon(Icons.error));
+          return Center(
+              child: Icon(
+            Icons.error,
+            color: primaryTextColor,
+            size: 30,
+          ));
         });
     super.initState();
   }
@@ -123,9 +132,16 @@ class _AppCardState extends State<AppCard> {
                 widget.userName,
                 style: listTileTitleText,
               ),
-              subtitle: Text(
-                '+ Add ${widget.userName} to watch list',
-                style: listTileSubTitleText,
+              subtitle: GestureDetector(
+                onTap: () {
+                  dashboardBloc.addhost(widget.hostId);
+                  MyAppDailog().appResponseDailog(
+                      context, dashboardBloc.ratingResponse, 1);
+                },
+                child: Text(
+                  '+ Add host to watch list',
+                  style: listTileSubTitleText,
+                ),
               ),
               trailing: Column(
                 mainAxisAlignment: MainAxisAlignment.end,
@@ -144,9 +160,7 @@ class _AppCardState extends State<AppCard> {
               height: SizeConfig.screenHeight * 0.2,
               decoration: BoxDecoration(
                 color: Colors.white,
-                image: DecorationImage(
-                    image: NetworkImage(widget.thumbnail),
-                    fit: BoxFit.cover)
+                // imagpfit: BoxFit.cover)
               ),
               child: Chewie(
                 controller: _chewieController,
@@ -219,16 +233,23 @@ class _AppCardState extends State<AppCard> {
                     padding: const EdgeInsets.all(12.0),
                     child: GestureDetector(
                       onTap: () {
-                        MyAppDailog().ratingDailog(widget.rating, dashboardBloc,
-                            widget.topicName, widget.userName, context, () {
-                          dashboardBloc.postRating(
-                              widget.opinionID, widget.stand);
-                          MyAppDailog().appResponseDailog(
-                            context,
-                            dashboardBloc.ratingResponse,
-                            2,
-                          );
-                        });
+                        if (widget.alreadyRated) {
+                          MyAppDailog().responseDailog(
+                              'You Have already Rate it this Video', context,
+                              showClosebutton: true);
+                        } else {
+                          MyAppDailog().ratingDailog(
+                              widget.rating,
+                              dashboardBloc,
+                              widget.topicName,
+                              widget.userName,
+                              context, () {
+                            dashboardBloc.postRating(
+                                widget.opinionID, widget.stand);
+                            MyAppDailog().appResponseDailog(
+                                context, dashboardBloc.ratingResponse, 2);
+                          });
+                        }
                       },
                       child: Row(
                         children: [
@@ -340,8 +361,11 @@ class AppCard2 extends StatefulWidget {
   final String thumbnail;
   final String videoURL;
   final String rating;
+  final String hostId;
+  final bool alreadyRated;
   const AppCard2({
     Key key,
+    @required this.alreadyRated,
     @required this.stand,
     @required this.rating,
     @required this.videoURL,
@@ -354,6 +378,7 @@ class AppCard2 extends StatefulWidget {
     @required this.opinionID,
     @required this.userPostCover,
     @required this.thumbnail,
+    @required this.hostId,
   }) : super(key: key);
 
   @override
@@ -380,7 +405,12 @@ class _AppCard2State extends State<AppCard2> {
         autoPlay: false,
         looping: true,
         errorBuilder: (context, errorMsg) {
-          return Center(child: Icon(Icons.error));
+          return Center(
+              child: Icon(
+            Icons.error,
+            color: primaryTextColor,
+            size: 30,
+          ));
         });
     super.initState();
   }
@@ -404,9 +434,9 @@ class _AppCard2State extends State<AppCard2> {
               height: 180,
               decoration: BoxDecoration(
                 color: Colors.white,
-                image: DecorationImage(
-                    image: NetworkImage(widget.thumbnail),
-                    fit: BoxFit.cover)
+                // image: DecorationImage(
+                //     image: NetworkImage(widget.thumbnail),
+                //     fit: BoxFit.cover)
               ),
               child: Chewie(
                 controller: _chewieController,
@@ -461,13 +491,19 @@ class _AppCard2State extends State<AppCard2> {
                   padding: const EdgeInsets.all(12.0),
                   child: GestureDetector(
                     onTap: () {
-                      MyAppDailog().ratingDailog(widget.rating, dashboardBloc,
-                          widget.topicName, widget.userName, context, () {
-                        dashboardBloc.postRating(
-                            widget.opinionID, widget.stand);
-                        MyAppDailog().appResponseDailog(
-                            context, dashboardBloc.ratingResponse, 2);
-                      });
+                      if (widget.alreadyRated) {
+                        MyAppDailog().responseDailog(
+                            'You Have already Rate it this Video', context,
+                            showClosebutton: true);
+                      } else {
+                        MyAppDailog().ratingDailog(widget.rating, dashboardBloc,
+                            widget.topicName, widget.userName, context, () {
+                          dashboardBloc.postRating(
+                              widget.opinionID, widget.stand);
+                          MyAppDailog().appResponseDailog(
+                              context, dashboardBloc.ratingResponse, 2);
+                        });
+                      }
                     },
                     child: CircleAvatar(
                       radius: 15,
@@ -547,9 +583,16 @@ class _AppCard2State extends State<AppCard2> {
                 widget.userName,
                 style: listTileTitleText2,
               ),
-              subtitle: Text(
-                '+ Add host to watch list',
-                style: listTileTrailingText,
+              subtitle: GestureDetector(
+                onTap: () {
+                  dashboardBloc.addhost(widget.hostId);
+                  MyAppDailog().appResponseDailog(
+                      context, dashboardBloc.ratingResponse, 1);
+                },
+                child: Text(
+                  '+ Add host to watch list',
+                  style: listTileTrailingText,
+                ),
               ),
             ),
           ],

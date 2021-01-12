@@ -19,6 +19,9 @@ class LocationBloc {
   final _defaultcountry = BehaviorSubject<String>();
   final _defaultstate = BehaviorSubject<String>();
   final _defaultcities = BehaviorSubject<String>();
+  final _defaultcountryId = BehaviorSubject<String>();
+  final _defaultstateId = BehaviorSubject<String>();
+  final _defaultcitiesId = BehaviorSubject<String>();
 
   //streams
   Stream<CountryModel> get listOfcountries => _listCountries.stream;
@@ -53,6 +56,9 @@ class LocationBloc {
   Function(String) get changedefaultCountry => _defaultcountry.sink.add;
   Function(String) get changedefaultStates => _defaultstate.sink.add;
   Function(String) get changedefaultCities => _defaultcities.sink.add;
+  Function(String) get changedefaultCountryId => _defaultcountryId.sink.add;
+  Function(String) get changedefaultStatesId => _defaultstateId.sink.add;
+  Function(String) get changedefaultCitiesId => _defaultcitiesId.sink.add;
 
   //dispose
   dispose() {
@@ -68,6 +74,9 @@ class LocationBloc {
     _defaultcities.close();
     _defaultcountry.close();
     _defaultstate.close();
+    _defaultcitiesId.close();
+    _defaultcountryId.close();
+    _defaultstateId.close();
     _listCountries.close();
   }
 
@@ -95,6 +104,7 @@ class LocationBloc {
     _listCountries.value.data.forEach((c) async {
       if (c.name == _defaultcountry.value) {
         var statesWithCities = await countryServices.getStatesWithCities(c.id);
+        _defaultcountryId.add(c.id);
         // print(c.id);
         changeDefaultListOfStates(statesWithCities);
         changedefaultStates(_defaultlistStates.value.data.first.name);
@@ -107,6 +117,7 @@ class LocationBloc {
     changedefaultCities('Disable');
     _defaultlistStates.value.data.forEach((c) async {
       if (c.name == _defaultstate.value) {
+        _defaultstateId.add(c.id);
         changedefaultListOfCities(c.cities);
         changedefaultCities(c.cities.first.name);
       }
@@ -167,5 +178,7 @@ class LocationBloc {
   //   await countryServices.getConstant();
   // }
 
-  get getCountryName => _country.value;
+  get getCountryId => _defaultcountryId.value;
+  get getCityId => _defaultcitiesId.value;
+  get getStateId => _defaultstateId.value;
 }

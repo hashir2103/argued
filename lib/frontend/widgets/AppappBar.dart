@@ -7,8 +7,9 @@ import 'package:provider/provider.dart';
 
 class AppAppBar extends StatelessWidget with PreferredSizeWidget {
   final String title;
+  final Function onTap;
 
-  const AppAppBar({Key key, @required this.title}) : super(key: key);
+  const AppAppBar({Key key, @required this.title,@required this.onTap}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     var authBloc = Provider.of<AuthBloc>(context);
@@ -21,9 +22,7 @@ class AppAppBar extends StatelessWidget with PreferredSizeWidget {
       ),
       leading: IconButton(
         icon: Icon(Icons.arrow_back),
-        onPressed: () {
-          Navigator.pop(context);
-        },
+        onPressed: onTap,
       ),
       actions: [
         GestureDetector(

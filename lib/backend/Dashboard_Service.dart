@@ -78,11 +78,29 @@ class DashboardServices {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     Map<String, dynamic> header = {'Authorization': prefs.getString('Token')};
     try {
-      Response response = await Dio().post(
-          '$kendpoint$kRateOpinion$opinionId',
-          data: rating,
-          options: Options(headers: header));
+      Response response = await Dio().post('$kendpoint$kRateOpinion$opinionId',
+          data: rating, options: Options(headers: header));
       print("Response ===> ${response.data}");
+      return response.data;
+    } on DioError catch (e) {
+      if (e.response != null) {
+        print(e.response.data);
+        print(e.response.headers);
+        print(e.response.request);
+      } else {
+        print(e.request);
+        print(e.message);
+      }
+    }
+  }
+
+  addHost(String hostId) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    Map<String, dynamic> header = {'Authorization': prefs.getString('Token')};
+    try {
+      Response response = await Dio().post('$kendpoint$kAddHost$hostId',
+          data: {"source": "Video"}, options: Options(headers: header));
+      print("Add host Response ===> ${response.data}");
       return response.data;
     } on DioError catch (e) {
       if (e.response != null) {

@@ -23,6 +23,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  adhara_socket_io: ^0.4.1
   animated_splash_screen: ^1.0.1+2
   cached_network_image: ^2.5.0
   carousel_slider: ^2.3.1
@@ -35,6 +36,7 @@ dependencies:
   dio: ^3.0.10
   emoji_feedback: ^0.1.0
   flutter_share: ^1.0.5
+  flutter_svg: ^0.19.0
   font_awesome_flutter: ^8.11.0
   google_fonts: ^1.1.1
   hive: ^1.4.4+1
@@ -51,8 +53,11 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   build_runner: null
-  hive_generator: null
-
+  flutter_launcher_icons: "^0.8.0"
+flutter_icons:
+  android: true
+  ios: true
+  image_path: "assets/appIcon.jpeg"
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 # The following section is specific to Flutter.

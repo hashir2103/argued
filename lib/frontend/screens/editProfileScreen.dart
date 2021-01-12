@@ -6,6 +6,7 @@ import 'package:argued/frontend/widgets/AppButton.dart';
 import 'package:argued/frontend/widgets/AppDialogs.dart';
 import 'package:argued/frontend/widgets/AppDropDown.dart';
 import 'package:argued/frontend/widgets/AppPhoneNumberField.dart';
+import 'package:argued/main.dart';
 import 'package:flutter/material.dart';
 import 'package:argued/ArguedConfigs/constant.dart';
 import 'package:argued/ArguedConfigs/textStyles.dart';
@@ -329,9 +330,11 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 AppSmallButton(
                     onTap: (true)
                         ? () {
+                            authBloc.changeButton(true);
                             profileBloc.editProfile();
-                            MyAppDailog()
-                                        .appResponseDailog(context, profileBloc.profileResponse,2);
+                            MyAppDailog().appResponseDailog(
+                                context, profileBloc.profileResponse, 2);
+                            authBloc.changeButton(false);
                             print('available');
                           }
                         : () {

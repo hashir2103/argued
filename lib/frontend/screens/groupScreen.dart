@@ -3,10 +3,10 @@ import 'package:argued/ArguedConfigs/constant.dart';
 import 'package:argued/ArguedConfigs/textStyles.dart';
 import 'package:argued/controller/groupBloc.dart';
 import 'package:argued/frontend/screens/contactScreen.dart';
+import 'package:argued/frontend/widgets/AppDialogs.dart';
 import 'package:argued/frontend/widgets/AppTextField.dart';
 import 'package:argued/frontend/widgets/AppUserProfileCircle.dart';
 import 'package:argued/frontend/widgets/AppappBar.dart';
-import 'package:argued/model/groupModel.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -26,9 +26,14 @@ class _GroupScreenState extends State<GroupScreen> {
   @override
   Widget build(BuildContext context) {
     var groupBloc = Provider.of<GroupBloc>(context);
-    groupBloc.getGroups();
+    // groupBloc.getGroups();
     return Scaffold(
-        appBar: AppAppBar(title: 'My Groups'),
+        appBar: AppAppBar(
+          title: 'My Groups',
+          onTap: () {
+            Navigator.pop(context);
+          },
+        ),
         floatingActionButton: FloatingActionButton(
             backgroundColor: primaryColor,
             child: Center(
@@ -38,7 +43,7 @@ class _GroupScreenState extends State<GroupScreen> {
                 size: 40,
               ),
             ),
-            onPressed: () => null),
+            onPressed: () => Navigator.pushNamed(context, kCreateGroupScreen)),
         body: Padding(
           padding:
               const EdgeInsets.symmetric(horizontal: kbaseHorizontalPadding),
@@ -59,15 +64,15 @@ class _GroupScreenState extends State<GroupScreen> {
                 child: Padding(
                     padding:
                         EdgeInsets.symmetric(vertical: kbaseVerticalPadding),
-                    child: StreamBuilder<GroupModel>(
+                    child: StreamBuilder<Map<dynamic, dynamic>>(
                         stream: groupBloc.groups,
                         builder: (context, snapshot) {
-                          if (!snapshot.hasError) {
+                          if (!snapshot.hasData) {
                             return Center(
                               child: CircularProgressIndicator(),
                             );
                           }
-                          if (!snapshot.hasData) {
+                          if (snapshot.hasError) {
                             return Center(
                               child: Text(
                                 "No Group to show.",
@@ -75,60 +80,89 @@ class _GroupScreenState extends State<GroupScreen> {
                               ),
                             );
                           }
-                          var data = snapshot.data.data;
+                          var data = snapshot.data['data'];
                           return StreamBuilder<String>(
                               stream: groupBloc.searchQuery,
                               builder: (context, snapshot) {
                                 if (snapshot.hasData && snapshot.data != "") {
                                   return ListView.builder(
-                                    itemCount: 1,
+                                    itemCount: data != null ? data.length : 0,
                                     itemBuilder: (context, index) {
                                       var c = data[index];
-                                      if (c.name.contains(snapshot.data)) {
+                                      if (c['name'].toLowerCase().contains(
+                                          snapshot.data.toLowerCase())) {
                                         return GestureDetector(
-                                            onTap: () {},
+                                            onTap: () {
+                                              groupBloc
+                                                  .getGroupMessage(c['_id']);
+                                              Navigator.pushNamed(
+                                                  context, kGroupChatScreen,
+                                                  arguments:
+                                                      "${c['name']},${c['_id']}" ??
+                                                          "");
+                                            },
                                             child: groupTile(
                                                 unreadCount:
-                                                    c.unreadCount ?? "",
-                                                groupPic: kTempImage,
-                                                name: c.name ?? "",
+                                                    c['unreadCount'] ?? "",
+                                                groupPic: c['profilePic'] ??
+                                                    kTempImage,
+                                                name: c['name'] ?? "",
                                                 description:
-                                                    c.description ?? "",
-                                                membersCount: c.members.length
+                                                    c['description'] ?? "",
+                                                membersCount: c['members']
+                                                        .length
                                                         .toString() ??
                                                     "",
                                                 countryName:
-                                                    c.countryName ?? "",
+                                                    c['countryName'] ?? "",
                                                 lastMessageTime:
-                                                    c.lastMessageMobile ??
-                                                        DateTime.now(),
-                                                createdAt: c.createdAt ??
-                                                    DateTime.now()));
+                                                    c['lastMessageMobile'] !=
+                                                            null
+                                                        ? DateTime.parse(c[
+                                                            'lastMessageMobile'])
+                                                        : DateTime.now(),
+                                                createdAt:
+                                                    c['createdAt'] != null
+                                                        ? DateTime.parse(
+                                                            c['createdAt'])
+                                                        : DateTime.now()));
                                       }
                                       return Container();
                                     },
                                   );
                                 }
                                 return ListView.builder(
-                                  itemCount: data.length,
+                                  itemCount: data != null ? data.length : 0,
                                   itemBuilder: (context, index) {
                                     var c = data[index];
                                     return GestureDetector(
-                                        onTap: () {},
+                                        onTap: () {
+                                          groupBloc.getGroupMessage(c['_id']);
+                                          Navigator.pushNamed(
+                                              context, kGroupChatScreen,
+                                              arguments:
+                                                  "${c['name']},${c['_id']}" ??
+                                                      "");
+                                        },
                                         child: groupTile(
-                                            unreadCount: c.unreadCount ?? "",
-                                            groupPic: kTempImage,
-                                            name: c.name ?? "",
-                                            description: c.description ?? "",
-                                            membersCount:
-                                                c.members.length.toString() ??
-                                                    "",
-                                            countryName: c.countryName ?? "",
+                                            unreadCount: c['unreadCount'] ?? "",
+                                            groupPic:
+                                                c['profilePic'] ?? kTempImage,
+                                            name: c['name'] ?? "",
+                                            description: c['description'] ?? "",
+                                            membersCount: c['members']
+                                                    .length
+                                                    .toString() ??
+                                                "",
+                                            countryName: c['countryName'] ?? "",
                                             lastMessageTime:
-                                                c.lastMessageMobile ??
-                                                    DateTime.now(),
-                                            createdAt:
-                                                c.createdAt ?? DateTime.now()));
+                                                c['lastMessageMobile'] != null
+                                                    ? DateTime.parse(
+                                                        c['lastMessageMobile'])
+                                                    : DateTime.now(),
+                                            createdAt: c['createdAt'] != null
+                                                ? DateTime.parse(c['createdAt'])
+                                                : DateTime.now()));
                                   },
                                 );
                               });
@@ -157,23 +191,25 @@ class _GroupScreenState extends State<GroupScreen> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            Expanded(
-              flex: 1,
-              child: Container(
-                margin: EdgeInsets.all(8),
-                child: Column(
-                  children: [
-                    UserCirle(
+            Container(
+              margin: EdgeInsets.all(8),
+              child: Column(
+                children: [
+                  GestureDetector(
+                    onTap: () {
+                      MyAppDailog().groupDetailsDailog(context);
+                    },
+                    child: UserCirle(
                       profilePic: groupPic,
-                      height: 60,
-                      width: 60,
-                    )
-                  ],
-                ),
+                      height: 70,
+                      width: 70,
+                    ),
+                  )
+                ],
               ),
             ),
             Expanded(
-              flex: 4,
+              // flex: 6,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -255,7 +291,7 @@ class _GroupScreenState extends State<GroupScreen> {
                       RichText(
                           text: TextSpan(children: [
                         TextSpan(
-                            text: 'Members:',
+                            text: 'Members : ',
                             style: listTileTitleText.copyWith(fontSize: 14)),
                         TextSpan(
                             text: membersCount,
@@ -265,7 +301,7 @@ class _GroupScreenState extends State<GroupScreen> {
                       RichText(
                           text: TextSpan(children: [
                         TextSpan(
-                            text: 'Country:',
+                            text: 'Country : ',
                             style: listTileTitleText.copyWith(fontSize: 14)),
                         TextSpan(
                             text: countryName,

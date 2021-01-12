@@ -85,11 +85,26 @@ class DashboardBloc {
   }
 
   postRating(opinionId, stand) async {
+    String stand = '';
+    for (int i = 0; i < _emojiList.value.length; i++) {
+      if (_emojiList.value[0] == true) {
+        stand = 'against';
+      } else if (_emojiList.value[1] == true) {
+        stand = 'Moderate';
+      } else {
+        stand = "For";
+      }
+    }
     var rating = {
       "rating": _rating.value.toString().split('.')[0],
       "stand": stand
     };
     var data = await dashboardServices.ratingOpinion(opinionId, rating);
+    _ratingResponse.add(data);
+  }
+
+  addhost(String hostId) async {
+    var data = await dashboardServices.addHost(hostId);
     _ratingResponse.add(data);
   }
 

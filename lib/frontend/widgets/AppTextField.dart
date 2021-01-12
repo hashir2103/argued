@@ -11,6 +11,7 @@ class AppTextField extends StatefulWidget {
   Function onTap;
   bool obsecureText;
   double size;
+  double radius;
   bool enable;
   bool showLabel;
   TextEditingController controller;
@@ -20,6 +21,7 @@ class AppTextField extends StatefulWidget {
 
   AppTextField(
       {this.node,
+      this.radius=10,
       this.showLabel = true,
       this.controller,
       this.enable = true,
@@ -61,7 +63,7 @@ class _AppTextFieldState extends State<AppTextField> {
               ),
         Container(
           decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10),
+              borderRadius: BorderRadius.circular(widget.radius),
               color: Colors.grey.withOpacity(0.2)),
           child: Stack(
             children: [

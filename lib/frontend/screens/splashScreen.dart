@@ -32,12 +32,12 @@ class _SplashScreenState extends State<SplashScreen> {
             Expanded(
               flex: 3,
               child: AnimatedSplashScreen(
-                animationDuration: Duration(milliseconds: 1000),
-                duration: 1000,
+                animationDuration: Duration(milliseconds: 3000),
+                duration:3000,
                 splashTransition: SplashTransition.rotationTransition,
                 curve: Curves.easeInOutBack,
                 nextScreen: LoginScreen(),
-                splash: AppIcon(widthPortion: 0.6,heigthPortion: 0.4,),
+                splash: AppIcon(widthPortion: 0.7,heigthPortion: 0.5,),
               ),
             ),
             Expanded(
@@ -45,9 +45,9 @@ class _SplashScreenState extends State<SplashScreen> {
               child: Padding(
                 padding: const EdgeInsets.all(12.0),
                 child: Text(
-                  // 'Argument is the cornerstone of a free society. Anything preventing argument is oppression.',
-                  'Created By Electromates!',
-                  style: bigHeadingText().copyWith(color: Colors.black),
+                  'Argument is the cornerstone of a free society. Anything preventing argument is oppression.',
+                  // 'Created By Electromates!',
+                  style: bigHeadingText().copyWith(color: Colors.black.withOpacity(0.5)),
                   textAlign: TextAlign.center,
                 ),
               ),

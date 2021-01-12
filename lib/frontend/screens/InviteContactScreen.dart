@@ -15,7 +15,12 @@ class InviteContactScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     var contactBloc = Provider.of<ContactBloc>(context);
     return Scaffold(
-        appBar: AppAppBar(title: 'Find Contacts'),
+        appBar: AppAppBar(
+          title: 'Find Contacts',
+          onTap: () {
+            Navigator.pop(context);
+          },
+        ),
         body: Padding(
           padding:
               const EdgeInsets.symmetric(horizontal: kbaseHorizontalPadding),
@@ -49,8 +54,8 @@ class InviteContactScreen extends StatelessWidget {
                                   d.username,
                                   () {
                                     contactBloc.addToContact(d.username);
-                                    MyAppDailog()
-                                        .appResponseDailog(context, contactBloc.addContact,1);
+                                    MyAppDailog().appResponseDailog(
+                                        context, contactBloc.addContact, 1);
                                   },
                                 );
                               });

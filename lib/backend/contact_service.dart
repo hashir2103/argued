@@ -44,6 +44,26 @@ class ContactService {
     }
   }
 
+  chatMessageRead(String roomId) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    Map<String, dynamic> header = {'Authorization': prefs.getString('Token')};
+    try {
+      Response response = await Dio().patch(
+          '$kendpoint$kChatMessagesread$roomId',
+          options: Options(headers: header));
+      print('Read =======> ${response.data}');
+    } on DioError catch (e) {
+      if (e.response != null) {
+        print(e.response.data);
+        print(e.response.headers);
+        print(e.response.request);
+      } else {
+        print(e.request);
+        print(e.message);
+      }
+    }
+  }
+
   findContact(String userName) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     Map<String, dynamic> header = {'Authorization': prefs.getString('Token')};

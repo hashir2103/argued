@@ -6,13 +6,13 @@ class ChatModel {
         this.code,
     });
 
-    List<Datum> data;
+    List<ChatMessages> data;
     String message;
     String key;
     int code;
 
     factory ChatModel.fromJson(Map<String, dynamic> json) => ChatModel(
-        data: List<Datum>.from(json["data"].map((x) => Datum.fromJson(x))),
+        data: List<ChatMessages>.from(json["data"].map((x) => ChatMessages.fromJson(x))),
         message: json["message"],
         key: json["key"],
         code: json["code"],
@@ -26,8 +26,8 @@ class ChatModel {
     };
 }
 
-class Datum {
-    Datum({
+class ChatMessages {
+    ChatMessages({
         this.id,
         this.room,
         this.message,
@@ -45,7 +45,7 @@ class Datum {
     DateTime updatedAt;
     int v;
 
-    factory Datum.fromJson(Map<String, dynamic> json) => Datum(
+    factory ChatMessages.fromJson(Map<String, dynamic> json) => ChatMessages(
         id: json["_id"],
         room: json["room"],
         message: json["message"],

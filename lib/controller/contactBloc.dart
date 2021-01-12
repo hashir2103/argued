@@ -12,7 +12,7 @@ class ContactBloc {
           .listen((query) async {
         if (query.isNotEmpty) {
           var response = await await contactService.findContact(query);
-      
+
           if (response['code'] == 200) {
             var obj = FindContactModel.fromJson(response);
             print("Length =====>>${obj.data.length}");
@@ -70,6 +70,8 @@ class ContactBloc {
   getChatRoom(String roomId) async {
     var data = await contactService.getChatRoom(roomId);
     changeChatMessages(data);
+    await contactService.chatMessageRead(roomId);
+    getContact();
   }
 
   addToContact(String userName) async {

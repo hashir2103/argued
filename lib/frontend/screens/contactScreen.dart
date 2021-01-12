@@ -26,11 +26,23 @@ class _ContactScreenState extends State<ContactScreen> {
   Widget build(BuildContext context) {
     var contactBloc = Provider.of<ContactBloc>(context);
     return Scaffold(
-        appBar: AppAppBar(title: 'My Contacts'),
+        appBar: AppAppBar(
+          title: 'My Contacts',
+          onTap: () {
+            Navigator.pop(context);
+          },
+        ),
         floatingActionButton: FloatingActionButton(
-          backgroundColor: primaryColor,
-          child: Center(child: Icon(Icons.add,color: Colors.white,size: 40,),),
-          onPressed: ()=> Navigator.pushNamed(context, kInviteContactScreen)),
+            backgroundColor: primaryColor,
+            child: Center(
+              child: Icon(
+                Icons.add,
+                color: Colors.white,
+                size: 40,
+              ),
+            ),
+            onPressed: () =>
+                Navigator.pushNamed(context, kInviteContactScreen)),
         body: Padding(
           padding:
               const EdgeInsets.symmetric(horizontal: kbaseHorizontalPadding),
@@ -73,13 +85,16 @@ class _ContactScreenState extends State<ContactScreen> {
                                     itemBuilder: (context, index) {
                                       var c = data[index];
                                       if (c.user.username
-                                          .contains(snapshot.data)) {
+                                          .toLowerCase()
+                                          .contains(
+                                              snapshot.data.toLowerCase())) {
                                         return GestureDetector(
                                           onTap: () {
                                             contactBloc.getChatRoom(c.room);
                                             Navigator.pushNamed(
                                                 context, kChatScreen,
-                                                arguments: c.user.username);
+                                                arguments:
+                                                    "${c.user.username},${c.room}");
                                           },
                                           child: contactViewContainer(
                                               c.user.profilePic,
@@ -100,10 +115,10 @@ class _ContactScreenState extends State<ContactScreen> {
                                     return GestureDetector(
                                       onTap: () {
                                         contactBloc.getChatRoom(c.room);
-                                        print('Room Id : ${c.room}');
                                         Navigator.pushNamed(
                                             context, kChatScreen,
-                                            arguments: c.user.username);
+                                            arguments:
+                                                "${c.user.username},${c.room}");
                                       },
                                       child: contactViewContainer(
                                           c.user.profilePic,

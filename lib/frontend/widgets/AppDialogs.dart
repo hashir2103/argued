@@ -2,6 +2,7 @@ import 'package:argued/ArguedConfigs/color.dart';
 import 'package:argued/ArguedConfigs/sizeConfig.dart';
 import 'package:argued/ArguedConfigs/textStyles.dart';
 import 'package:argued/controller/DashboadBloc.dart';
+import 'package:argued/frontend/screens/groupDeatils.dart';
 import 'package:flutter/material.dart';
 
 class MyAppDailog {
@@ -35,7 +36,7 @@ class MyAppDailog {
                 height: 10,
               ),
               Text(
-                msg,
+                msg ?? "",
                 style: normalText(),
               ),
             ],
@@ -135,7 +136,7 @@ class MyAppDailog {
                           height: 10,
                         ),
                         Text(
-                          snapshot.data["message"],
+                          snapshot.data["message"] ?? 'Error!',
                           style: normalText(),
                         ),
                       ],
@@ -186,7 +187,7 @@ class MyAppDailog {
                 height: 16,
               ),
               Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Wrap(
                     children: [
@@ -204,17 +205,17 @@ class MyAppDailog {
                       )
                     ],
                   ),
-                  Wrap(
-                    children: [
-                      Text(
-                        'Add host to Watchlist +',
-                        style: listTileTrailingText,
-                      ),
-                      SizedBox(
-                        width: 4,
-                      )
-                    ],
-                  ),
+                  // Wrap(
+                  //   children: [
+                  //     Text(
+                  //       'Add host to Watchlist +',
+                  //       style: listTileTrailingText,
+                  //     ),
+                  //     SizedBox(
+                  //       width: 4,
+                  //     )
+                  //   ],
+                  // ),
                 ],
               ),
               SizedBox(
@@ -318,6 +319,21 @@ class MyAppDailog {
             ],
           )),
     );
+    showDialog(context: context, builder: (context) => dailog);
+  }
+
+  groupDetailsDailog(context) {
+    var dailog = Dialog(
+        elevation: 0,
+        backgroundColor: Colors.transparent,
+        child: Container(
+            width: SizeConfig.screenWidth,
+            padding: EdgeInsets.symmetric(vertical: 12, horizontal: 12),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(15),
+            ),
+            child: GroupDetails()));
     showDialog(context: context, builder: (context) => dailog);
   }
 }

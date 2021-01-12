@@ -2,17 +2,21 @@ import 'package:argued/ArguedConfigs/color.dart';
 import 'package:argued/ArguedConfigs/constant.dart';
 import 'package:argued/ArguedConfigs/sizeConfig.dart';
 import 'package:argued/ArguedConfigs/textStyles.dart';
+import 'package:argued/controller/AuthBloc.dart';
 import 'package:argued/controller/DashboadBloc.dart';
 import 'package:argued/controller/ProfileBloc.dart';
 import 'package:argued/controller/contactBloc.dart';
+import 'package:argued/controller/groupBloc.dart';
 import 'package:argued/controller/watchListBloc.dart';
 import 'package:argued/frontend/widgets/AppCard.dart';
 import 'package:argued/frontend/widgets/AppCarousel.dart';
+import 'package:argued/frontend/widgets/AppDialogs.dart';
 import 'package:argued/frontend/widgets/dashBoardAppBar.dart';
 import 'package:argued/model/HotTopicModel.dart';
 import 'package:argued/model/opnionModel.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -27,19 +31,20 @@ class _ViewerDashBoardScreenState extends State<ViewerDashBoardScreen> {
 
   @override
   void initState() {
-    // ignore: unused_local_variable
     var contactBloc = Provider.of<ContactBloc>(context, listen: false);
-    // ignore: unused_local_variable
     var watchListBloc = Provider.of<WatchListBloc>(context, listen: false);
     var profileBloc = Provider.of<ProfileBloc>(context, listen: false);
     var dashboardBloc = Provider.of<DashboardBloc>(context, listen: false);
-    dashboardBloc.getHotTopicOfHour();
-    dashboardBloc.getMostWatchedTopic();
-    dashboardBloc.getInterestingToYou();
-    profileBloc.getProfile();
+    var groupBloc = Provider.of<GroupBloc>(context, listen: false);
+    groupBloc.getGroups();
+
+    // dashboardBloc.getHotTopicOfHour();
+    // dashboardBloc.getMostWatchedTopic();
+    // dashboardBloc.getInterestingToYou();
+    // profileBloc.getProfile();
 
     // watchListBloc.getWatchList();
-    // contactBloc.getContact();
+    contactBloc.getContact();
     super.initState();
 
     scrollController.addListener(() {
@@ -65,6 +70,7 @@ class _ViewerDashBoardScreenState extends State<ViewerDashBoardScreen> {
   @override
   Widget build(BuildContext context) {
     var dashboardBloc = Provider.of<DashboardBloc>(context);
+    var authBloc = Provider.of<AuthBloc>(context);
 
     return Scaffold(
       appBar: DashboardAppBar(),
@@ -92,6 +98,9 @@ class _ViewerDashBoardScreenState extends State<ViewerDashBoardScreen> {
                     var s = snapshot.data;
 
                     return AppCard(
+                      alreadyRated:
+                          (s.createdBy.createdById == authBloc.getuserId),
+                      hostId: s.createdBy.id,
                       rating: s.rating.toString(),
                       videoURL: s.video.file,
                       thumbnail: s.video.thumbnail,
@@ -152,13 +161,32 @@ class _ViewerDashBoardScreenState extends State<ViewerDashBoardScreen> {
       height: 60,
       // animationCurve: Curves.easeOutCubic,
       animationDuration: Duration(milliseconds: 200),
-      index: 1,
+      index: 0,
       color: Colors.white,
       backgroundColor: Colors.grey.withOpacity(0.1),
       buttonBackgroundColor: Colors.white,
       items: [
         Column(
           mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.add,
+              size: 35,
+              color: primaryColor,
+            ),
+            // Text(
+            //   'Watchlist',
+            //   textWidthBasis: TextWidthBasis.parent,
+            //   style: listTileTrailingText.copyWith(
+            //       color: Colors.black, fontSize: 10),
+            // ),
+            // SizedBox(
+            //   height: 12,
+            // ),
+          ],
+        ),
+        Column(
+          mainAxisAlignment: MainAxisAlignment.end,
           children: [
             Icon(
               FontAwesomeIcons.users,
@@ -169,57 +197,63 @@ class _ViewerDashBoardScreenState extends State<ViewerDashBoardScreen> {
               '  Groups',
               style: listTileTrailingText.copyWith(
                   color: Colors.black, fontSize: 10),
-            )
+            ),
+            SizedBox(
+              height: 12,
+            ),
           ],
         ),
-        Container(
-          padding: EdgeInsets.symmetric(horizontal: 2),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(
-                Icons.add,
-                // size: 25,
-                color: primaryColor,
-              ),
-              Text(
-                'Watchlist',
-                textWidthBasis: TextWidthBasis.parent,
-                style: listTileTrailingText.copyWith(
-                    color: Colors.black, fontSize: 10),
-              )
-            ],
-          ),
+        Column(
+          // mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            SvgPicture.asset(
+              'assets/glasses.svg',
+              width: 35,
+              color: primaryColor,
+            ),
+            Text(
+              'Watchlist',
+              textWidthBasis: TextWidthBasis.parent,
+              style: listTileTrailingText.copyWith(
+                  color: Colors.black, fontSize: 10),
+            ),
+            SizedBox(
+              height: 12,
+            ),
+          ],
         ),
-        Container(
-          padding: EdgeInsets.symmetric(horizontal: 2),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(
-                FontAwesomeIcons.solidAddressBook,
-                // size: 25,
-                color: primaryColor,
-              ),
-              Text(
-                'Contacts',
-                textWidthBasis: TextWidthBasis.parent,
-                style: listTileTrailingText.copyWith(
-                    color: Colors.black, fontSize: 10),
-              )
-            ],
-          ),
+        Column(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            Icon(
+              FontAwesomeIcons.solidAddressBook,
+              // size: 25,
+              color: primaryColor,
+            ),
+            Text(
+              'Contacts',
+              textWidthBasis: TextWidthBasis.parent,
+              style: listTileTrailingText.copyWith(
+                  color: Colors.black, fontSize: 10),
+            ),
+            SizedBox(
+              height: 12,
+            ),
+          ],
         ),
       ],
       onTap: (index) {
-        if (index == 0) {
-          // dashboardBloc.changeIndex(1);
+        if (index == 1) {
           Navigator.pushNamed(context, kGroupScreen);
         } else if (index == 2) {
-          // dashboardBloc.changeIndex(1);
+          Navigator.pushNamed(context, kWatchListScreen);
+        } else if (index == 3) {
           Navigator.pushNamed(context, kContactScreen);
         } else {
-          Navigator.pushNamed(context, kWatchListScreen);
+          MyAppDailog().responseDailog(
+              'Upgrade to be a host and post \nUpgrade at argued.com', context,
+              showClosebutton: true);
         }
       },
     );
@@ -231,6 +265,7 @@ class InterestingToYou extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var dashboardBloc = Provider.of<DashboardBloc>(context);
+    var authBloc = Provider.of<AuthBloc>(context);
     return StreamBuilder<List<OpinionData>>(
         stream: dashboardBloc.interestingToYou,
         builder: (context, snapshot) {
@@ -244,9 +279,17 @@ class InterestingToYou extends StatelessWidget {
               itemCount: snapshot.data.length,
               itemBuilder: (BuildContext context, index) {
                 var s = snapshot.data[index];
+                bool alreadyRate = false;
+                s.userRatings.forEach((e) {
+                  if (e.createdBy == authBloc.getuserId) {
+                    alreadyRate = true;
+                  }
+                });
                 return Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: AppCard(
+                    alreadyRated: alreadyRate,
+                    hostId: s.createdBy.id,
                     rating: s.rating.toString(),
                     videoURL: s.video.file,
                     userPostCover: s.createdBy.profilePic,

@@ -13,11 +13,14 @@ const String kSplashScreen = '/splashscreen';
 const String kHomeScreen = '/homescreen';
 const String kContactScreen = '/Contactscreen';
 const String kGroupScreen = '/Groupscreen';
+const String kCreateGroupScreen = '/CreateGroup';
 const String kEditProfileScreen = '/editProfile';
 const String kViewerDashBoardScreen = '/VDashBoard';
 const String kWatchListScreen = '/WatchList';
 const String kChatScreen = '/ChatScreen';
+const String kGroupChatScreen = '/GroupChatScreen';
 const String kInviteContactScreen = '/InviteContact';
+const String kProfileOpinion = 'api/user/profile-with-opinions/';
 
 // animation
 const kAnimationDuration = Duration(milliseconds: 200);
@@ -46,7 +49,12 @@ const String kContact = '/api/user/contacts';
 const String kChatRoom = '/api/chat-room/messages/';
 const String kInviteContact = '/api/user/by-username/';
 const String kAddContact = '/api/contact-requests';
-const String kGroups = '/api/group/my-groups';
+const String kGroups = '/api/group/my-groups/';
+const String kGroupMessages = '/api/group/messages/';
+const String kGroupMessagesread = '/api/group/read/';
+const String kChatMessagesread = '/api/user/read/';
+const String kCreateGroup = '/api/group';
+const String kAddHost = '/api/user/follow/';
 const String kTempImage =
     "https://www.colorbook.io/imagecreator.php?width=300&height=300?hex=0xadd8e6";
 

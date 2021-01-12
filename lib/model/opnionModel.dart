@@ -165,7 +165,7 @@ class Category {
     Status status;
     List<String> tags;
     String name;
-    List<Subcategory> subcategories;
+    List<Subcategor> subcategories;
     int v;
     String profilePic;
     String createdBy;
@@ -176,7 +176,7 @@ class Category {
         status: statusValues.map[json["status"]],
         tags: List<String>.from(json["tags"].map((x) => x)),
         name: json["name"],
-        subcategories: List<Subcategory>.from(json["subcategories"].map((x) => Subcategory.fromMap(x))),
+        subcategories: List<Subcategor>.from(json["subcategories"].map((x) => Subcategor.fromMap(x))),
         v: json["__v"],
         profilePic: json["profilePic"],
         createdBy: json["createdBy"] == null ? null : json["createdBy"],
@@ -666,8 +666,8 @@ final statusValues = EnumValues({
     "Approved": Status.APPROVED
 });
 
-class Subcategory {
-    Subcategory({
+class Subcategor {
+    Subcategor({
         this.status,
         this.tags,
         this.id,
@@ -685,7 +685,7 @@ class Subcategory {
     String associatedBusiness;
     String description;
 
-    factory Subcategory.fromMap(Map<String, dynamic> json) => Subcategory(
+    factory Subcategor.fromMap(Map<String, dynamic> json) => Subcategor(
         status: statusValues.map[json["status"]],
         tags: List<String>.from(json["tags"].map((x) => x)),
         id: json["_id"],

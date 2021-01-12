@@ -1,7 +1,9 @@
 import 'package:argued/ArguedConfigs/constant.dart';
+import 'package:argued/frontend/screens/GroupChatScreen.dart';
 import 'package:argued/frontend/screens/InviteContactScreen.dart';
 import 'package:argued/frontend/screens/ViewerDashBoardScreen.dart';
 import 'package:argued/frontend/screens/chatScreen.dart';
+import 'package:argued/frontend/screens/createGroupScreen.dart';
 import 'package:argued/frontend/screens/groupScreen.dart';
 import 'package:argued/frontend/screens/editProfileScreen.dart';
 import 'package:argued/frontend/screens/contactScreen.dart';
@@ -31,9 +33,20 @@ abstract class Routes {
       case kWatchListScreen:
         return MaterialPageRoute(builder: (context) => WatchListScreen());
       case kChatScreen:
-        return MaterialPageRoute(builder: (context) =>  ChatScreen(userName:settings.arguments,));
+        print(settings.arguments);
+        return MaterialPageRoute(
+            builder: (context) => ChatScreen(
+                  userName: settings.arguments.toString().split(',')[0],
+                  roomId: settings.arguments.toString().split(',')[1],
+                ));
       case kInviteContactScreen:
-        return MaterialPageRoute(builder: (context) =>  InviteContactScreen());
+        return MaterialPageRoute(builder: (context) => InviteContactScreen());
+      case kCreateGroupScreen:
+        return MaterialPageRoute(builder: (context) => CreateGroupScreen());
+      case kGroupChatScreen:
+        return MaterialPageRoute(
+            builder: (context) =>
+                GroupChatScreen(groupName: settings.arguments.toString().split(',')[0],groupId:settings.arguments.toString().split(',')[1] ,));
 
       default:
         return MaterialPageRoute(builder: (context) => LoginScreen());

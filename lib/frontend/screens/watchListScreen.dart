@@ -27,7 +27,12 @@ class _WatchListScreenState extends State<WatchListScreen> {
     var watchListBloc = Provider.of<WatchListBloc>(context);
 
     return Scaffold(
-        appBar: AppAppBar(title: 'Watch List'),
+        appBar: AppAppBar(
+          title: 'Watch List',
+          onTap: () {
+            Navigator.pop(context);
+          },
+        ),
         body: Padding(
           padding:
               const EdgeInsets.symmetric(horizontal: kbaseHorizontalPadding),
@@ -51,12 +56,29 @@ class _WatchListScreenState extends State<WatchListScreen> {
                     child: StreamBuilder<WatchListModel>(
                         stream: watchListBloc.watchList,
                         builder: (context, snapshot) {
-                          if (!snapshot.hasData) {
+                          if (snapshot.error == 'Disable') {
                             return Center(
                               child: Text(
-                                "No Host to Show",
+                                "No Host to show",
                                 style: listTileSubTitleText,
                               ),
+                            );
+                          }
+                          if (!snapshot.hasData) {
+                            return Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                CircularProgressIndicator(),
+                                SizedBox(
+                                  height: 12,
+                                ),
+                                Center(
+                                  child: Text(
+                                    "Finding Your Hosts..",
+                                    style: listTileSubTitleText,
+                                  ),
+                                ),
+                              ],
                             );
                           }
                           var data = snapshot.data.data.following;
@@ -70,9 +92,20 @@ class _WatchListScreenState extends State<WatchListScreen> {
                                     itemBuilder: (context, index) {
                                       var d = data[index];
 
-                                      if (d.username.contains(query.data)) {
-                                        return hostViewContainer(
-                                            d.profilePic, d.username, d.id);
+                                      if (d.username
+                                          .toLowerCase()
+                                          .contains(query.data.toLowerCase())) {
+                                        return GestureDetector(
+                                          onTap: () {
+                                            watchListBloc
+                                                .getProfileOpinion(d.id);
+                                                
+                                          },
+                                          child: hostViewContainer(
+                                              d.profilePic ?? kTempImage,
+                                              d.username ?? "",
+                                              d.id ?? ""),
+                                        );
                                       }
                                       return Container();
                                     },
@@ -83,7 +116,9 @@ class _WatchListScreenState extends State<WatchListScreen> {
                                   itemBuilder: (context, index) {
                                     var d = data[index];
                                     return hostViewContainer(
-                                        d.profilePic, d.username, d.id);
+                                        d.profilePic ?? kTempImage,
+                                        d.username ?? "",
+                                        d.id ?? "");
                                   },
                                 );
                               });
