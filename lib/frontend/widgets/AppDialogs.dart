@@ -2,7 +2,7 @@ import 'package:argued/ArguedConfigs/color.dart';
 import 'package:argued/ArguedConfigs/sizeConfig.dart';
 import 'package:argued/ArguedConfigs/textStyles.dart';
 import 'package:argued/controller/DashboadBloc.dart';
-import 'package:argued/frontend/screens/groupDeatils.dart';
+import 'package:argued/frontend/screens/group/groupDeatils.dart';
 import 'package:flutter/material.dart';
 
 class MyAppDailog {

@@ -1,33 +1,35 @@
-import 'package:adhara_socket_io/adhara_socket_io.dart';
-import 'package:adhara_socket_io/manager.dart';
-import 'package:adhara_socket_io/options.dart';
 import 'package:argued/ArguedConfigs/color.dart';
 import 'package:argued/ArguedConfigs/constant.dart';
 import 'package:argued/ArguedConfigs/sizeConfig.dart';
 import 'package:argued/ArguedConfigs/textStyles.dart';
 import 'package:argued/controller/AuthBloc.dart';
-import 'package:argued/controller/contactBloc.dart';
-import 'package:argued/frontend/screens/contactScreen.dart';
+import 'package:argued/controller/groupBloc.dart';
+import 'package:argued/frontend/screens/contact/contactScreen.dart';
 import 'package:argued/frontend/widgets/AppTextField.dart';
 import 'package:argued/frontend/widgets/AppUserProfileCircle.dart';
 import 'package:argued/frontend/widgets/AppappBar.dart';
 import 'package:argued/model/chatModel.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
+import 'package:adhara_socket_io/adhara_socket_io.dart';
+import 'package:adhara_socket_io/manager.dart';
+import 'package:adhara_socket_io/options.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class ChatScreen extends StatefulWidget {
-  final String userName;
-  final String roomId;
+class GroupChatScreen extends StatefulWidget {
+  final String groupName;
+  final String groupId;
 
-  const ChatScreen({Key key, @required this.userName, @required this.roomId})
+  const GroupChatScreen(
+      {Key key, @required this.groupName, @required this.groupId})
       : super(key: key);
 
   @override
-  _ChatScreenState createState() => _ChatScreenState();
+  _GroupChatScreenState createState() => _GroupChatScreenState();
 }
 
-class _ChatScreenState extends State<ChatScreen> {
+class _GroupChatScreenState extends State<GroupChatScreen> {
   SocketIO socket;
   SocketIOManager manager;
   List<ChatMessages> _allMessages = List<ChatMessages>();
@@ -37,20 +39,20 @@ class _ChatScreenState extends State<ChatScreen> {
   @override
   void initState() {
     super.initState();
-    var contactBloc = Provider.of<ContactBloc>(context, listen: false);
+    var groupBloc = Provider.of<GroupBloc>(context, listen: false);
     manager = SocketIOManager();
-    setUpSocket(contactBloc);
+    setUpSocket(groupBloc);
   }
 
-  Future<void> setUpSocket(ContactBloc contactBloc) async {
+  Future<void> setUpSocket(groupBloc) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
       token = prefs.getString('Token');
-      initSocket(contactBloc);
+      initSocket(groupBloc);
     });
   }
 
-  initSocket(ContactBloc contactBloc) async {
+  initSocket(GroupBloc groupBloc) async {
     socket = await manager.createInstance(SocketOptions(kendpoint,
         query: {
           "token": token,
@@ -78,7 +80,6 @@ class _ChatScreenState extends State<ChatScreen> {
     socket.on("newMessage", (data) {
       print("newMessage");
       print(data);
-      print("data $data");
       setState(() {
         ChatMessages chatMessage = ChatMessages.fromJson(data);
         _allMessages.insert(0, chatMessage);
@@ -89,7 +90,7 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 
   void _sendChatMessage(String msg) async {
-    String jsonData = '{"room": "${widget.roomId}" , "message": "$msg"}';
+    String jsonData = '{"group": "${widget.groupId}" , "message": "$msg"}';
     if (socket != null) {
       print("sending message...");
       socket.emit("send-message", [
@@ -108,30 +109,39 @@ class _ChatScreenState extends State<ChatScreen> {
 
   @override
   Widget build(BuildContext context) {
-    var contactBloc = Provider.of<ContactBloc>(context);
+    print("groupId : ${widget.groupId}");
+    var groupBloc = Provider.of<GroupBloc>(context);
     var authBloc = Provider.of<AuthBloc>(context);
-    return Scaffold(
-        appBar: AppAppBar(
-          title: widget.userName,
-          onTap: () {
-            contactBloc.getContact();
-            Navigator.pop(context);
-          },
-        ),
-        body: WillPopScope(
-          onWillPop: () async {
-            contactBloc.getContact();
-            return true;
-          },
-          child: Padding(
+    return WillPopScope(
+      onWillPop: () async {
+        // groupBloc.getGroups();
+        return true;
+      },
+      child: Scaffold(
+          appBar: AppAppBar(
+            title: widget.groupName,
+            onTap: () {
+              // groupBloc.getGroups();
+              Navigator.pop(context);
+            },
+          ),
+          body: Padding(
             padding:
                 const EdgeInsets.symmetric(horizontal: kbaseHorizontalPadding),
             child: Column(
               children: [
                 Expanded(
                     child: StreamBuilder<ChatModel>(
-                        stream: contactBloc.chatMessages,
+                        stream: groupBloc.groupChat,
                         builder: (context, snapshot) {
+                          if (snapshot.error == 'error') {
+                            return Center(
+                              child: Text(
+                                'No messages yet',
+                                style: listTileSubTitleText,
+                              ),
+                            );
+                          }
                           if (!snapshot.hasData) {
                             return Center(
                               child: CircularProgressIndicator(),
@@ -148,14 +158,9 @@ class _ChatScreenState extends State<ChatScreen> {
                                 SizedBox(
                                   height: 4,
                                 ),
-                                Text(
-                                  'Say Hi to ${widget.userName}!',
-                                  textAlign: TextAlign.center,
-                                ),
                               ],
                             );
                           }
-
                           _allMessages = snapshot.data.data;
                           return ListView.builder(
                               reverse: true,
@@ -196,7 +201,6 @@ class _ChatScreenState extends State<ChatScreen> {
                                     time: m.createdAt);
                               });
                         })),
-
                 AppTextField(
                   controller: _msg,
                   showLabel: false,
@@ -210,13 +214,10 @@ class _ChatScreenState extends State<ChatScreen> {
                     }
                   },
                 ),
-                // SizedBox(
-                //   height: 4,
-                // )
               ],
             ),
-          ),
-        ));
+          )),
+    );
   }
 }
 
@@ -255,12 +256,11 @@ class SenderContainer extends StatelessWidget {
                 ),
               ),
               child: Stack(
-                clipBehavior: Clip.none,
                 overflow: Overflow.visible,
                 children: [
                   Column(
                     children: [
-                      Container(
+                      Padding(
                         padding: EdgeInsets.all(8),
                         child: Text(
                           message,

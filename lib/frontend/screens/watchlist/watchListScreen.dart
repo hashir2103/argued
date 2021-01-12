@@ -99,7 +99,10 @@ class _WatchListScreenState extends State<WatchListScreen> {
                                           onTap: () {
                                             watchListBloc
                                                 .getProfileOpinion(d.id);
-                                                
+                                            Navigator.pushNamed(
+                                                context, kUserOpinionScreen,
+                                                arguments:
+                                                    "${d.username},${d.profilePic}");
                                           },
                                           child: hostViewContainer(
                                               d.profilePic ?? kTempImage,
@@ -115,10 +118,19 @@ class _WatchListScreenState extends State<WatchListScreen> {
                                   itemCount: data.length,
                                   itemBuilder: (context, index) {
                                     var d = data[index];
-                                    return hostViewContainer(
-                                        d.profilePic ?? kTempImage,
-                                        d.username ?? "",
-                                        d.id ?? "");
+                                    return GestureDetector(
+                                      onTap: () {
+                                        watchListBloc.getProfileOpinion(d.id);
+                                        Navigator.pushNamed(
+                                            context, kUserOpinionScreen,
+                                            arguments:
+                                                "${d.username},${d.profilePic}");
+                                      },
+                                      child: hostViewContainer(
+                                          d.profilePic ?? kTempImage,
+                                          d.username ?? "",
+                                          d.id ?? ""),
+                                    );
                                   },
                                 );
                               });

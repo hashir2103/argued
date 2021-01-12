@@ -20,7 +20,9 @@ const String kWatchListScreen = '/WatchList';
 const String kChatScreen = '/ChatScreen';
 const String kGroupChatScreen = '/GroupChatScreen';
 const String kInviteContactScreen = '/InviteContact';
-const String kProfileOpinion = 'api/user/profile-with-opinions/';
+const String kUserOpinionScreen = '/UsrOpinionScreen';
+const String kSingleOpinionScreen = '/SingleOpinionScreen';
+const String kProfileOpinion = '/api/user/profile-with-opinions/';
 
 // animation
 const kAnimationDuration = Duration(milliseconds: 200);

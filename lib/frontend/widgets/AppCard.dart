@@ -403,7 +403,7 @@ class _AppCard2State extends State<AppCard2> {
         allowFullScreen: true,
         autoInitialize: true,
         autoPlay: false,
-        looping: true,
+        looping: false,
         errorBuilder: (context, errorMsg) {
           return Center(
               child: Icon(

@@ -2,7 +2,7 @@ import 'package:argued/ArguedConfigs/color.dart';
 import 'package:argued/ArguedConfigs/constant.dart';
 import 'package:argued/ArguedConfigs/textStyles.dart';
 import 'package:argued/controller/groupBloc.dart';
-import 'package:argued/frontend/screens/contactScreen.dart';
+import 'package:argued/frontend/screens/contact/contactScreen.dart';
 import 'package:argued/frontend/widgets/AppDialogs.dart';
 import 'package:argued/frontend/widgets/AppTextField.dart';
 import 'package:argued/frontend/widgets/AppUserProfileCircle.dart';

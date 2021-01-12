@@ -18,7 +18,7 @@ class GroupService {
     try {
       Response response = await Dio()
           .get('$kendpoint$kGroups', options: Options(headers: header));
-      printWrapped(response.data.toString());
+      // printWrapped(response.data.toString());
       return response.data;
       // return GroupModel.fromJson(response.data);
     } on DioError catch (e) {
@@ -38,7 +38,7 @@ class GroupService {
     try {
       Response response = await Dio()
           .get('$kendpoint$kGroups$groupId', options: Options(headers: header));
-      printWrapped(response.data.toString());
+      // printWrapped(response.data.toString());
       return response.data;
     } on DioError catch (e) {
       if (e.response != null) {
@@ -75,7 +75,7 @@ class GroupService {
     try {
       Response response = await Dio()
           .post('$kendpoint$kCreateGroup', options: Options(headers: header),data: data);
-      printWrapped(response.data.toString());
+      // printWrapped(response.data.toString());
       return response.data;
     } on DioError catch (e) {
       if (e.response != null) {
@@ -92,9 +92,9 @@ class GroupService {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     Map<String, dynamic> header = {'Authorization': prefs.getString('Token')};
     try {
-      Response response = await Dio()
+       await Dio()
           .patch('$kendpoint$kGroupMessagesread$groupId', options: Options(headers: header));
-      printWrapped(response.data.toString());
+      // printWrapped(response.data.toString());
       // return response.data;
     } on DioError catch (e) {
       if (e.response != null) {

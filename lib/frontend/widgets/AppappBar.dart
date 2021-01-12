@@ -8,8 +8,9 @@ import 'package:provider/provider.dart';
 class AppAppBar extends StatelessWidget with PreferredSizeWidget {
   final String title;
   final Function onTap;
+  final String profilePic;
 
-  const AppAppBar({Key key, @required this.title,@required this.onTap}) : super(key: key);
+  const AppAppBar({Key key, @required this.title,@required this.onTap, this.profilePic}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     var authBloc = Provider.of<AuthBloc>(context);
@@ -33,7 +34,7 @@ class AppAppBar extends StatelessWidget with PreferredSizeWidget {
             
             children: [
               SizedBox(height: 4,),
-              Expanded(child: UserCirle(profilePic: authBloc.getLoginResponse.profilePic,height: 20,width: 50,)),
+              Expanded(child: UserCirle(profilePic: profilePic??authBloc.getLoginResponse.profilePic ,height: 20,width: 50,)),
             ],
           ),
         ),
