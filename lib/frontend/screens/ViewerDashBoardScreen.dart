@@ -4,10 +4,6 @@ import 'package:argued/ArguedConfigs/sizeConfig.dart';
 import 'package:argued/ArguedConfigs/textStyles.dart';
 import 'package:argued/controller/AuthBloc.dart';
 import 'package:argued/controller/DashboadBloc.dart';
-import 'package:argued/controller/ProfileBloc.dart';
-import 'package:argued/controller/contactBloc.dart';
-import 'package:argued/controller/groupBloc.dart';
-import 'package:argued/controller/watchListBloc.dart';
 import 'package:argued/frontend/widgets/AppCard.dart';
 import 'package:argued/frontend/widgets/AppCarousel.dart';
 import 'package:argued/frontend/widgets/AppDialogs.dart';
@@ -31,32 +27,19 @@ class _ViewerDashBoardScreenState extends State<ViewerDashBoardScreen> {
 
   @override
   void initState() {
-    var contactBloc = Provider.of<ContactBloc>(context, listen: false);
-    var watchListBloc = Provider.of<WatchListBloc>(context, listen: false);
-    var profileBloc = Provider.of<ProfileBloc>(context, listen: false);
-    var dashboardBloc = Provider.of<DashboardBloc>(context, listen: false);
-    var groupBloc = Provider.of<GroupBloc>(context, listen: false);
-    groupBloc.getGroups();
-
-    // dashboardBloc.getHotTopicOfHour();
-    // dashboardBloc.getMostWatchedTopic();
-    // dashboardBloc.getInterestingToYou();
-    // profileBloc.getProfile();
-
-    // watchListBloc.getWatchList();
-    contactBloc.getContact();
     super.initState();
-
+    var dashboardBloc = Provider.of<DashboardBloc>(context, listen: false);
+    dashboardBloc.getHotTopicOfHour();
+    dashboardBloc.getMostWatchedTopic();
+    dashboardBloc.getInterestingToYou();
     scrollController.addListener(() {
       if (scrollController.position.maxScrollExtent ==
           scrollController.offset) {
         if (!dashboardBloc.shouldStopSearching) {
           dashboardBloc.changePageNum(dashboardBloc.getPageNo + 1);
           dashboardBloc.getInterestingToYou();
-          print('========Getting more pages=======');
           dashboardBloc.changeIsLoading(true);
         }
-        print('Stop Searching Now......');
       }
     });
   }
@@ -294,15 +277,12 @@ class InterestingToYou extends StatelessWidget {
                     videoURL: s.video.file,
                     userPostCover: s.createdBy.profilePic,
                     thumbnail: s.video.thumbnail,
-                    stand: s.stand.toString().split(".")[1],
-                    userName: s.details.userName
-                        .toString()
-                        .split(".")[1]
-                        .toLowerCase(),
+                    stand: s.stand,
+                    userName: s.details.userName,
                     topicName: s.details.topicName,
                     categoryName: s.details.categoryName,
                     subCategoryName: s.details.subCategoryName,
-                    language: s.language.toString().split(".")[1],
+                    language: s.language,
                     createdAt: s.createdAt,
                     opinionID: s.video.id,
                   ),

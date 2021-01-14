@@ -162,10 +162,10 @@ class _WatchListScreenState extends State<WatchListScreen> {
         username,
         style: listTileTitleText,
       ),
-      subtitle: Text(
-        email,
-        style: listTileSubTitleText,
-      ),
+      // subtitle: Text(
+      //   email,
+      //   style: listTileSubTitleText,
+      // ),
     );
   }
 }

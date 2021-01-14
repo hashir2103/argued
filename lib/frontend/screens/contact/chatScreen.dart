@@ -235,6 +235,8 @@ class SenderContainer extends StatelessWidget {
       : super(key: key);
   @override
   Widget build(BuildContext context) {
+
+    var authBloc = Provider.of<AuthBloc>(context);
     return Container(
       padding: EdgeInsets.symmetric(vertical: 8),
       child: Row(
@@ -284,7 +286,7 @@ class SenderContainer extends StatelessWidget {
           SizedBox(
             width: 4,
           ),
-          UserCirle(profilePic: profilePic),
+          UserCirle(profilePic: profilePic??authBloc.getUserProfilePic),
         ],
       ),
     );

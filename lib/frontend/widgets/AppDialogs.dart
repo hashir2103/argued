@@ -2,7 +2,7 @@ import 'package:argued/ArguedConfigs/color.dart';
 import 'package:argued/ArguedConfigs/sizeConfig.dart';
 import 'package:argued/ArguedConfigs/textStyles.dart';
 import 'package:argued/controller/DashboadBloc.dart';
-import 'package:argued/frontend/screens/group/groupDeatils.dart';
+import 'package:argued/frontend/screens/group/groupDetails.dart';
 import 'package:flutter/material.dart';
 
 class MyAppDailog {
@@ -322,7 +322,7 @@ class MyAppDailog {
     showDialog(context: context, builder: (context) => dailog);
   }
 
-  groupDetailsDailog(context) {
+  groupDetailsDailog(context,groupId) {
     var dailog = Dialog(
         elevation: 0,
         backgroundColor: Colors.transparent,
@@ -333,7 +333,7 @@ class MyAppDailog {
               color: Colors.white,
               borderRadius: BorderRadius.circular(15),
             ),
-            child: GroupDetails()));
+            child: GroupDetails(groupId: groupId,)));
     showDialog(context: context, builder: (context) => dailog);
   }
 }

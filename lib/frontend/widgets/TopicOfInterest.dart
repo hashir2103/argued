@@ -1,4 +1,5 @@
 import 'package:argued/ArguedConfigs/color.dart';
+import 'package:argued/ArguedConfigs/constant.dart';
 import 'package:argued/ArguedConfigs/textStyles.dart';
 import 'package:argued/controller/catergoryBloc.dart';
 import 'package:argued/frontend/widgets/AppButton.dart';
@@ -99,7 +100,7 @@ class _TopicOfInterestState extends State<TopicOfInterest> {
                         },
                         child: CategoryCard(
                             label: data[index].name,
-                            imgUrl: data[index].profilePic),
+                            imgUrl: data[index].profilePic??kTempImage),
                       );
                     });
               }),
@@ -214,7 +215,7 @@ class _SubTopicOfInterestState extends State<SubTopicOfInterest> {
                               child: CategoryCard(
                                   label: widget.subcategories[index].name,
                                   imgUrl:
-                                      widget.subcategories[index].profilePic),
+                                      widget.subcategories[index].profilePic??kTempImage),
                             ),
                             !_list.contains(widget.subcategories[index].id)
                                 ? Container()
@@ -300,7 +301,7 @@ class CategoryCard extends StatelessWidget {
                     height: 145.2,
                     // width: 100,
                     fit: BoxFit.cover,
-                    imageUrl: imgUrl,
+                    imageUrl: imgUrl??kTempImage,
                     placeholder: (context, url) =>
                         Center(child: CircularProgressIndicator()),
                     errorWidget: (context, url, error) =>

@@ -30,6 +30,7 @@ class GroupChatScreen extends StatefulWidget {
 }
 
 class _GroupChatScreenState extends State<GroupChatScreen> {
+  bool isLoading = true;
   SocketIO socket;
   SocketIOManager manager;
   List<ChatMessages> _allMessages = List<ChatMessages>();
@@ -44,10 +45,13 @@ class _GroupChatScreenState extends State<GroupChatScreen> {
     setUpSocket(groupBloc);
   }
 
-  Future<void> setUpSocket(groupBloc) async {
+  Future<void> setUpSocket(GroupBloc groupBloc) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
+    var d = await groupBloc.getGroupMessage(widget.groupId);
     setState(() {
       token = prefs.getString('Token');
+      _allMessages = d.data;
+      isLoading = false;
       initSocket(groupBloc);
     });
   }
@@ -110,7 +114,7 @@ class _GroupChatScreenState extends State<GroupChatScreen> {
   @override
   Widget build(BuildContext context) {
     print("groupId : ${widget.groupId}");
-    var groupBloc = Provider.of<GroupBloc>(context);
+    // var groupBloc = Provider.of<GroupBloc>(context);
     var authBloc = Provider.of<AuthBloc>(context);
     return WillPopScope(
       onWillPop: () async {
@@ -131,76 +135,59 @@ class _GroupChatScreenState extends State<GroupChatScreen> {
             child: Column(
               children: [
                 Expanded(
-                    child: StreamBuilder<ChatModel>(
-                        stream: groupBloc.groupChat,
-                        builder: (context, snapshot) {
-                          if (snapshot.error == 'error') {
-                            return Center(
-                              child: Text(
+                    child: (isLoading)
+                        ? Center(
+                            child: CircularProgressIndicator(),
+                          )
+                        : (_allMessages.isEmpty)
+                            ? Center(
+                                child: Text(
                                 'No messages yet',
                                 style: listTileSubTitleText,
-                              ),
-                            );
-                          }
-                          if (!snapshot.hasData) {
-                            return Center(
-                              child: CircularProgressIndicator(),
-                            );
-                          } else if (snapshot.data.data.isEmpty ||
-                              snapshot.data.data == null) {
-                            return Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Text(
-                                  'No messages yet.',
-                                  textAlign: TextAlign.center,
-                                ),
-                                SizedBox(
-                                  height: 4,
-                                ),
-                              ],
-                            );
-                          }
-                          _allMessages = snapshot.data.data;
-                          return ListView.builder(
-                              reverse: true,
-                              itemCount: _allMessages.length,
-                              itemBuilder: (context, i) {
-                                var m = _allMessages[i];
-                                if (i == 0) {
-                                  return Column(
-                                    crossAxisAlignment:
+                              ))
+                            : ListView.builder(
+                                reverse: true,
+                                itemCount: _allMessages.length,
+                                itemBuilder: (context, i) {
+                                  var m = _allMessages[i];
+                                  if (i == 0) {
+                                    return Column(
+                                      crossAxisAlignment:
+                                          (authBloc.getuserId == m.sentBy.id)
+                                              ? CrossAxisAlignment.end
+                                              : CrossAxisAlignment.start,
+                                      children: [
                                         (authBloc.getuserId == m.sentBy.id)
-                                            ? CrossAxisAlignment.end
-                                            : CrossAxisAlignment.start,
-                                    children: [
-                                      (authBloc.getuserId == m.sentBy.id)
-                                          ? SenderContainer(
-                                              profilePic: m.sentBy.profilePic,
-                                              message: m.message,
-                                              time: m.createdAt)
-                                          : RecieverContainer(
-                                              profilePic: m.sentBy.profilePic,
-                                              message: m.message,
-                                              time: m.createdAt),
-                                      Container(
-                                        height: 12,
-                                      ),
-                                    ],
-                                  );
-                                }
-                                if (authBloc.getuserId == m.sentBy.id) {
-                                  return SenderContainer(
+                                            ? SenderContainer(
+                                                userName: m.sentBy.username,
+                                                profilePic: m.sentBy.profilePic,
+                                                message: m.message,
+                                                time: m.createdAt)
+                                            : RecieverContainer(
+                                                userName: m.sentBy.username,
+                                                profilePic: m.sentBy.profilePic,
+                                                message: m.message,
+                                                time: m.createdAt),
+                                        Container(
+                                          height: 12,
+                                        ),
+                                      ],
+                                    );
+                                  }
+                                  if (authBloc.getuserId == m.sentBy.id) {
+                                    print(m.sentBy.profilePic);
+                                    return SenderContainer(
+                                        userName: m.sentBy.username,
+                                        profilePic: m.sentBy.profilePic,
+                                        message: m.message,
+                                        time: m.createdAt);
+                                  }
+                                  return RecieverContainer(
+                                      userName: m.sentBy.username,
                                       profilePic: m.sentBy.profilePic,
                                       message: m.message,
                                       time: m.createdAt);
-                                }
-                                return RecieverContainer(
-                                    profilePic: m.sentBy.profilePic,
-                                    message: m.message,
-                                    time: m.createdAt);
-                              });
-                        })),
+                                })),
                 AppTextField(
                   controller: _msg,
                   showLabel: false,
@@ -225,6 +212,7 @@ class _GroupChatScreenState extends State<GroupChatScreen> {
 class SenderContainer extends StatelessWidget {
   final String profilePic;
   final String message;
+  final String userName;
   final DateTime time;
   final double radius = 15;
 
@@ -232,10 +220,12 @@ class SenderContainer extends StatelessWidget {
       {Key key,
       @required this.profilePic,
       @required this.message,
+      @required this.userName,
       @required this.time})
       : super(key: key);
   @override
   Widget build(BuildContext context) {
+    var authBloc = Provider.of<AuthBloc>(context);
     return Container(
       padding: EdgeInsets.symmetric(vertical: 8),
       child: Row(
@@ -243,8 +233,9 @@ class SenderContainer extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
           Container(
-            constraints:
-                BoxConstraints(maxWidth: SizeConfig.screenWidth * 0.65),
+            constraints: BoxConstraints(
+                maxWidth: SizeConfig.screenWidth * 0.65,
+                minWidth: SizeConfig.screenWidth * 0.3),
             child: Card(
               shadowColor: Colors.transparent,
               color: primaryColor.withOpacity(0.1),
@@ -276,7 +267,14 @@ class SenderContainer extends StatelessWidget {
                       child: Text(
                         getFormatedTime(time),
                         style: listTileTrailingText,
-                      ))
+                      )),
+                  Positioned(
+                      bottom: -20,
+                      right: 0,
+                      child: Text(
+                        userName,
+                        style: listTileTrailingText,
+                      )),
                 ],
               ),
             ),
@@ -284,7 +282,7 @@ class SenderContainer extends StatelessWidget {
           SizedBox(
             width: 4,
           ),
-          UserCirle(profilePic: profilePic),
+          UserCirle(profilePic: profilePic??authBloc.getUserProfilePic),
         ],
       ),
     );
@@ -295,6 +293,7 @@ class SenderContainer extends StatelessWidget {
 class RecieverContainer extends StatelessWidget {
   final String profilePic;
   final String message;
+  final String userName;
   final DateTime time;
   final double radius = 15;
 
@@ -302,6 +301,7 @@ class RecieverContainer extends StatelessWidget {
       {Key key,
       @required this.profilePic,
       @required this.message,
+      @required this.userName,
       @required this.time})
       : super(key: key);
   @override
@@ -317,8 +317,9 @@ class RecieverContainer extends StatelessWidget {
             width: 4,
           ),
           Container(
-            constraints:
-                BoxConstraints(maxWidth: SizeConfig.screenWidth * 0.65),
+            constraints: BoxConstraints(
+                maxWidth: SizeConfig.screenWidth * 0.65,
+                minWidth: SizeConfig.screenWidth * 0.3),
             child: Card(
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.only(
@@ -346,7 +347,14 @@ class RecieverContainer extends StatelessWidget {
                       child: Text(
                         getFormatedTime(time),
                         style: listTileTrailingText,
-                      ))
+                      )),
+                  Positioned(
+                      bottom: -20,
+                      left: 0,
+                      child: Text(
+                        userName,
+                        style: listTileTrailingText,
+                      )),
                 ],
               ),
             ),

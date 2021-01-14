@@ -67,6 +67,11 @@ class _ContactScreenState extends State<ContactScreen> {
                     child: StreamBuilder<ContactModel>(
                         stream: contactBloc.contacts,
                         builder: (context, snapshot) {
+                          if(snapshot.error == 'loading'){
+                            return Center(
+                              child:CircularProgressIndicator()
+                            );
+                          }
                           if (!snapshot.hasData) {
                             return Center(
                               child: Text(

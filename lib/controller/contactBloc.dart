@@ -63,6 +63,7 @@ class ContactBloc {
 
   //func
   getContact() async {
+    _contacts.addError('loading');
     var data = await contactService.getContact();
     changeContacts(data);
   }

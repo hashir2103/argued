@@ -1,5 +1,8 @@
+import 'package:argued/ArguedConfigs/constant.dart';
 import 'package:argued/controller/DashboadBloc.dart';
 import 'package:argued/frontend/widgets/AppDialogs.dart';
+import 'package:argued/frontend/widgets/AppUserProfileCircle.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chewie/chewie.dart';
 import 'package:flutter/material.dart';
 import 'package:argued/ArguedConfigs/color.dart';
@@ -78,8 +81,14 @@ class AppCard extends StatefulWidget {
 
 class _AppCardState extends State<AppCard> {
   ChewieController _chewieController;
+  bool showVideo = false;
+  bool playing = true;
   @override
   void initState() {
+    super.initState();
+  }
+
+  startVideo() {
     _chewieController = ChewieController(
         deviceOrientationsAfterFullScreen: [
           DeviceOrientation.landscapeLeft,
@@ -88,10 +97,11 @@ class _AppCardState extends State<AppCard> {
           DeviceOrientation.portraitUp
         ],
         videoPlayerController: VideoPlayerController.network(widget.videoURL),
-        aspectRatio: 5 / 2.3,
+        // aspectRatio: 5 / 2.3,
+        aspectRatio: 16 / 9,
         allowFullScreen: true,
         autoInitialize: true,
-        autoPlay: false,
+        autoPlay: true,
         looping: false,
         errorBuilder: (context, errorMsg) {
           return Center(
@@ -101,13 +111,14 @@ class _AppCardState extends State<AppCard> {
             size: 30,
           ));
         });
-    super.initState();
+    return _chewieController;
   }
 
   @override
   void dispose() {
     _chewieController.videoPlayerController.dispose();
     _chewieController.dispose();
+    _chewieController.pause();
     super.dispose();
   }
 
@@ -120,13 +131,10 @@ class _AppCardState extends State<AppCard> {
         child: Wrap(
           children: [
             ListTile(
-              leading: Container(
-                child: CircleAvatar(
-                  radius: 25,
-                  backgroundImage: NetworkImage(
-                    widget.userPostCover,
-                  ),
-                ),
+              leading: UserCirle(
+                profilePic: widget.userPostCover ?? kTempImage,
+                height: 52,
+                width: 52,
               ),
               title: Text(
                 widget.userName,
@@ -156,15 +164,50 @@ class _AppCardState extends State<AppCard> {
                 ],
               ),
             ),
-            Container(
-              height: SizeConfig.screenHeight * 0.2,
-              decoration: BoxDecoration(
-                color: Colors.white,
-                // imagpfit: BoxFit.cover)
-              ),
-              child: Chewie(
-                controller: _chewieController,
-              ),
+            GestureDetector(
+              onTap: () {
+                if (!showVideo) {
+                  setState(() {
+                    showVideo = true;
+                  });
+                }
+              },
+              child: Container(
+                  height: SizeConfig.screenHeight * 0.2,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                  ),
+                  child: (showVideo)
+                      ? Chewie(
+                          controller: startVideo(),
+                        )
+                      : Stack(
+                          alignment: Alignment.topRight,
+                          children: [
+                            CachedNetworkImage(
+                              height: SizeConfig.screenHeight * 0.2,
+                              width: double.infinity,
+                              fit: BoxFit.cover,
+                              imageUrl: widget.thumbnail ?? kTempImage,
+                              placeholder: (context, url) =>
+                                  Center(child: CircularProgressIndicator()),
+                              errorWidget: (context, url, error) =>
+                                  Center(child: Icon(Icons.error)),
+                            ),
+                            Positioned(
+                              top: 8,
+                              right: 8,
+                              child: CircleAvatar(
+                                  backgroundColor: Colors.white,
+                                  child: Center(
+                                      child: Icon(
+                                    Icons.play_arrow_sharp,
+                                    // size: 45,
+                                    color: primaryTextColor,
+                                  ))),
+                            ),
+                          ],
+                        )),
             ),
             Padding(
               padding: EdgeInsets.only(left: 12, top: 8),
@@ -387,8 +430,14 @@ class AppCard2 extends StatefulWidget {
 
 class _AppCard2State extends State<AppCard2> {
   ChewieController _chewieController;
+  bool showVideo = false;
+  bool playing = true;
   @override
   void initState() {
+    super.initState();
+  }
+
+  startVideo() {
     _chewieController = ChewieController(
         deviceOrientationsAfterFullScreen: [
           DeviceOrientation.landscapeLeft,
@@ -397,12 +446,10 @@ class _AppCard2State extends State<AppCard2> {
           DeviceOrientation.portraitUp
         ],
         videoPlayerController: VideoPlayerController.network(widget.videoURL),
-        aspectRatio: 16 / 9,
-        showControlsOnInitialize: false,
-        // showControls: false,
+        aspectRatio: 16/9,
         allowFullScreen: true,
         autoInitialize: true,
-        autoPlay: false,
+        autoPlay: true,
         looping: false,
         errorBuilder: (context, errorMsg) {
           return Center(
@@ -412,13 +459,14 @@ class _AppCard2State extends State<AppCard2> {
             size: 30,
           ));
         });
-    super.initState();
+    return _chewieController;
   }
 
   @override
   void dispose() {
     _chewieController.videoPlayerController.dispose();
     _chewieController.dispose();
+    _chewieController.pause();
     super.dispose();
   }
 
@@ -430,16 +478,50 @@ class _AppCard2State extends State<AppCard2> {
       child: Card(
         child: Wrap(
           children: [
-            Container(
-              height: 180,
-              decoration: BoxDecoration(
-                color: Colors.white,
-                // image: DecorationImage(
-                //     image: NetworkImage(widget.thumbnail),
-                //     fit: BoxFit.cover)
-              ),
-              child: Chewie(
-                controller: _chewieController,
+            GestureDetector(
+              onTap: () {
+                if (!showVideo) {
+                  setState(() {
+                    showVideo = true;
+                  });
+                }
+              },
+              child: Container(
+                height: 180,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                ),
+                child: (showVideo)
+                    ? Chewie(
+                        controller: startVideo(),
+                      )
+                    : Stack(
+                        alignment: Alignment.topRight,
+                        children: [
+                          CachedNetworkImage(
+                            height: 180,
+                            width: double.infinity,
+                            fit: BoxFit.cover,
+                            imageUrl: widget.thumbnail ?? kTempImage,
+                            placeholder: (context, url) =>
+                                Center(child: CircularProgressIndicator()),
+                            errorWidget: (context, url, error) =>
+                                Center(child: Icon(Icons.error)),
+                          ),
+                          Positioned(
+                            top: 8,
+                            right: 8,
+                            child: CircleAvatar(
+                                backgroundColor: Colors.white,
+                                child: Center(
+                                    child: Icon(
+                                  Icons.play_arrow_sharp,
+                                  // size: 45,
+                                  color: primaryTextColor,
+                                ))),
+                          ),
+                        ],
+                      ),
               ),
             ),
             Wrap(
@@ -573,11 +655,10 @@ class _AppCard2State extends State<AppCard2> {
               thickness: 1,
             ),
             ListTile(
-              leading: CircleAvatar(
-                radius: 24,
-                backgroundImage: NetworkImage(
-                  widget.userPostCover,
-                ),
+              leading: UserCirle(
+                profilePic: widget.userPostCover ?? kTempImage,
+                height: 52,
+                width: 52,
               ),
               title: Text(
                 widget.userName,

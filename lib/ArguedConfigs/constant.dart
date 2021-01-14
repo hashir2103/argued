@@ -33,6 +33,7 @@ const double kbaseVerticalPadding = 8.0;
 
 //url
 const String kendpoint = 'https://argued.com';
+// const String kendpoint = 'http://34.235.85.190';
 const String ksignUp = '/api/user/signup-mobile';
 const String kLogin = '/api/user/login';
 const String kverifyCode = '/api/user/verify-user';
@@ -52,6 +53,7 @@ const String kChatRoom = '/api/chat-room/messages/';
 const String kInviteContact = '/api/user/by-username/';
 const String kAddContact = '/api/contact-requests';
 const String kGroups = '/api/group/my-groups/';
+const String kGroupRequest = '/api/group-requests';
 const String kGroupMessages = '/api/group/messages/';
 const String kGroupMessagesread = '/api/group/read/';
 const String kChatMessagesread = '/api/user/read/';

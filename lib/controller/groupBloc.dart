@@ -4,6 +4,8 @@ import 'package:argued/controller/LocationBloc.dart';
 import 'package:argued/frontend/widgets/AppDialogs.dart';
 import 'package:argued/model/catergoryModel.dart';
 import 'package:argued/model/chatModel.dart';
+import 'package:argued/model/groupDetailModel.dart';
+import 'package:flutter/widgets.dart';
 import 'package:rxdart/rxdart.dart';
 
 class GroupBloc {
@@ -11,6 +13,7 @@ class GroupBloc {
   final groupServices = GroupService();
   final _validGroup = BehaviorSubject<bool>();
   final _groupChat = BehaviorSubject<ChatModel>();
+  final _groupDetails = BehaviorSubject<GroupDetailsModel>();
   final _searchQuery = BehaviorSubject<String>();
   final _catergories = BehaviorSubject<CategoryModel>();
   final _subcatergories = BehaviorSubject<List<Subcategory>>();
@@ -22,11 +25,13 @@ class GroupBloc {
   final _subtopicId = BehaviorSubject<String>();
   final _groups = BehaviorSubject<Map<dynamic, dynamic>>();
   final _creategroup = BehaviorSubject<Map<dynamic, dynamic>>();
+  final _inviteUser = PublishSubject<Map<dynamic, dynamic>>();
   final _audience = BehaviorSubject<String>.seeded('Private');
 
   //streams
   Stream<bool> get validgroup => _validGroup.stream;
   Stream<ChatModel> get groupChat => _groupChat.stream;
+  Stream<GroupDetailsModel> get groupDetails => _groupDetails.stream;
   Stream<String> get searchQuery => _searchQuery.stream;
   Stream<String> get audience => _audience.stream;
   Stream<String> get name => _name.stream;
@@ -37,6 +42,7 @@ class GroupBloc {
   Stream<List<Subcategory>> get subcatergories => _subcatergories.stream;
   Stream<Map<dynamic, dynamic>> get groups => _groups.stream;
   Stream<Map<dynamic, dynamic>> get creategroup => _creategroup.stream;
+  Stream<Map<dynamic, dynamic>> get inviteUser => _inviteUser.stream;
 
   //sinks
   Function(String) get changeSearchQuery => _searchQuery.sink.add;
@@ -55,6 +61,7 @@ class GroupBloc {
   //dispose
   dispose() {
     _groupChat.close();
+    _inviteUser.close();
     _validGroup.close();
     _searchQuery.close();
     _subcatergories.close();
@@ -67,6 +74,7 @@ class GroupBloc {
     _topicId.close();
     _subtopicId.close();
     _catergories.close();
+    _groupDetails.close();
   }
 
   //FUNC
@@ -76,22 +84,36 @@ class GroupBloc {
     _groups.add(data);
   }
 
-  getGroupMessage(String groupId) async {
+  inviteUsers(String username, String groupId, BuildContext context) async {
+    MyAppDailog().appResponseDailog(context, inviteUser, 1);
+    var data = await groupServices.inviteUser(username, groupId);
+    _inviteUser.add(data);
+  }
+
+  Future<ChatModel> getGroupMessage(String groupId) async {
     _groupChat.addError("loading");
     var data = await groupServices.getGroupMessage(groupId);
+    groupServices.groupMessageRead(groupId);
     if (data['data'] != [] && data['data'] != null) {
-      var c = ChatModel.fromJson(data);
-      _groupChat.add(c);
+      return ChatModel.fromJson(data);
     } else {
-      _groupChat.addError('error');
+      return ChatModel();
     }
-    await groupServices.groupMessageRead(groupId);
-    getGroups();
+    // getGroups();
   }
 
   getCategorise() async {
     var res = await groupServices.getCategory();
     _catergories.add(res);
+  }
+
+  getGroupDetails(String groupId) async {
+    var res = await groupServices.getGroupDetail(groupId);
+    if (res['code'] == 200 && res['data'] != null) {
+      _groupDetails.add(GroupDetailsModel.fromJson(res));
+    } else {
+      _groupDetails.addError('Disable');
+    }
   }
 
   createGroup(LocationBloc locationBloc, context, AuthBloc authBloc) async {

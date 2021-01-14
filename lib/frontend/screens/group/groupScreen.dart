@@ -7,6 +7,7 @@ import 'package:argued/frontend/widgets/AppDialogs.dart';
 import 'package:argued/frontend/widgets/AppTextField.dart';
 import 'package:argued/frontend/widgets/AppUserProfileCircle.dart';
 import 'package:argued/frontend/widgets/AppappBar.dart';
+import 'package:argued/main.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -93,8 +94,6 @@ class _GroupScreenState extends State<GroupScreen> {
                                           snapshot.data.toLowerCase())) {
                                         return GestureDetector(
                                             onTap: () {
-                                              groupBloc
-                                                  .getGroupMessage(c['_id']);
                                               Navigator.pushNamed(
                                                   context, kGroupChatScreen,
                                                   arguments:
@@ -102,6 +101,7 @@ class _GroupScreenState extends State<GroupScreen> {
                                                           "");
                                             },
                                             child: groupTile(
+                                                groupId: c['_id'],
                                                 unreadCount:
                                                     c['unreadCount'] ?? "",
                                                 groupPic: c['profilePic'] ??
@@ -137,7 +137,6 @@ class _GroupScreenState extends State<GroupScreen> {
                                     var c = data[index];
                                     return GestureDetector(
                                         onTap: () {
-                                          groupBloc.getGroupMessage(c['_id']);
                                           Navigator.pushNamed(
                                               context, kGroupChatScreen,
                                               arguments:
@@ -145,6 +144,7 @@ class _GroupScreenState extends State<GroupScreen> {
                                                       "");
                                         },
                                         child: groupTile(
+                                            groupId: c['_id'],
                                             unreadCount: c['unreadCount'] ?? "",
                                             groupPic:
                                                 c['profilePic'] ?? kTempImage,
@@ -179,6 +179,7 @@ class _GroupScreenState extends State<GroupScreen> {
     @required String name,
     @required String description,
     @required String membersCount,
+    @required String groupId,
     @required String countryName,
     @required DateTime lastMessageTime,
     @required DateTime createdAt,
@@ -197,7 +198,9 @@ class _GroupScreenState extends State<GroupScreen> {
                 children: [
                   GestureDetector(
                     onTap: () {
-                      MyAppDailog().groupDetailsDailog(context);
+                      print(groupId);
+                      groupBloc.getGroupDetails(groupId);
+                      MyAppDailog().groupDetailsDailog(context,groupId);
                     },
                     child: UserCirle(
                       profilePic: groupPic,

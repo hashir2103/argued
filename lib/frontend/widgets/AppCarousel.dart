@@ -1,3 +1,4 @@
+import 'package:argued/ArguedConfigs/color.dart';
 import 'package:argued/ArguedConfigs/constant.dart';
 import 'package:argued/ArguedConfigs/sizeConfig.dart';
 import 'package:argued/controller/DashboadBloc.dart';
@@ -25,51 +26,70 @@ class AppCarousel extends StatelessWidget {
           }
           var s = snapshot.data.data;
 
-          return CarouselSlider(
-            options: CarouselOptions(
-              height: 430,
-              aspectRatio: 16 / 9,
-              viewportFraction: 0.75,
-              initialPage: 0,
-              enableInfiniteScroll: true,
-              enlargeCenterPage: true,
-              // onPageChanged: callbackFunction,
-              scrollDirection: Axis.horizontal,
-            ),
-            items: s.map((i) {
-              bool alreadyRate = false;
-              i.userRatings.forEach((e) {
-                if (e.createdBy == authBloc.getuserId) {
-                  alreadyRate = true;
-                }
-              });
-              return Builder(
-                builder: (BuildContext context) {
-                  return Container(
-                      width: MediaQuery.of(context).size.width,
-                      margin: EdgeInsets.symmetric(horizontal: 5.0),
-                      child: AppCard2(
-                          alreadyRated: alreadyRate,
-                          hostId: i.createdBy.id,
-                          rating: i.rating.toString(),
-                          videoURL: i.video.file,
-                          thumbnail: i.video.thumbnail,
-                          stand: i.stand.toString().split(".")[1] ?? "",
-                          userName: i.details.userName
-                                  .toString()
-                                  .split(".")[1]
-                                  .toLowerCase() ??
-                              "",
-                          topicName: i.details.topicName ?? "",
-                          categoryName: i.details.categoryName ?? '',
-                          subCategoryName: i.details.subCategoryName ?? '',
-                          language: i.language.toString().split(".")[1] ?? '',
-                          createdAt: i.createdAt,
-                          opinionID: i.id ?? '',
-                          userPostCover: i.createdBy.profilePic??kTempImage));
-                },
-              );
-            }).toList(),
+          return Stack(
+            children: [
+              Positioned(
+                  top: 200,
+                  left: -3,
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 2),
+                    child: Icon(
+                      Icons.arrow_back_ios,
+                      color: primaryTextColor,
+                      size: 35,
+                    ),
+                  )),
+              Positioned(
+                  top: 200,
+                  right: -3,
+                  child: Icon(
+                    Icons.arrow_forward_ios,
+                    color: primaryTextColor,
+                    size: 35,
+                  )),
+              CarouselSlider(
+                options: CarouselOptions(
+                  height: 430,
+                  viewportFraction: 0.878,
+                  initialPage: 0,
+                  enableInfiniteScroll: true,
+                  enlargeCenterPage: true,
+                  // onPageChanged: callbackFunction,
+                  scrollDirection: Axis.horizontal,
+                ),
+                items: s.map((i) {
+                  bool alreadyRate = false;
+                  i.userRatings.forEach((e) {
+                    if (e.createdBy == authBloc.getuserId) {
+                      alreadyRate = true;
+                    }
+                  });
+                  return Builder(
+                    builder: (BuildContext context) {
+                      return Container(
+                          width: MediaQuery.of(context).size.width,
+                          margin: EdgeInsets.symmetric(horizontal: 5.0),
+                          child: AppCard2(
+                              alreadyRated: alreadyRate,
+                              hostId: i.createdBy.id,
+                              rating: i.rating.toString(),
+                              videoURL: i.video.file,
+                              thumbnail: i.video.thumbnail,
+                              stand: i.stand,
+                              userName: i.details.userName,
+                              topicName: i.details.topicName ?? "",
+                              categoryName: i.details.categoryName ?? '',
+                              subCategoryName: i.details.subCategoryName ?? '',
+                              language: i.language ?? '',
+                              createdAt: i.createdAt,
+                              opinionID: i.id ?? '',
+                              userPostCover:
+                                  i.createdBy.profilePic ?? kTempImage));
+                    },
+                  );
+                }).toList(),
+              ),
+            ],
           );
         });
   }

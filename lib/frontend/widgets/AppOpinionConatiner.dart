@@ -31,7 +31,8 @@ class OpinionContainer extends StatefulWidget {
     this.rating = '',
     this.videoUrl = '',
     this.videoName = '',
-    this.thumbnail = kTempImage, this.createdBy,
+    this.thumbnail = kTempImage,
+    this.createdBy,
   });
   @override
   _OpinionContainerState createState() => _OpinionContainerState();
@@ -43,6 +44,10 @@ class _OpinionContainerState extends State<OpinionContainer> {
   bool playing = true;
   @override
   void initState() {
+    super.initState();
+  }
+
+  startVideo() {
     _chewieController = ChewieController(
         deviceOrientationsAfterFullScreen: [
           DeviceOrientation.portraitUp,
@@ -52,13 +57,14 @@ class _OpinionContainerState extends State<OpinionContainer> {
         ],
         videoPlayerController: VideoPlayerController.network(widget.videoUrl,
             videoPlayerOptions: VideoPlayerOptions(mixWithOthers: true)),
-        aspectRatio: 2.1 / 2.7,
+        // aspectRatio: 2.1 / 2.7,
+        aspectRatio: 16 / 9,
         showControlsOnInitialize: false,
         // fullScreenByDefault: true,
         showControls: false,
         allowFullScreen: true,
         autoInitialize: true,
-        autoPlay: false,
+        autoPlay: true,
         looping: false,
         errorBuilder: (context, errorMsg) {
           return Center(
@@ -68,13 +74,14 @@ class _OpinionContainerState extends State<OpinionContainer> {
             size: 30,
           ));
         });
-    super.initState();
+    return _chewieController;
   }
 
   @override
   void dispose() {
     _chewieController.videoPlayerController.dispose();
     _chewieController.dispose();
+    _chewieController.pause();
     super.dispose();
   }
 
@@ -93,55 +100,36 @@ class _OpinionContainerState extends State<OpinionContainer> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   GestureDetector(
-                    onDoubleTap: () {
-                      _chewieController.pause();
-                      Navigator.pushNamed(context, kSingleOpinionScreen,
-                          arguments: "${widget.videoName},${widget.videoUrl},${widget.createdBy}");
-                    },
                     onTap: () {
-                      if (!showVideo) {
-                        setState(() {
-                          showVideo = true;
-                        });
-                      }
-                      _chewieController.togglePause();
+                      Navigator.pushNamed(context, kSingleOpinionScreen,
+                          arguments:
+                              "${widget.videoName},${widget.videoUrl},${widget.createdBy}");
                     },
                     child: Stack(
                       alignment: Alignment.topRight,
                       children: [
                         Container(
-                          decoration: (showVideo)
-                              ? BoxDecoration(
-                                  borderRadius: BorderRadius.circular(12),
-                                )
-                              : BoxDecoration(
-                                  image: DecorationImage(
-                                      image: NetworkImage(widget.thumbnail),
-                                      fit: BoxFit.cover),
-                                  borderRadius: BorderRadius.circular(12),
-                                ),
+                          decoration: BoxDecoration(
+                            image: DecorationImage(
+                                image: NetworkImage(widget.thumbnail),
+                                fit: BoxFit.cover),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
                           height: 190,
                           width: SizeConfig.screenWidth * .35,
-                          child: (showVideo)
-                              ? Chewie(
-                                  controller: _chewieController,
-                                )
-                              : Container(),
-                        ),
-                        (showVideo)
-                            ? Container()
-                            : Positioned(
-                                top: 8,
-                                right: 8,
-                                child: CircleAvatar(
-                                    backgroundColor: Colors.white,
-                                    child: Center(
-                                        child: Icon(
-                                      Icons.play_arrow_sharp,
-                                      // size: 45,
-                                      color: primaryTextColor,
-                                    ))),
-                              ),
+                          child: Positioned(
+                            top: 8,
+                            right: 8,
+                            child: CircleAvatar(
+                                backgroundColor: Colors.white,
+                                child: Center(
+                                    child: Icon(
+                                  Icons.play_arrow_sharp,
+                                  // size: 45,
+                                  color: primaryTextColor,
+                                ))),
+                          ),
+                        )
                       ],
                     ),
                   ),
@@ -240,10 +228,10 @@ class _OpinionContainerState extends State<OpinionContainer> {
                             child: RichText(
                                 text: TextSpan(children: [
                               TextSpan(
-                                  text: widget.rating.split('.')[0],
+                                  text: "${widget.rating.split('.')[0]}%",
                                   style: listTileTitleText),
                               TextSpan(
-                                  text: ' Percent',
+                                  text: ' Avg Rating',
                                   style: listTileTitleText.copyWith(
                                       color: Colors.red)),
                             ])),

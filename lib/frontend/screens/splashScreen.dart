@@ -4,7 +4,6 @@ import 'package:argued/backend/hiveDB.dart';
 import 'package:argued/controller/AuthBloc.dart';
 
 import 'package:argued/frontend/screens/loginScreen.dart';
-import 'package:argued/frontend/widgets/AppIcon.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -37,11 +36,21 @@ class _SplashScreenState extends State<SplashScreen> {
                 splashTransition: SplashTransition.rotationTransition,
                 curve: Curves.easeInOutBack,
                 nextScreen: LoginScreen(),
-                splash: AppIcon(widthPortion: 0.7,heigthPortion: 0.5,),
+                splash: Center(child: Container(
+                  // height: 400,
+                  // width: 150,
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                      image: AssetImage('assets/appIcon.jpeg'),
+                      fit: BoxFit.fitHeight
+                      
+                    )
+                  ),
+                ),)
               ),
             ),
             Expanded(
-              flex: 4,
+              flex: 5,
               child: Padding(
                 padding: const EdgeInsets.all(12.0),
                 child: Text(

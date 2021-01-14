@@ -128,6 +128,7 @@ class AuthBloc {
   }
 
   String get getuserId => _loginResponse.value.id;
+  String get getUserProfilePic => _loginResponse.value.profilePic;
 
   Map get responseValue {
     return _response.value;
@@ -164,10 +165,13 @@ class AuthBloc {
     var loginModel =
         LoginModel(username: _username.value, password: _password.value.trim());
     var response = await authServices.login(loginModel);
-    if (response['code'] == 200) {
-      var l = LoginResponse.fromJson(response['data']);
-      changeLoginResponse(l);
-      prefs.setString('Token', _loginResponse.value.token);
+    print(response);
+    if (response != null) {
+      if (response['code'] == 200) {
+        var l = LoginResponse.fromJson(response['data']);
+        changeLoginResponse(l);
+        prefs.setString('Token', _loginResponse.value.token);
+      }
     }
     // print(response);
     changeResponse(response);

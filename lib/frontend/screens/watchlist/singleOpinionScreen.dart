@@ -30,7 +30,7 @@ class _SingleOpinionState extends State<SingleOpinion> {
         ],
         videoPlayerController: VideoPlayerController.network(widget.videoUrl,
             videoPlayerOptions: VideoPlayerOptions(mixWithOthers: true)),
-        aspectRatio: 18 / 9,
+        aspectRatio: 16 / 9,
         showControlsOnInitialize: true,
         showControls: true,
         allowFullScreen: true,
@@ -52,6 +52,7 @@ class _SingleOpinionState extends State<SingleOpinion> {
   void dispose() {
     _chewieController.videoPlayerController.dispose();
     _chewieController.dispose();
+    _chewieController.pause();
     super.dispose();
   }
 
