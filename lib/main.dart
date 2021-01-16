@@ -8,7 +8,7 @@ import 'package:argued/controller/catergoryBloc.dart';
 import 'package:argued/controller/contactBloc.dart';
 import 'package:argued/controller/groupBloc.dart';
 import 'package:argued/controller/watchListBloc.dart';
-import 'package:argued/frontend/screens/splashScreen.dart';
+import 'package:argued/frontend/screens/StartScreen/startScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -62,7 +62,7 @@ class _MyAppState extends State<MyApp> {
           debugShowCheckedModeBanner: false,
           onGenerateRoute: Routes.materialPageRoute,
           theme: theme(),
-          home: SplashScreen(),
+          home: StartScreen(),
         ));
   }
 }

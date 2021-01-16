@@ -1,4 +1,4 @@
-import 'package:argued/ArguedConfigs/color.dart';
+ import 'package:argued/ArguedConfigs/color.dart';
 import 'package:argued/ArguedConfigs/constant.dart';
 import 'package:argued/controller/AuthBloc.dart';
 import 'package:argued/frontend/widgets/AppDialogs.dart';

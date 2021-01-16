@@ -1,9 +1,12 @@
+import 'dart:async';
+
 import 'package:argued/ArguedConfigs/color.dart';
 import 'package:argued/ArguedConfigs/sizeConfig.dart';
 import 'package:argued/ArguedConfigs/textStyles.dart';
 import 'package:argued/controller/DashboadBloc.dart';
 import 'package:argued/frontend/screens/group/groupDetails.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class MyAppDailog {
   loading(context) {
@@ -147,13 +150,126 @@ class MyAppDailog {
 
   ratingDailog(
     rating,
-    DashboardBloc dashboardBloc,
     topicName,
     userName,
     context,
     onTap,
   ) {
+    showDialog(
+        context: context,
+        builder: (context) => RatingBox(
+              rating: rating,
+              topicName: topicName,
+              userName: userName,
+              onTap: onTap,
+            ));
+  }
+
+  groupDetailsDailog(context, groupId) {
     var dailog = Dialog(
+        elevation: 0,
+        backgroundColor: Colors.transparent,
+        child: Container(
+            width: SizeConfig.screenWidth,
+            padding: EdgeInsets.symmetric(vertical: 12, horizontal: 12),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(15),
+            ),
+            child: GroupDetails(
+              groupId: groupId,
+            )));
+    showDialog(context: context, builder: (context) => dailog);
+  }
+}
+
+emojiContainer(DashboardBloc dashboardBloc) {
+  return StreamBuilder<List<bool>>(
+      stream: dashboardBloc.emojiList,
+      builder: (context, snapshot) {
+        return Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            GestureDetector(
+              onTap: () {
+                dashboardBloc.changeEmojiList([true, false, false]);
+              },
+              child: AnimatedContainer(
+                duration: Duration(milliseconds: 100),
+                padding: EdgeInsets.symmetric(horizontal: 20),
+                height: snapshot.data[0] == true ? 80 : 40,
+                width: snapshot.data[0] == true ? 80 : 40,
+                decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    image: DecorationImage(
+                        image: AssetImage('assets/sad.png'),
+                        fit: BoxFit.contain)),
+              ),
+            ),
+            SizedBox(
+              width: 8,
+            ),
+            GestureDetector(
+              onTap: () {
+                dashboardBloc.changeEmojiList([false, true, false]);
+              },
+              child: AnimatedContainer(
+                duration: Duration(milliseconds: 100),
+                padding: EdgeInsets.symmetric(horizontal: 20),
+                height: snapshot.data[1] == true ? 80 : 40,
+                width: snapshot.data[1] == true ? 80 : 40,
+                decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    image: DecorationImage(
+                        image: AssetImage('assets/ok.png'),
+                        fit: BoxFit.contain)),
+              ),
+            ),
+            SizedBox(
+              width: 8,
+            ),
+            GestureDetector(
+              onTap: () {
+                dashboardBloc.changeEmojiList([false, false, true]);
+              },
+              child: AnimatedContainer(
+                duration: Duration(milliseconds: 100),
+                padding: EdgeInsets.symmetric(horizontal: 20),
+                height: snapshot.data[2] == true ? 80 : 40,
+                width: snapshot.data[2] == true ? 80 : 40,
+                decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    image: DecorationImage(
+                        image: AssetImage('assets/happy.png'),
+                        fit: BoxFit.contain)),
+              ),
+            ),
+          ],
+        );
+      });
+}
+
+// ignore: must_be_immutable
+class RatingBox extends StatefulWidget {
+  String rating;
+  final String userName;
+  final String topicName;
+  final Function onTap;
+
+  RatingBox(
+      {Key key, this.rating, this.userName, this.topicName, this.onTap})
+      : super(key: key);
+  @override
+  _RatingBoxState createState() => _RatingBoxState();
+}
+
+class _RatingBoxState extends State<RatingBox> {
+
+  @override
+  Widget build(BuildContext context) {
+    print("Rating : ${widget.rating}");
+    var dashboardBloc = Provider.of<DashboardBloc>(context);
+    return Dialog(
       elevation: 0,
       backgroundColor: Colors.transparent,
       child: Container(
@@ -176,7 +292,7 @@ class MyAppDailog {
                 ],
               ),
               Text(
-                topicName ?? '',
+                widget.topicName ?? '',
                 style: listTileTitleText2,
               ),
               SizedBox(
@@ -200,9 +316,9 @@ class MyAppDailog {
                         size: 16,
                       ),
                       Text(
-                        '$rating% avg',
+                        '${widget.rating}% avg',
                         style: listTileTrailingText.copyWith(fontSize: 16),
-                      )
+                      ),
                     ],
                   ),
                   // Wrap(
@@ -299,7 +415,7 @@ class MyAppDailog {
                 thickness: 1,
               ),
               GestureDetector(
-                onTap: onTap,
+                onTap: widget.onTap,
                 child: Container(
                   margin: EdgeInsets.only(top: 8),
                   padding: EdgeInsets.all(8),
@@ -319,87 +435,5 @@ class MyAppDailog {
             ],
           )),
     );
-    showDialog(context: context, builder: (context) => dailog);
   }
-
-  groupDetailsDailog(context,groupId) {
-    var dailog = Dialog(
-        elevation: 0,
-        backgroundColor: Colors.transparent,
-        child: Container(
-            width: SizeConfig.screenWidth,
-            padding: EdgeInsets.symmetric(vertical: 12, horizontal: 12),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(15),
-            ),
-            child: GroupDetails(groupId: groupId,)));
-    showDialog(context: context, builder: (context) => dailog);
-  }
-}
-
-emojiContainer(DashboardBloc dashboardBloc) {
-  return StreamBuilder<List<bool>>(
-      stream: dashboardBloc.emojiList,
-      builder: (context, snapshot) {
-        return Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            GestureDetector(
-              onTap: () {
-                dashboardBloc.changeEmojiList([true, false, false]);
-              },
-              child: AnimatedContainer(
-                duration: Duration(milliseconds: 100),
-                padding: EdgeInsets.symmetric(horizontal: 20),
-                height: snapshot.data[0] == true ? 80 : 40,
-                width: snapshot.data[0] == true ? 80 : 40,
-                decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    image: DecorationImage(
-                        image: AssetImage('assets/sad.png'),
-                        fit: BoxFit.contain)),
-              ),
-            ),
-            SizedBox(
-              width: 8,
-            ),
-            GestureDetector(
-              onTap: () {
-                dashboardBloc.changeEmojiList([false, true, false]);
-              },
-              child: AnimatedContainer(
-                duration: Duration(milliseconds: 100),
-                padding: EdgeInsets.symmetric(horizontal: 20),
-                height: snapshot.data[1] == true ? 80 : 40,
-                width: snapshot.data[1] == true ? 80 : 40,
-                decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    image: DecorationImage(
-                        image: AssetImage('assets/ok.png'),
-                        fit: BoxFit.contain)),
-              ),
-            ),
-            SizedBox(
-              width: 8,
-            ),
-            GestureDetector(
-              onTap: () {
-                dashboardBloc.changeEmojiList([false, false, true]);
-              },
-              child: AnimatedContainer(
-                duration: Duration(milliseconds: 100),
-                padding: EdgeInsets.symmetric(horizontal: 20),
-                height: snapshot.data[2] == true ? 80 : 40,
-                width: snapshot.data[2] == true ? 80 : 40,
-                decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    image: DecorationImage(
-                        image: AssetImage('assets/happy.png'),
-                        fit: BoxFit.contain)),
-              ),
-            ),
-          ],
-        );
-      });
 }

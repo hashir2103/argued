@@ -88,18 +88,21 @@ class DashboardBloc {
     String stand = '';
     for (int i = 0; i < _emojiList.value.length; i++) {
       if (_emojiList.value[0] == true) {
-        stand = 'against';
+        stand = 'Against';
       } else if (_emojiList.value[1] == true) {
-        stand = 'Moderate';
+        stand = 'Netural';
       } else {
         stand = "For";
       }
     }
     var rating = {
-      "rating": _rating.value.toString().split('.')[0],
+      "rating": int.parse(_rating.value.toString().split('.')[0]),
       "stand": stand
     };
+
     var data = await dashboardServices.ratingOpinion(opinionId, rating);
+    print("opinionId : $opinionId");
+    print(data);
     _ratingResponse.add(data);
   }
 

@@ -9,6 +9,7 @@ import 'package:argued/frontend/widgets/AppBottomSheet.dart';
 import 'package:argued/frontend/widgets/AppButton.dart';
 import 'package:argued/frontend/widgets/AppDialogs.dart';
 import 'package:argued/frontend/widgets/AppIcon.dart';
+import 'package:argued/frontend/widgets/AppPolicyDailog.dart';
 import 'package:argued/frontend/widgets/AppTextField.dart';
 import 'package:argued/frontend/widgets/PopUpMessage.dart';
 import 'package:flutter/gestures.dart';
@@ -192,8 +193,21 @@ class _LoginScreenState extends State<LoginScreen> {
         SizedBox(
           height: 8,
         ),
-        Text('Read our Terms & Conditions.',
-            style: TextStyle(color: primaryTextColor)),
+        InkWell(
+          borderRadius: BorderRadius.circular(20),
+          onTap: () {
+            showDialog(
+                context: context,
+                builder: (context) {
+                  return PolicyDailog(mdfilename: 'terms_conditions.md');
+                });
+          },
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 6,vertical: 4),
+            child: Text('Read our Terms & Conditions.',
+                style: TextStyle(color: primaryTextColor)),
+          ),
+        ),
       ],
     );
   }

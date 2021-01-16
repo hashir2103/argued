@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:argued/ArguedConfigs/constant.dart';
 import 'package:argued/controller/DashboadBloc.dart';
 import 'package:argued/frontend/widgets/AppDialogs.dart';
@@ -80,7 +82,9 @@ class AppCard extends StatefulWidget {
 }
 
 class _AppCardState extends State<AppCard> {
+  String avgRating;
   ChewieController _chewieController;
+  StreamSubscription _rating;
   bool showVideo = false;
   bool playing = true;
   @override
@@ -116,6 +120,7 @@ class _AppCardState extends State<AppCard> {
 
   @override
   void dispose() {
+    _rating.cancel();
     _chewieController.videoPlayerController.dispose();
     _chewieController.dispose();
     _chewieController.pause();
@@ -125,6 +130,17 @@ class _AppCardState extends State<AppCard> {
   @override
   Widget build(BuildContext context) {
     var dashboardBloc = Provider.of<DashboardBloc>(context);
+    _rating = dashboardBloc.ratingResponse.listen((event) {
+      if (event["data"]["avgRating"] != null) {
+        if (widget.opinionID == event['data']['opinion']) {
+          print('updating rating');
+          setState(() {
+            avgRating = event['data']["avgRating"].toString();
+          });
+        }
+      }
+    });
+    print("avgRating: $avgRating");
     var month = getMonth(widget.createdAt.month);
     return Container(
       child: Card(
@@ -281,12 +297,12 @@ class _AppCardState extends State<AppCard> {
                               'You Have already Rate it this Video', context,
                               showClosebutton: true);
                         } else {
+                          print("Avg : $avgRating , Rate : ${widget.rating}");
                           MyAppDailog().ratingDailog(
-                              widget.rating,
-                              dashboardBloc,
+                              avgRating ?? widget.rating,
                               widget.topicName,
                               widget.userName,
-                              context, () {
+                              context, () async {
                             dashboardBloc.postRating(
                                 widget.opinionID, widget.stand);
                             MyAppDailog().appResponseDailog(
@@ -356,7 +372,9 @@ class _AppCardState extends State<AppCard> {
                   child: GestureDetector(
                     onTap: () async {
                       await FlutterShare.share(
-                          title: widget.topicName, linkUrl: widget.videoURL);
+                          title: widget.topicName,
+                          linkUrl:
+                              "https://argued.com/opinion/${widget.opinionID}");
                     },
                     child: Padding(
                       padding: const EdgeInsets.all(12.0),
@@ -429,11 +447,23 @@ class AppCard2 extends StatefulWidget {
 }
 
 class _AppCard2State extends State<AppCard2> {
+  String avgRating;
   ChewieController _chewieController;
+  StreamSubscription _rating;
   bool showVideo = false;
   bool playing = true;
   @override
   void initState() {
+    var dashboardBloc = Provider.of<DashboardBloc>(context, listen: false);
+    _rating = dashboardBloc.ratingResponse.listen((event) {
+      if (event["data"]["avgRating"] != null) {
+        if (widget.opinionID == event['data']['opinion']) {
+          setState(() {
+            avgRating = event['data']["avgRating"].toString();
+          });
+        }
+      }
+    });
     super.initState();
   }
 
@@ -446,7 +476,7 @@ class _AppCard2State extends State<AppCard2> {
           DeviceOrientation.portraitUp
         ],
         videoPlayerController: VideoPlayerController.network(widget.videoURL),
-        aspectRatio: 16/9,
+        aspectRatio: 16 / 9,
         allowFullScreen: true,
         autoInitialize: true,
         autoPlay: true,
@@ -464,6 +494,7 @@ class _AppCard2State extends State<AppCard2> {
 
   @override
   void dispose() {
+    _rating.cancel();
     _chewieController.videoPlayerController.dispose();
     _chewieController.dispose();
     _chewieController.pause();
@@ -578,7 +609,7 @@ class _AppCard2State extends State<AppCard2> {
                             'You Have already Rate it this Video', context,
                             showClosebutton: true);
                       } else {
-                        MyAppDailog().ratingDailog(widget.rating, dashboardBloc,
+                        MyAppDailog().ratingDailog(avgRating ?? widget.rating,
                             widget.topicName, widget.userName, context, () {
                           dashboardBloc.postRating(
                               widget.opinionID, widget.stand);
@@ -623,7 +654,7 @@ class _AppCard2State extends State<AppCard2> {
                 GestureDetector(
                   onTap: () async {
                     await FlutterShare.share(
-                        title: widget.topicName, linkUrl: widget.videoURL);
+                        title: widget.topicName, linkUrl: "https://argued.com/opinion/${widget.opinionID}");
                   },
                   child: Padding(
                     padding: const EdgeInsets.all(12.0),

@@ -1,9 +1,11 @@
 import 'package:animated_splash_screen/animated_splash_screen.dart';
+import 'package:argued/ArguedConfigs/color.dart';
+import 'package:argued/ArguedConfigs/constant.dart';
 import 'package:argued/ArguedConfigs/textStyles.dart';
-import 'package:argued/backend/hiveDB.dart';
 import 'package:argued/controller/AuthBloc.dart';
 
 import 'package:argued/frontend/screens/loginScreen.dart';
+import 'package:argued/frontend/widgets/AppButton.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -13,7 +15,6 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
-  HiveDB db = HiveDB();
   @override
   void initState() {
     super.initState();
@@ -29,38 +30,61 @@ class _SplashScreenState extends State<SplashScreen> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Expanded(
-              flex: 3,
+              flex: 4,
               child: AnimatedSplashScreen(
-                animationDuration: Duration(milliseconds: 3000),
-                duration:3000,
-                splashTransition: SplashTransition.rotationTransition,
-                curve: Curves.easeInOutBack,
-                nextScreen: LoginScreen(),
-                splash: Center(child: Container(
-                  // height: 400,
-                  // width: 150,
-                  decoration: BoxDecoration(
-                    image: DecorationImage(
-                      image: AssetImage('assets/appIcon.jpeg'),
-                      fit: BoxFit.fitHeight
-                      
-                    )
-                  ),
-                ),)
-              ),
+                  animationDuration: Duration(milliseconds: 3000),
+                  duration: 3000,
+                  splashTransition: SplashTransition.rotationTransition,
+                  curve: Curves.easeInOutBack,
+                  nextScreen: SplashScreen(),
+                  splash: Center(
+                    child: Container(
+                      height: 90,
+                      width: 90,
+                      decoration: BoxDecoration(
+                          image: DecorationImage(
+                              image: AssetImage('assets/appIcon.jpeg'),
+                              fit: BoxFit.cover)),
+                    ),
+                  )),
             ),
             Expanded(
-              flex: 5,
-              child: Padding(
-                padding: const EdgeInsets.all(12.0),
-                child: Text(
-                  'Argument is the cornerstone of a free society. Anything preventing argument is oppression.',
-                  // 'Created By Electromates!',
-                  style: bigHeadingText().copyWith(color: Colors.black.withOpacity(0.5)),
-                  textAlign: TextAlign.center,
-                ),
-              ),
-            )
+              flex: 2,
+              child: AnimatedSplashScreen(
+                  animationDuration: Duration(milliseconds: 3000),
+                  duration: 3000,
+                  splashTransition: SplashTransition.slideTransition,
+                  curve: Curves.easeInOutBack,
+                  nextScreen: LoginScreen(),
+                  splash: Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 0),
+                    child: Text(
+                      'Argument is the cornerstone of a free society.',
+                      style: bigHeadingText().copyWith(
+                          color: Colors.black.withOpacity(1), fontSize: 26),
+                      textAlign: TextAlign.center,
+                    ),
+                  )),
+            ),
+            Expanded(
+              flex: 2,
+              child: AnimatedSplashScreen(
+                  animationDuration: Duration(milliseconds: 3000),
+                  duration: 3000,
+                  splashTransition: SplashTransition.slideTransitionReverse,
+                  curve: Curves.easeInOutBack,
+                  nextScreen: LoginScreen(),
+                  splash: Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 0),
+                    child: Text(
+                      'Anything preventing argument is oppression.',
+                      style: bigHeadingText().copyWith(
+                          color: Colors.black.withOpacity(1), fontSize: 26),
+                      textAlign: TextAlign.center,
+                    ),
+                  )),
+            ),
+            Expanded(flex: 4,child: Container())
           ],
         ),
       ),

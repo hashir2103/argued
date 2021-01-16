@@ -76,7 +76,7 @@ class AppCarousel extends StatelessWidget {
                               videoURL: i.video.file,
                               thumbnail: i.video.thumbnail,
                               stand: i.stand,
-                              userName: i.details.userName,
+                              userName: i.createdBy.displayName ?? i.details.userName,
                               topicName: i.details.topicName ?? "",
                               categoryName: i.details.categoryName ?? '',
                               subCategoryName: i.details.subCategoryName ?? '',

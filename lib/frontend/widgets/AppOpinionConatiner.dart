@@ -3,6 +3,7 @@ import 'package:argued/ArguedConfigs/constant.dart';
 import 'package:argued/ArguedConfigs/sizeConfig.dart';
 import 'package:argued/ArguedConfigs/textStyles.dart';
 import 'package:argued/frontend/screens/group/groupScreen.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chewie/chewie.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -96,44 +97,45 @@ class _OpinionContainerState extends State<OpinionContainer> {
         children: [
           Expanded(
               flex: 2,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.pushNamed(context, kSingleOpinionScreen,
-                          arguments:
-                              "${widget.videoName},${widget.videoUrl},${widget.createdBy}");
-                    },
-                    child: Stack(
-                      alignment: Alignment.topRight,
-                      children: [
-                        Container(
-                          decoration: BoxDecoration(
-                            image: DecorationImage(
-                                image: NetworkImage(widget.thumbnail),
-                                fit: BoxFit.cover),
-                            borderRadius: BorderRadius.circular(12),
+              child: GestureDetector(
+                onTap: () {
+                  Navigator.pushNamed(context, kSingleOpinionScreen,
+                      arguments:
+                          "${widget.videoName},${widget.videoUrl},${widget.createdBy}");
+                },
+                child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Stack(
+                        alignment: Alignment.center,
+                        children: [
+                          Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            height: 190,
+                            width: SizeConfig.screenWidth * .35,
+                            child: CachedNetworkImage(
+                              fit: BoxFit.cover,
+                              imageUrl: widget.thumbnail,
+                              placeholder: (context, url) =>
+                                  Center(child: CircularProgressIndicator()),
+                              errorWidget: (context, url, error) =>
+                                  Center(child: Icon(Icons.error)),
+                            ),
+                            // child: CircleAvatar(
+                            //     radius: 20,
+                            //     backgroundColor: Colors.white,
+                            //     child: Center(
+                            //         child: Icon(
+                            //       Icons.play_arrow_sharp,
+                            //       size: 20,
+                            //       color: primaryTextColor,
+                            //     ))),
                           ),
-                          height: 190,
-                          width: SizeConfig.screenWidth * .35,
-                          child: Positioned(
-                            top: 8,
-                            right: 8,
-                            child: CircleAvatar(
-                                backgroundColor: Colors.white,
-                                child: Center(
-                                    child: Icon(
-                                  Icons.play_arrow_sharp,
-                                  // size: 45,
-                                  color: primaryTextColor,
-                                ))),
-                          ),
-                        )
-                      ],
-                    ),
-                  ),
-                ],
+                        ],
+                      ),
+                    ]),
               )),
           SizedBox(
             width: 4,

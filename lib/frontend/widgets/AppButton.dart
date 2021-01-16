@@ -19,6 +19,7 @@ class AppButton extends StatelessWidget {
       this.fontSize = 20});
   @override
   Widget build(BuildContext context) {
+    SizeConfig.init(context);
     var authBloc = Provider.of<AuthBloc>(context);
     return StreamBuilder<bool>(
         stream: authBloc.button,
@@ -28,7 +29,9 @@ class AppButton extends StatelessWidget {
             child: Container(
               height: height,
               decoration: BoxDecoration(
-                color: snapshot.data==true? primaryColor.withOpacity(0.4): primaryColor,
+                color: snapshot.data == true
+                    ? primaryColor.withOpacity(0.4)
+                    : primaryColor,
                 borderRadius: BorderRadius.circular(10),
               ),
               child: Center(

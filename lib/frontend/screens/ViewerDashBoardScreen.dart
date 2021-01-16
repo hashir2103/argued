@@ -79,7 +79,7 @@ class _ViewerDashBoardScreenState extends State<ViewerDashBoardScreen> {
                       );
                     }
                     var s = snapshot.data;
-
+                    print("Opinion id for hotopic video thats is also one of the video that show Opinion Not Found ${s.id}");
                     return AppCard(
                       alreadyRated:
                           (s.createdBy.createdById == authBloc.getuserId),
@@ -89,13 +89,13 @@ class _ViewerDashBoardScreenState extends State<ViewerDashBoardScreen> {
                       thumbnail: s.video.thumbnail,
                       userPostCover: s.createdBy.profilePic,
                       stand: s.stand,
-                      userName: s.details.userName,
+                      userName: s.createdBy.displayName ?? s.details.userName,
                       topicName: s.details.topicName,
                       categoryName: s.details.categoryName,
                       subCategoryName: s.details.subCategoryName,
                       language: s.language,
                       createdAt: s.createdAt,
-                      opinionID: s.video.id,
+                      opinionID: s.id,
                     );
                   }),
               bodyHeading(heading: "Most watched in your selected topics"),
@@ -278,13 +278,13 @@ class InterestingToYou extends StatelessWidget {
                     userPostCover: s.createdBy.profilePic,
                     thumbnail: s.video.thumbnail,
                     stand: s.stand,
-                    userName: s.details.userName,
+                    userName: s.createdBy.displayName ?? s.details.userName,
                     topicName: s.details.topicName,
                     categoryName: s.details.categoryName,
                     subCategoryName: s.details.subCategoryName,
                     language: s.language,
                     createdAt: s.createdAt,
-                    opinionID: s.video.id,
+                    opinionID: s.id,
                   ),
                 );
               });

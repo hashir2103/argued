@@ -80,7 +80,7 @@ class DashboardServices {
     try {
       Response response = await Dio().post('$kendpoint$kRateOpinion$opinionId',
           data: rating, options: Options(headers: header));
-      print("Response ===> ${response.data}");
+
       return response.data;
     } on DioError catch (e) {
       if (e.response != null) {
