@@ -1,8 +1,10 @@
 import 'package:argued/ArguedConfigs/color.dart';
 import 'package:argued/ArguedConfigs/constant.dart';
 import 'package:argued/ArguedConfigs/sizeConfig.dart';
+import 'package:argued/ArguedConfigs/textStyles.dart';
 import 'package:argued/frontend/widgets/AppButton.dart';
 import 'package:flutter/material.dart';
+import 'package:package_info/package_info.dart';
 
 class StartScreen extends StatefulWidget {
   @override
@@ -11,7 +13,22 @@ class StartScreen extends StatefulWidget {
 
 class _StartScreenState extends State<StartScreen> {
   int currentPage = 0;
+  String versionCode = '';
+  String versionName = '';
   final pageController = PageController(initialPage: 0);
+  Future platfromInfo() async {
+    PackageInfo packageInfo = await PackageInfo.fromPlatform();
+    setState(() {
+      versionCode = packageInfo.buildNumber;
+      versionName = packageInfo.version;
+    });
+  }
+
+  @override
+  void initState() {
+    platfromInfo();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -69,15 +86,15 @@ class _StartScreenState extends State<StartScreen> {
                   (currentPage == 7)
                       ? Container()
                       : Container(
-                        margin: EdgeInsets.only(bottom: 50),
-                        child: AppSmallButton(
-                            onTap: () =>
-                                Navigator.pushNamed(context, kSplashScreen),
-                            screenWidthPercentage: 0.4,
-                            buttonColor: primaryColor,
-                            buttonTextColor: Colors.white,
-                            buttonText: 'Skip'),
-                      ),
+                          margin: EdgeInsets.only(bottom: 50),
+                          child: AppSmallButton(
+                              onTap: () =>
+                                  Navigator.pushNamed(context, kSplashScreen),
+                              screenWidthPercentage: 0.4,
+                              buttonColor: primaryColor,
+                              buttonTextColor: Colors.white,
+                              buttonText: 'Skip'),
+                        ),
                   GestureDetector(
                     onTap: () {
                       if (currentPage == 7) {
@@ -113,7 +130,15 @@ class _StartScreenState extends State<StartScreen> {
                           ),
                   ),
                 ],
-              )
+              ),
+              Center(
+                  child: Text(
+                'v$versionName.$versionCode',
+                style: normalText().copyWith(color: primaryTextColor),
+              )),
+              SizedBox(
+                height: 20,
+              ),
             ],
           ),
         ],

@@ -555,6 +555,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.3.0"
+  ota_update:
+    dependency: "direct main"
+    description:
+      name: ota_update
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.4.1"
   package_config:
     dependency: transitive
     description:
@@ -562,6 +569,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.9.3"
+  package_info:
+    dependency: "direct main"
+    description:
+      name: package_info
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.4.3+2"
   page_transition:
     dependency: transitive
     description:

@@ -5,15 +5,21 @@ import 'package:argued/ArguedConfigs/sizeConfig.dart';
 import 'package:argued/ArguedConfigs/textStyles.dart';
 import 'package:argued/controller/DashboadBloc.dart';
 import 'package:argued/frontend/screens/group/groupDetails.dart';
+import 'package:argued/frontend/widgets/AppButton.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class MyAppDailog {
-  loading(context) {
+  loading(context, bool dissimable,bool popBack) {
     showDialog(
+        barrierDismissible: dissimable,
         context: context,
         builder: (context) => Center(
-              child: CircularProgressIndicator(),
+              child: WillPopScope(
+                  onWillPop: () async {
+                    return popBack;
+                  },
+                  child: CircularProgressIndicator()),
             ));
   }
 
@@ -97,6 +103,52 @@ class MyAppDailog {
                     ),
             ],
           )),
+    );
+    showDialog(context: context, builder: (context) => dailog);
+  }
+
+  updateApkDailog(msg, context, onTap) {
+    var dailog = Dialog(
+      elevation: 0,
+      backgroundColor: Colors.transparent,
+      child: Container(
+        width: SizeConfig.screenWidth,
+        padding: EdgeInsets.symmetric(vertical: 12, horizontal: 12),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(15),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              "Argued.com",
+              style: TextStyle(color: Colors.black, fontSize: 30),
+            ),
+            Divider(
+              color: primaryTextColor,
+            ),
+            SizedBox(
+              height: 10,
+            ),
+            Text(
+              msg,
+              style: normalText().copyWith(
+                  color: primaryTextColor, fontWeight: FontWeight.bold),
+              textAlign: TextAlign.center,
+            ),
+            SizedBox(height: 16),
+            Center(
+              child: AppSmallButton(
+                  onTap: onTap,
+                  screenWidthPercentage: 0.4,
+                  buttonColor: primaryColor,
+                  buttonTextColor: Colors.white,
+                  buttonText: 'Upgrade'),
+            )
+          ],
+        ),
+      ),
     );
     showDialog(context: context, builder: (context) => dailog);
   }
@@ -256,15 +308,13 @@ class RatingBox extends StatefulWidget {
   final String topicName;
   final Function onTap;
 
-  RatingBox(
-      {Key key, this.rating, this.userName, this.topicName, this.onTap})
+  RatingBox({Key key, this.rating, this.userName, this.topicName, this.onTap})
       : super(key: key);
   @override
   _RatingBoxState createState() => _RatingBoxState();
 }
 
 class _RatingBoxState extends State<RatingBox> {
-
   @override
   Widget build(BuildContext context) {
     print("Rating : ${widget.rating}");

@@ -10,9 +10,17 @@ class ProfileBloc {
       _profile.listen((ProfileModel p) async {
         _salutation.add(p.salutation);
         _username.add(p.username);
-        _firstname.add(p.displayName);
+        _firstname.add(p.firstname);
         _showMyOccupation.add(p.settings.showOccupation);
         _geographicalInterest.add(p.settings.useLocation);
+        _lastname.add(p.lastname);
+        _phoneCode.add(p.countryCode);
+        _phoneNo.add(p.phoneNumber);
+        _dob.add(p.dob);
+        _country.add(p.nationality);
+        _occupation.add(p.occupation);
+        _maritalStatus.add(p.maritalStatus);
+        _religion.add(p.religion);
       });
     }
   }
@@ -26,7 +34,7 @@ class ProfileBloc {
   final _lastname = BehaviorSubject<String>();
   final _dob = BehaviorSubject<DateTime>();
   final _phoneNo = BehaviorSubject<String>();
-  final _phoneCode = BehaviorSubject<String>();
+  final _phoneCode = BehaviorSubject<String>.seeded("+92");
   final _password = BehaviorSubject<String>();
   final _confirmPassword = BehaviorSubject<String>();
   final _country = BehaviorSubject<String>.seeded('Pakistan');
@@ -120,7 +128,7 @@ class ProfileBloc {
   });
   final phoneNoValidator = StreamTransformer<String, String>.fromHandlers(
       handleData: (phoneNo, sink) async {
-    if (phoneNo.length >= 10) {
+    if (phoneNo.length > 9) {
       sink.add(phoneNo.trim());
     } else {
       sink.addError("Invalid Phone No.");
@@ -130,6 +138,7 @@ class ProfileBloc {
   //Functions
   bool get getHideText => _hideText.value;
   String get pass => _password.value;
+  String get getPhoneNo => _phoneNo.value;
   String get confirmpass => _confirmPassword.value;
 
   getProfile() async {
@@ -138,25 +147,44 @@ class ProfileBloc {
   }
 
   editProfile() async {
-    var data = {
+    Map<String, dynamic> data = {
       "salutation": _salutation.value,
-      "username": _username.value,
-      "firstname": _firstname.value,
-      "lastname": _lastname.value,
-      "dob": _dob.value.toIso8601String(),
-      "countryCode": _phoneCode.value,
-      "password": _password.value,
-      "confirmPassword": _confirmPassword.value,
-      "phoneNumber": _phoneNo.value,
       "nationality": _country.value,
       "occupation": _occupation.value,
       "currency": _currency.value,
       "religion": _religion.value,
+      "maritalStatus": _maritalStatus.value,
       "settings": {
         "showOccupation": _showMyOccupation.value,
         "useLocation": _geographicalInterest.value
       },
     };
+    if (_username.value != null && _username.value.isNotEmpty) {
+      data["username"] = _username.value;
+    }
+    if (_lastname.value != null && _lastname.value.isNotEmpty) {
+      data["lastname"] = _lastname.value;
+    }
+
+    if (_firstname.value != null && _firstname.value.isNotEmpty) {
+      data["firstname"] = _firstname.value;
+    }
+    if (_dob.value != null) {
+      data["dob"] = _dob.value.toIso8601String();
+    }
+    if (_phoneNo.value != null && _phoneNo.value.isNotEmpty) {
+      data["countryCode"] = _phoneCode.value;
+      data["phoneNumber"] = _phoneNo.value;
+    }
+    if (_password.value != null &&
+        _confirmPassword.value != null &&
+        _password.value.isNotEmpty &&
+        _confirmPassword.value.isNotEmpty) {
+      data["password"] = _password.value;
+      data["confirmPassword"] = _confirmPassword.value;
+    }
+
+    print(data);
     var res = await profileService.editProfile(data);
     _profileResponse.add(res);
   }
@@ -164,7 +192,7 @@ class ProfileBloc {
   checkUserName() async {
     var response = await profileService.checkUesrname(_username.value ?? '');
     if (response['code'] != 200) {
-      _username.addError("error");
+      _username.addError("username not available");
     }
   }
 }

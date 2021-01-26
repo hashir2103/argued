@@ -35,24 +35,25 @@ class Datum {
         this.description,
         this.createdBy,
         this.members,
-        this.profilePic,
         this.createdAt,
         this.updatedAt,
         this.categoryName,
         this.subCategoryName,
         this.userName,
+        this.approvedByName,
         this.countryName,
-        this.stateName,
-        this.cityName,
         this.isAdmin,
         this.isCreator,
+        this.lastRead,
         this.topicRelevance,
         this.numberOfMembers,
         this.geoLocationRelevance,
+        this.stateName,
+        this.cityName,
         this.lastMessage,
         this.lastMessageMobile,
-        this.lastRead,
         this.unreadCount,
+        this.profilePic,
         this.nominations,
         this.joinRequests,
     });
@@ -64,26 +65,27 @@ class Datum {
     String description;
     CreatedBy createdBy;
     List<Member> members;
-    String profilePic;
     DateTime createdAt;
     DateTime updatedAt;
     String categoryName;
     String subCategoryName;
     String userName;
+    String approvedByName;
     String countryName;
-    String stateName;
-    String cityName;
     bool isAdmin;
     bool isCreator;
+    String lastRead;
     String topicRelevance;
     int numberOfMembers;
     String geoLocationRelevance;
-    dynamic lastMessage;
-    dynamic lastMessageMobile;
-    String lastRead;
+    String stateName;
+    String cityName;
+    LastMessage lastMessage;
+    LastMessage lastMessageMobile;
     int unreadCount;
+    String profilePic;
     List<dynamic> nominations;
-    List<JoinRequest> joinRequests;
+    List<dynamic> joinRequests;
 
     factory Datum.fromJson(Map<String, dynamic> json) => Datum(
         id: json["_id"],
@@ -93,26 +95,27 @@ class Datum {
         description: json["description"],
         createdBy: CreatedBy.fromJson(json["createdBy"]),
         members: List<Member>.from(json["members"].map((x) => Member.fromJson(x))),
-        profilePic: json["profilePic"],
         createdAt: DateTime.parse(json["createdAt"]),
         updatedAt: DateTime.parse(json["updatedAt"]),
         categoryName: json["categoryName"],
         subCategoryName: json["subCategoryName"],
         userName: json["userName"],
+        approvedByName: json["approvedByName"] == null ? null : json["approvedByName"],
         countryName: json["countryName"],
-        stateName: json["stateName"],
-        cityName: json["cityName"],
         isAdmin: json["isAdmin"],
         isCreator: json["isCreator"],
+        lastRead: json["lastRead"],
         topicRelevance: json["topicRelevance"],
         numberOfMembers: json["numberOfMembers"],
         geoLocationRelevance: json["geoLocationRelevance"],
-        lastMessage: json["lastMessage"],
-        lastMessageMobile: json["lastMessageMobile"],
-        lastRead: json["lastRead"],
+        stateName: json["stateName"] == null ? null : json["stateName"],
+        cityName: json["cityName"] == null ? null : json["cityName"],
+        lastMessage: json["lastMessage"] == null ? null : LastMessage.fromJson(json["lastMessage"]),
+        lastMessageMobile: LastMessage.fromJson(json["lastMessageMobile"]),
         unreadCount: json["unreadCount"],
-        nominations: List<dynamic>.from(json["nominations"].map((x) => x)),
-        joinRequests: List<JoinRequest>.from(json["joinRequests"].map((x) => JoinRequest.fromJson(x))),
+        profilePic: json["profilePic"] == null ? null : json["profilePic"],
+        nominations: json["nominations"] == null ? null : List<dynamic>.from(json["nominations"].map((x) => x)),
+        joinRequests: json["joinRequests"] == null ? null : List<dynamic>.from(json["joinRequests"].map((x) => x)),
     );
 
     Map<String, dynamic> toJson() => {
@@ -123,26 +126,27 @@ class Datum {
         "description": description,
         "createdBy": createdBy.toJson(),
         "members": List<dynamic>.from(members.map((x) => x.toJson())),
-        "profilePic": profilePic,
         "createdAt": createdAt.toIso8601String(),
         "updatedAt": updatedAt.toIso8601String(),
         "categoryName": categoryName,
         "subCategoryName": subCategoryName,
         "userName": userName,
+        "approvedByName": approvedByName == null ? null : approvedByName,
         "countryName": countryName,
-        "stateName": stateName,
-        "cityName": cityName,
         "isAdmin": isAdmin,
         "isCreator": isCreator,
+        "lastRead": lastRead,
         "topicRelevance": topicRelevance,
         "numberOfMembers": numberOfMembers,
         "geoLocationRelevance": geoLocationRelevance,
-        "lastMessage": lastMessage,
-        "lastMessageMobile": lastMessageMobile,
-        "lastRead": lastRead,
+        "stateName": stateName == null ? null : stateName,
+        "cityName": cityName == null ? null : cityName,
+        "lastMessage": lastMessage == null ? null : lastMessage.toJson(),
+        "lastMessageMobile": lastMessageMobile.toJson(),
         "unreadCount": unreadCount,
-        "nominations": List<dynamic>.from(nominations.map((x) => x)),
-        "joinRequests": List<dynamic>.from(joinRequests.map((x) => x.toJson())),
+        "profilePic": profilePic == null ? null : profilePic,
+        "nominations": nominations == null ? null : List<dynamic>.from(nominations.map((x) => x)),
+        "joinRequests": joinRequests == null ? null : List<dynamic>.from(joinRequests.map((x) => x)),
     };
 }
 
@@ -166,197 +170,52 @@ class CreatedBy {
     };
 }
 
-class JoinRequest {
-    JoinRequest({
-        this.status,
+class LastMessage {
+    LastMessage({
         this.id,
-        this.createdBy,
-        this.createdFor,
         this.group,
+        this.message,
+        this.sentBy,
         this.createdAt,
         this.updatedAt,
         this.v,
     });
 
-    String status;
     String id;
-    String createdBy;
-    CreatedFor createdFor;
-    Group group;
+    String group;
+    String message;
+    SentBy sentBy;
     DateTime createdAt;
     DateTime updatedAt;
     int v;
 
-    factory JoinRequest.fromJson(Map<String, dynamic> json) => JoinRequest(
-        status: json["status"],
-        id: json["_id"],
-        createdBy: json["createdBy"],
-        createdFor: CreatedFor.fromJson(json["createdFor"]),
-        group: Group.fromJson(json["group"]),
-        createdAt: DateTime.parse(json["createdAt"]),
-        updatedAt: DateTime.parse(json["updatedAt"]),
-        v: json["__v"],
+    factory LastMessage.fromJson(Map<String, dynamic> json) => LastMessage(
+        id: json["_id"] == null ? null : json["_id"],
+        group: json["group"] == null ? null : json["group"],
+        message: json["message"] == null ? null : json["message"],
+        sentBy: json["sentBy"] == null ? null : sentByValues.map[json["sentBy"]],
+        createdAt: json["createdAt"] == null ? null : DateTime.parse(json["createdAt"]),
+        updatedAt: json["updatedAt"] == null ? null : DateTime.parse(json["updatedAt"]),
+        v: json["__v"] == null ? null : json["__v"],
     );
 
     Map<String, dynamic> toJson() => {
-        "status": status,
-        "_id": id,
-        "createdBy": createdBy,
-        "createdFor": createdFor.toJson(),
-        "group": group.toJson(),
-        "createdAt": createdAt.toIso8601String(),
-        "updatedAt": updatedAt.toIso8601String(),
-        "__v": v,
+        "_id": id == null ? null : id,
+        "group": group == null ? null : group,
+        "message": message == null ? null : message,
+        "sentBy": sentBy == null ? null : sentByValues.reverse[sentBy],
+        "createdAt": createdAt == null ? null : createdAt.toIso8601String(),
+        "updatedAt": updatedAt == null ? null : updatedAt.toIso8601String(),
+        "__v": v == null ? null : v,
     };
 }
 
-class CreatedFor {
-    CreatedFor({
-        this.id,
-        this.username,
-        this.opinions,
-        this.videos,
-        this.createdForId,
-    });
+enum SentBy { THE_5_F5_ADE7_CE590_B141_D2_F3_C7_C9, THE_5_DE4_D6_CF26_D43127_CA9_A46_E6 }
 
-    String id;
-    String username;
-    dynamic opinions;
-    dynamic videos;
-    String createdForId;
-
-    factory CreatedFor.fromJson(Map<String, dynamic> json) => CreatedFor(
-        id: json["_id"],
-        username: json["username"],
-        opinions: json["opinions"],
-        videos: json["videos"],
-        createdForId: json["id"],
-    );
-
-    Map<String, dynamic> toJson() => {
-        "_id": id,
-        "username": username,
-        "opinions": opinions,
-        "videos": videos,
-        "id": createdForId,
-    };
-}
-
-class Group {
-    Group({
-        this.audience,
-        this.status,
-        this.id,
-        this.name,
-        this.description,
-        this.city,
-        this.country,
-        this.state,
-        this.category,
-        this.subcategory,
-        this.createdBy,
-        this.members,
-        this.profilePic,
-        this.nominations,
-        this.details,
-        this.createdAt,
-        this.updatedAt,
-        this.v,
-    });
-
-    String audience;
-    String status;
-    String id;
-    String name;
-    String description;
-    String city;
-    String country;
-    String state;
-    String category;
-    String subcategory;
-    String createdBy;
-    List<Member> members;
-    String profilePic;
-    List<dynamic> nominations;
-    Details details;
-    DateTime createdAt;
-    DateTime updatedAt;
-    int v;
-
-    factory Group.fromJson(Map<String, dynamic> json) => Group(
-        audience: json["audience"],
-        status: json["status"],
-        id: json["_id"],
-        name: json["name"],
-        description: json["description"],
-        city: json["city"],
-        country: json["country"],
-        state: json["state"],
-        category: json["category"],
-        subcategory: json["subcategory"],
-        createdBy: json["createdBy"],
-        members: List<Member>.from(json["members"].map((x) => Member.fromJson(x))),
-        profilePic: json["profilePic"],
-        nominations: List<dynamic>.from(json["nominations"].map((x) => x)),
-        details: Details.fromJson(json["details"]),
-        createdAt: DateTime.parse(json["createdAt"]),
-        updatedAt: DateTime.parse(json["updatedAt"]),
-        v: json["__v"],
-    );
-
-    Map<String, dynamic> toJson() => {
-        "audience": audience,
-        "status": status,
-        "_id": id,
-        "name": name,
-        "description": description,
-        "city": city,
-        "country": country,
-        "state": state,
-        "category": category,
-        "subcategory": subcategory,
-        "createdBy": createdBy,
-        "members": List<dynamic>.from(members.map((x) => x.toJson())),
-        "profilePic": profilePic,
-        "nominations": List<dynamic>.from(nominations.map((x) => x)),
-        "details": details.toJson(),
-        "createdAt": createdAt.toIso8601String(),
-        "updatedAt": updatedAt.toIso8601String(),
-        "__v": v,
-    };
-}
-
-class Details {
-    Details({
-        this.subCategoryName,
-        this.categoryName,
-        this.countryName,
-        this.stateName,
-        this.cityName,
-    });
-
-    String subCategoryName;
-    String categoryName;
-    String countryName;
-    String stateName;
-    String cityName;
-
-    factory Details.fromJson(Map<String, dynamic> json) => Details(
-        subCategoryName: json["subCategoryName"],
-        categoryName: json["categoryName"],
-        countryName: json["countryName"],
-        stateName: json["stateName"],
-        cityName: json["cityName"],
-    );
-
-    Map<String, dynamic> toJson() => {
-        "subCategoryName": subCategoryName,
-        "categoryName": categoryName,
-        "countryName": countryName,
-        "stateName": stateName,
-        "cityName": cityName,
-    };
-}
+final sentByValues = EnumValues({
+    "5de4d6cf26d43127ca9a46e6": SentBy.THE_5_DE4_D6_CF26_D43127_CA9_A46_E6,
+    "5f5ade7ce590b141d2f3c7c9": SentBy.THE_5_F5_ADE7_CE590_B141_D2_F3_C7_C9
+});
 
 class Member {
     Member({
@@ -366,6 +225,7 @@ class Member {
         this.adminDate,
         this.createdAt,
         this.updatedAt,
+        this.lastRead,
     });
 
     bool admin;
@@ -374,22 +234,39 @@ class Member {
     DateTime adminDate;
     DateTime createdAt;
     DateTime updatedAt;
+    DateTime lastRead;
 
     factory Member.fromJson(Map<String, dynamic> json) => Member(
         admin: json["admin"],
         blocked: json["blocked"],
         id: json["_id"],
-        adminDate: DateTime.parse(json["adminDate"]),
+        adminDate: json["adminDate"] == null ? null : DateTime.parse(json["adminDate"]),
         createdAt: DateTime.parse(json["createdAt"]),
         updatedAt: DateTime.parse(json["updatedAt"]),
+        lastRead: json["lastRead"] == null ? null : DateTime.parse(json["lastRead"]),
     );
 
     Map<String, dynamic> toJson() => {
         "admin": admin,
         "blocked": blocked,
         "_id": id,
-        "adminDate": adminDate.toIso8601String(),
+        "adminDate": adminDate == null ? null : adminDate.toIso8601String(),
         "createdAt": createdAt.toIso8601String(),
         "updatedAt": updatedAt.toIso8601String(),
+        "lastRead": lastRead == null ? null : lastRead.toIso8601String(),
     };
+}
+
+class EnumValues<T> {
+    Map<String, T> map;
+    Map<T, String> reverseMap;
+
+    EnumValues(this.map);
+
+    Map<T, String> get reverse {
+        if (reverseMap == null) {
+            reverseMap = map.map((k, v) => new MapEntry(v, k));
+        }
+        return reverseMap;
+    }
 }

@@ -16,6 +16,7 @@ import 'ArguedConfigs/routes.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  ErrorWidget.builder = (FlutterErrorDetails details) => Container();
   await HiveDB.init;
   runApp(MyApp());
 }
@@ -46,6 +47,7 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     SystemChrome.setPreferredOrientations(
         [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
+
     return MultiProvider(
         providers: [
           Provider(create: (context) => authBloc),
@@ -62,6 +64,8 @@ class _MyAppState extends State<MyApp> {
           debugShowCheckedModeBanner: false,
           onGenerateRoute: Routes.materialPageRoute,
           theme: theme(),
+          // darkTheme: ThemeData(brightness: Brightness.dark),
+          // themeMode: ThemeMode.dark,
           home: StartScreen(),
         ));
   }

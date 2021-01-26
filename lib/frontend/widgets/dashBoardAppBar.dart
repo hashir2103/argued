@@ -15,16 +15,14 @@ class DashboardAppBar extends StatelessWidget with PreferredSizeWidget {
     var authBloc = Provider.of<AuthBloc>(context);
     var locationBloc = Provider.of<LocationBloc>(context);
     return AppBar(
+      automaticallyImplyLeading: false,
       centerTitle: false,
       backgroundColor: Colors.white,
       title: Text(
         'DashBoard',
         style: appBarTitleText(),
       ),
-      // leading: IconButton(
-      //   icon: Icon(Icons.menu_open),
-      //   onPressed: () {},
-      // ),
+      // leading: Container(),
       actions: [
         Icon(
           Icons.notifications,

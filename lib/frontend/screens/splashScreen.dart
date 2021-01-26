@@ -1,11 +1,8 @@
 import 'package:animated_splash_screen/animated_splash_screen.dart';
-import 'package:argued/ArguedConfigs/color.dart';
-import 'package:argued/ArguedConfigs/constant.dart';
 import 'package:argued/ArguedConfigs/textStyles.dart';
 import 'package:argued/controller/AuthBloc.dart';
 
 import 'package:argued/frontend/screens/loginScreen.dart';
-import 'package:argued/frontend/widgets/AppButton.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

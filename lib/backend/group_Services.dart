@@ -59,8 +59,8 @@ class GroupService {
     Map<String, dynamic> header = {'Authorization': prefs.getString('Token')};
     var data = {"username": username, "group": groupId};
     try {
-      Response response = await Dio()
-          .post('$kendpoint$kGroupRequest', options: Options(headers: header),data: data);
+      Response response = await Dio().post('$kendpoint$kGroupRequest',
+          options: Options(headers: header), data: data);
       // printWrapped(response.data.toString());
       // print('hello');
       return response.data;

@@ -59,6 +59,7 @@ const String kGroupMessagesread = '/api/group/read/';
 const String kChatMessagesread = '/api/user/read/';
 const String kCreateGroup = '/api/group';
 const String kAddHost = '/api/user/follow/';
+const String kApiVersion = '/api/public/check-api-version/v1.0.0.1';
 const String kTempImage =
     "https://www.colorbook.io/imagecreator.php?width=300&height=300?hex=0xadd8e6";
 

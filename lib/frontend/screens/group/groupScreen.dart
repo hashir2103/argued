@@ -109,17 +109,16 @@ class _GroupScreenState extends State<GroupScreen> {
                                                 name: c['name'] ?? "",
                                                 description:
                                                     c['description'] ?? "",
-                                                membersCount: c['members']
-                                                        .length
-                                                        .toString() ??
-                                                    "",
+                                                membersCount:
+                                                    c['numberOfMembers'].toString() ?? "",
                                                 countryName:
                                                     c['countryName'] ?? "",
                                                 lastMessageTime:
                                                     c['lastMessageMobile'] !=
                                                             null
-                                                        ? DateTime.parse(c[
-                                                            'lastMessageMobile'])
+                                                        ? DateTime.parse(
+                                                            c['lastMessageMobile']
+                                                                ["createdAt"])
                                                         : DateTime.now(),
                                                 createdAt:
                                                     c['createdAt'] != null
@@ -150,15 +149,14 @@ class _GroupScreenState extends State<GroupScreen> {
                                                 c['profilePic'] ?? kTempImage,
                                             name: c['name'] ?? "",
                                             description: c['description'] ?? "",
-                                            membersCount: c['members']
-                                                    .length
-                                                    .toString() ??
-                                                "",
+                                            membersCount:
+                                                c['numberOfMembers'].toString() ?? "",
                                             countryName: c['countryName'] ?? "",
                                             lastMessageTime:
                                                 c['lastMessageMobile'] != null
                                                     ? DateTime.parse(
-                                                        c['lastMessageMobile'])
+                                                        c['lastMessageMobile']
+                                                            ["createdAt"])
                                                     : DateTime.now(),
                                             createdAt: c['createdAt'] != null
                                                 ? DateTime.parse(c['createdAt'])
@@ -200,7 +198,7 @@ class _GroupScreenState extends State<GroupScreen> {
                     onTap: () {
                       print(groupId);
                       groupBloc.getGroupDetails(groupId);
-                      MyAppDailog().groupDetailsDailog(context,groupId);
+                      MyAppDailog().groupDetailsDailog(context, groupId);
                     },
                     child: UserCirle(
                       profilePic: groupPic,

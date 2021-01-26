@@ -54,76 +54,82 @@ class _ViewerDashBoardScreenState extends State<ViewerDashBoardScreen> {
   Widget build(BuildContext context) {
     var dashboardBloc = Provider.of<DashboardBloc>(context);
     var authBloc = Provider.of<AuthBloc>(context);
-
-    return Scaffold(
-      appBar: DashboardAppBar(),
-      bottomNavigationBar: bottomNavBar(dashboardBloc),
-      body: SingleChildScrollView(
-        controller: scrollController,
-        child: Padding(
-          padding:
-              const EdgeInsets.symmetric(horizontal: kbaseHorizontalPadding),
-          child: Wrap(
-            children: [
-              bodyHeading(heading: "Hot Topic this hour"),
-              StreamBuilder<HotTopicModel>(
-                  stream: dashboardBloc.hotTopicOfHour,
-                  builder: (context, snapshot) {
-                    if (!snapshot.hasData) {
+    
+    return WillPopScope(
+      onWillPop: () async {
+        return false;
+      },
+      child: Scaffold(
+        appBar: DashboardAppBar(),
+        bottomNavigationBar: bottomNavBar(dashboardBloc),
+        body: SingleChildScrollView(
+          controller: scrollController,
+          child: Padding(
+            padding:
+                const EdgeInsets.symmetric(horizontal: kbaseHorizontalPadding),
+            child: Wrap(
+              children: [
+                bodyHeading(heading: "Hot Topic this hour"),
+                StreamBuilder<HotTopicModel>(
+                    stream: dashboardBloc.hotTopicOfHour,
+                    builder: (context, snapshot) {
+                      if (!snapshot.hasData) {
+                        return Container(
+                          width: SizeConfig.screenWidth,
+                          height: SizeConfig.screenHeight * 0.3,
+                          child: Center(
+                            child: CircularProgressIndicator(),
+                          ),
+                        );
+                      }
+                      var s = snapshot.data;
+                      print(
+                          "Opinion id for hotopic video thats is also one of the video that show Opinion Not Found ${s.id}");
+                      return AppCard(
+                        alreadyRated:
+                            (s.createdBy.createdById == authBloc.getuserId),
+                        hostId: s.createdBy.id,
+                        rating: s.rating.toString(),
+                        videoURL: s.video.file,
+                        thumbnail: s.video.thumbnail,
+                        userPostCover: s.createdBy.profilePic,
+                        stand: s.stand,
+                        userName: s.createdBy.displayName ?? s.details.userName,
+                        topicName: s.details.topicName,
+                        categoryName: s.details.categoryName,
+                        subCategoryName: s.details.subCategoryName,
+                        language: s.language,
+                        createdAt: s.createdAt,
+                        opinionID: s.id,
+                      );
+                    }),
+                bodyHeading(heading: "Most watched in your selected topics"),
+                AppCarousel(),
+                bodyHeading(heading: "Interesting to you"),
+                InterestingToYou(),
+                StreamBuilder<bool>(
+                    initialData: true,
+                    stream: dashboardBloc.isLoading,
+                    builder: (context, snapshot) {
+                      if (snapshot.hasData & snapshot.data == true) {
+                        return Padding(
+                          padding: EdgeInsets.all(16),
+                          child: Center(
+                            child: CircularProgressIndicator(),
+                          ),
+                        );
+                      }
                       return Container(
-                        width: SizeConfig.screenWidth,
-                        height: SizeConfig.screenHeight * 0.3,
                         child: Center(
-                          child: CircularProgressIndicator(),
+                          child: Text(
+                            "No more post to show",
+                            style: listTileSubTitleText,
+                          ),
                         ),
                       );
-                    }
-                    var s = snapshot.data;
-                    print("Opinion id for hotopic video thats is also one of the video that show Opinion Not Found ${s.id}");
-                    return AppCard(
-                      alreadyRated:
-                          (s.createdBy.createdById == authBloc.getuserId),
-                      hostId: s.createdBy.id,
-                      rating: s.rating.toString(),
-                      videoURL: s.video.file,
-                      thumbnail: s.video.thumbnail,
-                      userPostCover: s.createdBy.profilePic,
-                      stand: s.stand,
-                      userName: s.createdBy.displayName ?? s.details.userName,
-                      topicName: s.details.topicName,
-                      categoryName: s.details.categoryName,
-                      subCategoryName: s.details.subCategoryName,
-                      language: s.language,
-                      createdAt: s.createdAt,
-                      opinionID: s.id,
-                    );
-                  }),
-              bodyHeading(heading: "Most watched in your selected topics"),
-              AppCarousel(),
-              bodyHeading(heading: "Interesting to you"),
-              InterestingToYou(),
-              StreamBuilder<bool>(
-                  initialData: true,
-                  stream: dashboardBloc.isLoading,
-                  builder: (context, snapshot) {
-                    if (snapshot.hasData & snapshot.data == true) {
-                      return Padding(
-                        padding: EdgeInsets.all(16),
-                        child: Center(
-                          child: CircularProgressIndicator(),
-                        ),
-                      );
-                    }
-                    return Container(
-                      child: Center(
-                        child: Text(
-                          "No more post to show",
-                          style: listTileSubTitleText,
-                        ),
-                      ),
-                    );
-                  })
-            ],
+                    })
+              ],
+            ),
           ),
         ),
       ),

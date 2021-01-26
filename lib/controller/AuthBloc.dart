@@ -24,21 +24,25 @@ class AuthBloc {
   final _password = BehaviorSubject<String>();
   final _confirmPassword = BehaviorSubject<String>();
   final _rememberMe = BehaviorSubject<bool>.seeded(false);
+  final _apiVerified = BehaviorSubject<bool>.seeded(false);
   final _loginPress = BehaviorSubject<bool>.seeded(false);
   final _button = BehaviorSubject<bool>.seeded(false);
   final _hideText = BehaviorSubject<bool>.seeded(true);
   final _resetCredential = BehaviorSubject<bool>.seeded(true);
   final _response = BehaviorSubject<Map>();
   final _loginResponse = BehaviorSubject<LoginResponse>();
+  final _apiValidation = BehaviorSubject<Map<dynamic, dynamic>>();
 
   //getter
 
   Stream<Map> get response => _response.stream;
+  Stream<Map> get apiValidation => _apiValidation.stream;
   Stream<LoginResponse> get loginResponse => _loginResponse.stream;
   Stream<bool> get hideText => _hideText.stream;
   Stream<bool> get button => _button.stream;
   Stream<bool> get resetCredential => _resetCredential.stream;
   Stream<bool> get rememberMe => _rememberMe.stream;
+  Stream<bool> get apiVerified => _apiVerified.stream;
   Stream<bool> get loginPress => _loginPress.stream;
   Stream<String> get username => _username.stream;
   Stream<String> get fname => _fname.stream;
@@ -58,6 +62,7 @@ class AuthBloc {
   Function(LoginResponse) get changeLoginResponse => _loginResponse.sink.add;
   Function(bool) get changeHideText => _hideText.sink.add;
   Function(bool) get changeButton => _button.sink.add;
+  Function(bool) get changeApiVerified => _apiVerified.sink.add;
   Function(bool) get changeResetCredential => _resetCredential.sink.add;
   Function(bool) get changeLoginPress => _loginPress.sink.add;
   Function(Map) get changeResponse => _response.sink.add;
@@ -73,6 +78,8 @@ class AuthBloc {
   Function(String) get changeConfirmPassword => _confirmPassword.sink.add;
 
   dispose() {
+    _apiVerified.close();
+    _apiValidation.close();
     _loginResponse.close();
     _resetCredential.close();
     _hideText.close();
@@ -122,6 +129,14 @@ class AuthBloc {
   });
 
   //functions
+
+  apiVerification() async {
+    var data = await authServices.apiVerification();
+    print(data);
+    _apiValidation.add(data);
+  }
+
+  String get newApkUrl => _apiValidation.value["data"]["latestAPKurl"];
 
   String get getloginToken {
     return _loginResponse.value.token;

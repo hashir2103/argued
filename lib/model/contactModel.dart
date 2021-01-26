@@ -46,7 +46,7 @@ class Datum {
     DateTime updatedAt;
     DateTime createdAt;
     LastMessage lastMessage;
-    DateTime lastMessageMobile;
+    LastMessage lastMessageMobile;
     int unreadCount;
 
     factory Datum.fromJson(Map<String, dynamic> json) => Datum(
@@ -56,8 +56,8 @@ class Datum {
         lastRead: DateTime.parse(json["lastRead"]),
         updatedAt: DateTime.parse(json["updatedAt"]),
         createdAt: DateTime.parse(json["createdAt"]),
-        lastMessage: LastMessage.fromJson(json["lastMessage"]),
-        lastMessageMobile: DateTime.parse(json["lastMessageMobile"]),
+        lastMessage: json["lastMessage"] == null ? null : LastMessage.fromJson(json["lastMessage"]),
+        lastMessageMobile: LastMessage.fromJson(json["lastMessageMobile"]),
         unreadCount: json["unreadCount"],
     );
 
@@ -68,8 +68,8 @@ class Datum {
         "lastRead": lastRead.toIso8601String(),
         "updatedAt": updatedAt.toIso8601String(),
         "createdAt": createdAt.toIso8601String(),
-        "lastMessage": lastMessage.toJson(),
-        "lastMessageMobile": lastMessageMobile.toIso8601String(),
+        "lastMessage": lastMessage == null ? null : lastMessage.toJson(),
+        "lastMessageMobile": lastMessageMobile.toJson(),
         "unreadCount": unreadCount,
     };
 }
@@ -94,23 +94,23 @@ class LastMessage {
     int v;
 
     factory LastMessage.fromJson(Map<String, dynamic> json) => LastMessage(
-        id: json["_id"],
-        room: json["room"],
-        message: json["message"],
-        sentBy: json["sentBy"],
-        createdAt: DateTime.parse(json["createdAt"]),
-        updatedAt: DateTime.parse(json["updatedAt"]),
-        v: json["__v"],
+        id: json["_id"] == null ? null : json["_id"],
+        room: json["room"] == null ? null : json["room"],
+        message: json["message"] == null ? null : json["message"],
+        sentBy: json["sentBy"] == null ? null : json["sentBy"],
+        createdAt: json["createdAt"] == null ? null : DateTime.parse(json["createdAt"]),
+        updatedAt: json["updatedAt"] == null ? null : DateTime.parse(json["updatedAt"]),
+        v: json["__v"] == null ? null : json["__v"],
     );
 
     Map<String, dynamic> toJson() => {
-        "_id": id,
-        "room": room,
-        "message": message,
-        "sentBy": sentBy,
-        "createdAt": createdAt.toIso8601String(),
-        "updatedAt": updatedAt.toIso8601String(),
-        "__v": v,
+        "_id": id == null ? null : id,
+        "room": room == null ? null : room,
+        "message": message == null ? null : message,
+        "sentBy": sentBy == null ? null : sentBy,
+        "createdAt": createdAt == null ? null : createdAt.toIso8601String(),
+        "updatedAt": updatedAt == null ? null : updatedAt.toIso8601String(),
+        "__v": v == null ? null : v,
     };
 }
 

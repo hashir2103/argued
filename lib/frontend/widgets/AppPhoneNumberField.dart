@@ -6,7 +6,19 @@ import 'package:country_code_picker/country_code_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class AppPhoneNumberField extends StatelessWidget {
+class AppPhoneNumberField extends StatefulWidget {
+  @override
+  _AppPhoneNumberFieldState createState() => _AppPhoneNumberFieldState();
+}
+
+class _AppPhoneNumberFieldState extends State<AppPhoneNumberField> {
+  TextEditingController _phoneNo = TextEditingController();
+  @override
+  void dispose() {
+    _phoneNo.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     var profileBloc = Provider.of<ProfileBloc>(context);
@@ -52,12 +64,14 @@ class AppPhoneNumberField extends StatelessWidget {
                         builder: (context, snapshot) {
                           return TextFormField(
                             maxLength: 10,
-                            // controller: TextEditingController()
-                            //   ..selection = TextSelection.collapsed(
-                            //       offset: snapshot.hasData
-                            //           ? snapshot.data.length
-                            //           : 0)
-                            //   ..text = snapshot.hasData ? snapshot.data : '',
+                            controller: _phoneNo
+                              ..text = profileBloc.getPhoneNo != null
+                                  ? profileBloc.getPhoneNo
+                                  : ''
+                              ..selection = TextSelection.collapsed(
+                                  offset: profileBloc.getPhoneNo != null
+                                      ? profileBloc.getPhoneNo.length
+                                      : 0),
                             keyboardType: TextInputType.number,
                             onChanged: profileBloc.changePhoneNo,
                             decoration: InputDecoration(

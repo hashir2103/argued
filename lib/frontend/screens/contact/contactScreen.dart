@@ -104,9 +104,9 @@ class _ContactScreenState extends State<ContactScreen> {
                                           child: contactViewContainer(
                                               c.user.profilePic,
                                               c.user.username,
-                                              c.lastMessage.message,
+                                              c.lastMessageMobile.message,
                                               c.unreadCount,
-                                              c.lastMessageMobile),
+                                              c.lastMessageMobile.createdAt),
                                         );
                                       }
                                       return Container();
@@ -128,9 +128,9 @@ class _ContactScreenState extends State<ContactScreen> {
                                       child: contactViewContainer(
                                           c.user.profilePic,
                                           c.user.username,
-                                          c.lastMessage.message,
+                                          c.lastMessageMobile.message,
                                           c.unreadCount,
-                                          c.lastMessageMobile),
+                                          c.lastMessageMobile.createdAt),
                                     );
                                   },
                                 );
@@ -151,7 +151,7 @@ class _ContactScreenState extends State<ContactScreen> {
         decoration: BoxDecoration(shape: BoxShape.circle),
         child: CachedNetworkImage(
           fit: BoxFit.cover,
-          imageUrl: profilePic,
+          imageUrl: profilePic??kTempImage,
           placeholder: (context, url) =>
               Center(child: CircularProgressIndicator()),
           errorWidget: (context, url, error) =>
@@ -163,14 +163,14 @@ class _ContactScreenState extends State<ContactScreen> {
         style: listTileTitleText,
       ),
       subtitle: Text(
-        lastmsg,
+        lastmsg??"",
         style: listTileSubTitleText,
       ),
       trailing: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
           Text(
-            getFormatedTime(time),
+            getFormatedTime(time)??"",
             style: listTileTrailingText,
           ),
           SizedBox(height: 2),
@@ -180,7 +180,7 @@ class _ContactScreenState extends State<ContactScreen> {
                   backgroundColor: Colors.red,
                   child: Center(
                     child: Text(
-                      "$unreadCount",
+                      "$unreadCount"??"",
                       style: TextStyle(
                           color: Colors.white, fontWeight: FontWeight.bold),
                     ),

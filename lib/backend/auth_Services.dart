@@ -5,6 +5,22 @@ import 'package:dio/dio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthServices {
+  apiVerification() async {
+    try {
+      Response response = await Dio().get('$kendpoint$kApiVersion');
+      return response.data;
+    } on DioError catch (e) {
+      if (e.response != null) {
+        print(e.response.data);
+        print(e.response.headers);
+        print(e.response.request);
+      } else {
+        print(e.request);
+        print(e.message);
+      }
+    }
+  }
+
   signUp(SignUpModel signUpModel) async {
     try {
       Response response =
@@ -64,7 +80,7 @@ class AuthServices {
     try {
       Response response = await Dio().post('$kendpoint$kCheckUsername',
           data: data, options: Options(headers: header));
-      
+
       return response.data;
     } on DioError catch (e) {
       if (e.response != null) {
