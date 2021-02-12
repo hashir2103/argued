@@ -20,6 +20,7 @@ class AuthBloc {
   final _fname = BehaviorSubject<String>();
   final _lname = BehaviorSubject<String>();
   final _username = BehaviorSubject<String>();
+  final _usernameA = BehaviorSubject<String>();
   final _email = BehaviorSubject<String>();
   final _password = BehaviorSubject<String>();
   final _confirmPassword = BehaviorSubject<String>();
@@ -27,6 +28,7 @@ class AuthBloc {
   final _apiVerified = BehaviorSubject<bool>.seeded(false);
   final _loginPress = BehaviorSubject<bool>.seeded(false);
   final _button = BehaviorSubject<bool>.seeded(false);
+  final _validUsername = BehaviorSubject<bool>.seeded(false);
   final _hideText = BehaviorSubject<bool>.seeded(true);
   final _resetCredential = BehaviorSubject<bool>.seeded(true);
   final _response = BehaviorSubject<Map>();
@@ -45,14 +47,16 @@ class AuthBloc {
   Stream<bool> get apiVerified => _apiVerified.stream;
   Stream<bool> get loginPress => _loginPress.stream;
   Stream<String> get username => _username.stream;
+  Stream<String> get usernameA => _usernameA.stream;
+  Stream<bool> get validUsername => _validUsername.stream;
   Stream<String> get fname => _fname.stream;
   Stream<String> get lname => _lname.stream;
   Stream<String> get email => _email.stream.transform(emailValidator);
   Stream<String> get password => _password.stream.transform(passwordValidator);
   Stream<String> get confirmPassword =>
       _confirmPassword.stream.transform(passwordValidator);
-  Stream<bool> get isValidSignUp =>
-      CombineLatestStream.combine2(email, password, (a, b) => true);
+  Stream<bool> get isValidSignUp => CombineLatestStream.combine3(
+      email, password, validUsername, (a, b, c) => true);
   Stream<bool> get isValidLogin =>
       CombineLatestStream.combine2(username, password, (a, b) => true);
 
@@ -71,6 +75,7 @@ class AuthBloc {
   Function(String) get changePin3 => _pin3.sink.add;
   Function(String) get changePin4 => _pin4.sink.add;
   Function(String) get changeusername => _username.sink.add;
+  Function(String) get changeusernameA => _usernameA.sink.add;
   Function(String) get changefname => _fname.sink.add;
   Function(String) get changelname => _lname.sink.add;
   Function(String) get changeEmail => _email.sink.add;
@@ -84,6 +89,7 @@ class AuthBloc {
     _resetCredential.close();
     _hideText.close();
     _username.close();
+    _usernameA.close();
     _response.close();
     _button.close();
     _pin1.close();
@@ -97,6 +103,7 @@ class AuthBloc {
     _confirmPassword.close();
     _rememberMe.close();
     _loginPress.close();
+    _validUsername.close();
   }
 
   //Tranformer of stream to validate data
@@ -159,9 +166,9 @@ class AuthBloc {
     var signUpModel = SignUpModel(
       email: _email.value,
       password: _password.value,
-      username: _username.value.trim(),
-      firstname: _fname.value.trim(),
-      lastname: _lname.value.trim(),
+      username: _usernameA.value.trim(),
+      // firstname: _fname.value.trim(),
+      // lastname: _lname.value.trim(),
     );
     var response = await authServices.signUp(signUpModel);
     changeResponse(response);
@@ -220,6 +227,17 @@ class AuthBloc {
     var response = await authServices.checkUesrname(_username.value ?? '');
     if (response['code'] == 200) {
       _username.addError("error");
+    }
+  }
+
+  checkUserNameAvailable() async {
+    var response =
+        await authServices.checkUesrname(_usernameA.value.trim() ?? '');
+    if (response['code'] != 200) {
+      _validUsername.add(false);
+      _usernameA.addError("error");
+    } else {
+      _validUsername.add(true);
     }
   }
 }

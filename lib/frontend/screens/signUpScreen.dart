@@ -1,7 +1,9 @@
+import 'package:argued/ArguedConfigs/color.dart';
 import 'package:argued/ArguedConfigs/constant.dart';
 import 'package:argued/ArguedConfigs/textStyles.dart';
 import 'package:argued/controller/AuthBloc.dart';
 import 'package:argued/frontend/widgets/AppButton.dart';
+import 'package:argued/frontend/widgets/AppDialogs.dart';
 import 'package:argued/frontend/widgets/AppIcon.dart';
 import 'package:argued/frontend/widgets/AppTextField.dart';
 import 'package:argued/frontend/widgets/PopUpMessage.dart';
@@ -59,7 +61,28 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           vertical: kbaseVerticalPadding),
                       child: Text("Create Account", style: bigHeadingText()),
                     ),
-                    firstlastName(authBloc),
+                    Padding(
+                        padding: EdgeInsets.symmetric(
+                            vertical: kbaseVerticalPadding),
+                        child: StreamBuilder<String>(
+                            stream: authBloc.usernameA,
+                            builder: (context, snapshot) {
+                              return Focus(
+                                onFocusChange: (focus) {
+                                  if (!focus) {
+                                    authBloc.checkUserNameAvailable();
+                                  }
+                                },
+                                child: AppTextField(
+                                  icon: (snapshot.hasError)
+                                    ? Icons.clear
+                                    : FontAwesomeIcons.check,
+                                  onChanged: authBloc.changeusernameA,
+                                  hintText: 'johndoe',
+                                  label: 'Username',
+                                ),
+                              );
+                            })),
                     Padding(
                         padding: EdgeInsets.symmetric(
                             vertical: kbaseVerticalPadding),
@@ -94,12 +117,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                                   : ''
                                               ..selection =
                                                   TextSelection.collapsed(
-                                                      offset:
-                                                          authBloc.pass !=
-                                                                  null
-                                                              ? authBloc
-                                                                  .pass.length
-                                                              : 0),
+                                                      offset: authBloc.pass !=
+                                                              null
+                                                          ? authBloc.pass.length
+                                                          : 0),
                                             onTap: () {
                                               authBloc.changeHideText(
                                                   !authBloc.getHideText);
@@ -108,8 +129,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                                 authBloc.getHideText == false
                                                     ? false
                                                     : true,
-                                            onChanged:
-                                                authBloc.changePassword,
+                                            onChanged: authBloc.changePassword,
                                             hintText: '**********',
                                             label: 'Password',
                                             icon: FontAwesomeIcons.eye);
@@ -139,8 +159,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                             ? authBloc.confirmpass
                                             : ''
                                         ..selection = TextSelection.collapsed(
-                                            offset: authBloc.confirmpass !=
-                                                    null
+                                            offset: authBloc.confirmpass != null
                                                 ? authBloc.confirmpass.length
                                                 : 0),
                                       onTap: () {
@@ -151,8 +170,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                           authBloc.getHideText == false
                                               ? false
                                               : true,
-                                      onChanged:
-                                          authBloc.changeConfirmPassword,
+                                      onChanged: authBloc.changeConfirmPassword,
                                       hintText: '**********',
                                       label: 'Confirm Password',
                                       icon: FontAwesomeIcons.eye),
@@ -175,13 +193,24 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         stream: authBloc.isValidSignUp,
                         builder: (context, snapshot) {
                           return AppButton(
+                            color: snapshot.data
+                                ? primaryColor
+                                : primaryColor.withOpacity(0.5),
                             text: 'Sign Up',
                             onTap: snapshot.data == true
                                 ? () async {
+                                    authBloc.changeButton(true);
                                     await authBloc.signUp();
                                     authBloc.changeLoginPress(true);
+                                    authBloc.changeButton(false);
                                   }
                                 : () {
+                                    authBloc.changeButton(true);
+                                    MyAppDailog().responseDailog(
+                                        "Please fill Complete Information",
+                                        context,
+                                        showClosebutton: true);
+                                    authBloc.changeButton(false);
                                     print('Nothing Happens');
                                   },
                           );

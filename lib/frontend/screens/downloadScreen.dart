@@ -7,8 +7,11 @@ import 'package:ota_update/ota_update.dart';
 // ignore: must_be_immutable
 class DownloadScreen extends StatefulWidget {
   OtaEvent event;
-  
-  DownloadScreen({Key key, this.event, }) : super(key: key);
+
+  DownloadScreen({
+    Key key,
+    this.event,
+  }) : super(key: key);
 
   @override
   _DownloadScreenState createState() => _DownloadScreenState();
@@ -41,8 +44,8 @@ class _DownloadScreenState extends State<DownloadScreen> {
                       padding: const EdgeInsets.all(8.0),
                       child: Text(
                         // widget.notGranted
-                            // ? "Please grant permission to download new App verison!"
-                            'Downloading... ${widget.event.value}%',
+                        // ? "Please grant permission to download new App verison!"
+                        'Downloading... ${widget.event.value}%',
                         textAlign: TextAlign.center,
                         style: TextStyle(color: Colors.white, fontSize: 20),
                       ),
@@ -88,3 +91,6 @@ class _DownloadScreenState extends State<DownloadScreen> {
     }
   }
 }
+
+
+
