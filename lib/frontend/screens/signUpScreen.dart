@@ -61,6 +61,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           vertical: kbaseVerticalPadding),
                       child: Text("Create Account", style: bigHeadingText()),
                     ),
+                    firstlastName(authBloc),
                     Padding(
                         padding: EdgeInsets.symmetric(
                             vertical: kbaseVerticalPadding),
@@ -75,8 +76,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                 },
                                 child: AppTextField(
                                   icon: (snapshot.hasError)
-                                    ? Icons.clear
-                                    : FontAwesomeIcons.check,
+                                      ? Icons.clear
+                                      : FontAwesomeIcons.check,
                                   onChanged: authBloc.changeusernameA,
                                   hintText: 'johndoe',
                                   label: 'Username',
@@ -192,28 +193,32 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         initialData: false,
                         stream: authBloc.isValidSignUp,
                         builder: (context, snapshot) {
-                          return AppButton(
-                            color: snapshot.data
-                                ? primaryColor
-                                : primaryColor.withOpacity(0.5),
-                            text: 'Sign Up',
-                            onTap: snapshot.data == true
-                                ? () async {
-                                    authBloc.changeButton(true);
-                                    await authBloc.signUp();
-                                    authBloc.changeLoginPress(true);
-                                    authBloc.changeButton(false);
-                                  }
-                                : () {
-                                    authBloc.changeButton(true);
-                                    MyAppDailog().responseDailog(
-                                        "Please fill Complete Information",
-                                        context,
-                                        showClosebutton: true);
-                                    authBloc.changeButton(false);
-                                    print('Nothing Happens');
-                                  },
-                          );
+                          return StreamBuilder<String>(
+                              stream: authBloc.usernameA,
+                              builder: (context, username) {
+                                return AppButton(
+                                  color: !username.hasError
+                                      ? primaryColor
+                                      : primaryColor.withOpacity(0.5),
+                                  text: 'Sign Up',
+                                  onTap: !username.hasError
+                                      ? () async {
+                                          authBloc.changeButton(true);
+                                          await authBloc.signUp();
+                                          authBloc.changeLoginPress(true);
+                                          authBloc.changeButton(false);
+                                        }
+                                      : () {
+                                          authBloc.changeButton(true);
+                                          MyAppDailog().responseDailog(
+                                              "Please fill Correct Information",
+                                              context,
+                                              showClosebutton: true);
+                                          authBloc.changeButton(false);
+                                          print('Nothing Happens');
+                                        },
+                                );
+                              });
                         }),
                     SizedBox(
                       height: 28,

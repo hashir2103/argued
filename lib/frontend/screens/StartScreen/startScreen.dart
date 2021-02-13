@@ -133,7 +133,7 @@ class _StartScreenState extends State<StartScreen> {
               ),
               Center(
                   child: Text(
-                'v$versionName.$versionCode',
+                'v$versionName.2',
                 style: normalText().copyWith(color: primaryTextColor),
               )),
               SizedBox(

@@ -55,11 +55,10 @@ class AuthBloc {
   Stream<String> get password => _password.stream.transform(passwordValidator);
   Stream<String> get confirmPassword =>
       _confirmPassword.stream.transform(passwordValidator);
-  Stream<bool> get isValidSignUp => CombineLatestStream.combine3(
-      email, password, validUsername, (a, b, c) => true);
+  Stream<bool> get isValidSignUp => CombineLatestStream.combine2(
+      email, password, (a, b) => true);
   Stream<bool> get isValidLogin =>
       CombineLatestStream.combine2(username, password, (a, b) => true);
-
   // Setter
 
   Function(bool) get changeRememberMe => _rememberMe.sink.add;
@@ -107,7 +106,7 @@ class AuthBloc {
   }
 
   //Tranformer of stream to validate data
-  //email.trim() to pull out any extra spacesother
+  //email.trim() to pull out any extra spacesotherObject
   final emailValidator =
       StreamTransformer<String, String>.fromHandlers(handleData: (email, sink) {
     if (emailValidatorRegExp.hasMatch(email.trim())) {
@@ -167,8 +166,8 @@ class AuthBloc {
       email: _email.value,
       password: _password.value,
       username: _usernameA.value.trim(),
-      // firstname: _fname.value.trim(),
-      // lastname: _lname.value.trim(),
+      firstname: _fname.value !=null ? _fname.value.trim() : "",
+      lastname:_lname.value!=null? _lname.value.trim() : "",
     );
     var response = await authServices.signUp(signUpModel);
     changeResponse(response);
@@ -234,10 +233,7 @@ class AuthBloc {
     var response =
         await authServices.checkUesrname(_usernameA.value.trim() ?? '');
     if (response['code'] != 200) {
-      _validUsername.add(false);
       _usernameA.addError("error");
-    } else {
-      _validUsername.add(true);
     }
   }
 }

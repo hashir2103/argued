@@ -237,7 +237,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                       Center(
                           child: Text(
-                        'v$versionName.$versionCode',
+                        'v$versionName.2',
                         style: normalText().copyWith(color: primaryTextColor),
                       )),
                       SizedBox(
